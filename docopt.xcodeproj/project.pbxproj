@@ -9,7 +9,12 @@
 /* Begin PBXBuildFile section */
 		3CE911341AA1DE7D00082C0B /* docopt.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CE911331AA1DE7D00082C0B /* docopt.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3CE9113A1AA1DE7E00082C0B /* docopt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE9112E1AA1DE7D00082C0B /* docopt.framework */; };
-		3CE911411AA1DE7E00082C0B /* docoptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE911401AA1DE7E00082C0B /* docoptTests.swift */; };
+		3CE911411AA1DE7E00082C0B /* DocoptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE911401AA1DE7E00082C0B /* DocoptTests.swift */; };
+		3CE9114B1AA1DEB700082C0B /* docopt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE9114A1AA1DEB700082C0B /* docopt.swift */; };
+		3CE9114C1AA1DEB700082C0B /* docopt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE9114A1AA1DEB700082C0B /* docopt.swift */; };
+		3CE9114E1AA1E1F200082C0B /* DocoptTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE9114D1AA1E1F200082C0B /* DocoptTestCase.swift */; };
+		3CE911501AA1E20400082C0B /* testcases.docopt in Resources */ = {isa = PBXBuildFile; fileRef = 3CE9114F1AA1E20400082C0B /* testcases.docopt */; };
+		3CE911521AA1E22400082C0B /* DocoptTestCaseParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE911511AA1E22400082C0B /* DocoptTestCaseParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +33,11 @@
 		3CE911331AA1DE7D00082C0B /* docopt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docopt.h; sourceTree = "<group>"; };
 		3CE911391AA1DE7E00082C0B /* docoptTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = docoptTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CE9113F1AA1DE7E00082C0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3CE911401AA1DE7E00082C0B /* docoptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = docoptTests.swift; sourceTree = "<group>"; };
+		3CE911401AA1DE7E00082C0B /* DocoptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocoptTests.swift; sourceTree = "<group>"; };
+		3CE9114A1AA1DEB700082C0B /* docopt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = docopt.swift; sourceTree = "<group>"; };
+		3CE9114D1AA1E1F200082C0B /* DocoptTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCase.swift; sourceTree = "<group>"; };
+		3CE9114F1AA1E20400082C0B /* testcases.docopt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testcases.docopt; sourceTree = "<group>"; };
+		3CE911511AA1E22400082C0B /* DocoptTestCaseParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCaseParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,8 +80,9 @@
 		3CE911301AA1DE7D00082C0B /* docopt */ = {
 			isa = PBXGroup;
 			children = (
-				3CE911331AA1DE7D00082C0B /* docopt.h */,
 				3CE911311AA1DE7D00082C0B /* Supporting Files */,
+				3CE9114A1AA1DEB700082C0B /* docopt.swift */,
+				3CE911331AA1DE7D00082C0B /* docopt.h */,
 			);
 			path = docopt;
 			sourceTree = "<group>";
@@ -88,8 +98,11 @@
 		3CE9113D1AA1DE7E00082C0B /* docoptTests */ = {
 			isa = PBXGroup;
 			children = (
-				3CE911401AA1DE7E00082C0B /* docoptTests.swift */,
 				3CE9113E1AA1DE7E00082C0B /* Supporting Files */,
+				3CE9114F1AA1E20400082C0B /* testcases.docopt */,
+				3CE911401AA1DE7E00082C0B /* DocoptTests.swift */,
+				3CE9114D1AA1E1F200082C0B /* DocoptTestCase.swift */,
+				3CE911511AA1E22400082C0B /* DocoptTestCaseParser.swift */,
 			);
 			path = docoptTests;
 			sourceTree = "<group>";
@@ -199,6 +212,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CE911501AA1E20400082C0B /* testcases.docopt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CE9114B1AA1DEB700082C0B /* docopt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,7 +231,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CE911411AA1DE7E00082C0B /* docoptTests.swift in Sources */,
+				3CE9114C1AA1DEB700082C0B /* docopt.swift in Sources */,
+				3CE9114E1AA1E1F200082C0B /* DocoptTestCase.swift in Sources */,
+				3CE911411AA1DE7E00082C0B /* DocoptTests.swift in Sources */,
+				3CE911521AA1E22400082C0B /* DocoptTestCaseParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +336,7 @@
 		3CE911451AA1DE7E00082C0B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -329,12 +348,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		3CE911461AA1DE7E00082C0B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
