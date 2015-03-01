@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class DocoptTestCaseParser {
+public struct DocoptTestCaseParser {
     public var testCases: Array<DocoptTestCase>!
     
     public init(stringOfTestCases: String) {
@@ -75,7 +75,7 @@ public class DocoptTestCaseParser {
     }
     
     private func parseTestCase(invocationString: String) -> DocoptTestCase? {
-        let trimmedTestInvocation: String = invocationString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet());
+        let trimmedTestInvocation: String = invocationString.strip();
         var testInvocationComponents: Array<String> = trimmedTestInvocation.componentsSeparatedByString("\n");
         assert(count(testInvocationComponents) >= 2, "Could not split test case: \(trimmedTestInvocation) into components");
         
@@ -111,7 +111,7 @@ public class DocoptTestCaseParser {
     
     private func arrayByRemovingStringsContainingOnlyWhitespace(sourceArray: Array<String>) -> Array<String> {
         return sourceArray.filter({
-            return $0.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) != ""
+            return !$0.strip().isEmpty
         })
     }
 }
