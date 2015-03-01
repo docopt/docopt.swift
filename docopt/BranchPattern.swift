@@ -23,6 +23,17 @@ internal class BranchPattern : Pattern, Equatable {
     internal init(_ children: Array<Pattern>) {
         self.children = children
     }
+    
+    override internal func flat<T>(_: T.Type) -> Array<Pattern> {
+        if let cast = self as? T {
+            return [self]
+        }
+        var result = [Pattern]()
+        for child in children {
+            result += child.flat(T)
+        }
+        return result
+    }
 }
 
 internal func ==(lhs: BranchPattern, rhs: BranchPattern) -> Bool {

@@ -8,6 +8,24 @@
 
 import Foundation
 
+internal struct MatchResult: Equatable, Printable {
+    let match: Bool
+    let left: [LeafPattern]
+    let collected: [LeafPattern]
+    
+    init(_ match: Bool, left: [LeafPattern], collected: [LeafPattern]) {
+        self.match = match
+        self.left = left
+        self.collected = collected
+    }
+
+    internal var description: String {
+        get {
+            return "MatchResult(\(match), \(left), \(collected))"
+        }
+    }
+}
+
 internal class Pattern: Equatable, Printable {
     internal func fix() -> Pattern {
         fixIdentities()
@@ -36,6 +54,14 @@ internal class Pattern: Equatable, Printable {
     private func fixRepeatingArguments() {
         
     }
+
+    internal func flat() -> Array<Pattern> {
+        return flat(LeafPattern)
+    }
+
+    internal func flat<T>(_: T.Type) -> Array<Pattern> {
+        return []
+    }
 }
 
 internal func ==(lhs: Pattern, rhs: Pattern) -> Bool {
@@ -46,4 +72,10 @@ internal func ==(lhs: Pattern, rhs: Pattern) -> Bool {
         return lhs as! LeafPattern == rhs as! LeafPattern
     }
     return false // Pattern is abstract and shouldn't be instantiated :)
+}
+
+internal func ==(lhs: MatchResult, rhs: MatchResult) -> Bool {
+    return lhs.match == rhs.match
+        && lhs.left == rhs.left
+        && lhs.collected == rhs.collected
 }

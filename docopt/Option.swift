@@ -12,9 +12,9 @@ internal class Option: LeafPattern, Equatable {
     internal var short: String?
     internal var long: String?
     internal var argCount: UInt
-    override internal var name: String {
+    override internal var name: String? {
         get {
-            return self.long ?? self.short ?? ""
+            return self.long ?? self.short
         }
         set {
         }
@@ -29,7 +29,7 @@ internal class Option: LeafPattern, Equatable {
         self.init(option.short, long: option.long, argCount: option.argCount, value: option.value)
     }
     
-    internal init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: String? = nil) {
+    internal init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = nil) {
         assert(argCount <= 1)
         self.short = short
         self.long = long
@@ -69,11 +69,22 @@ internal class Option: LeafPattern, Equatable {
         
         return Option(short, long: long, argCount: argCount, value: value)
     }
+    
+    override internal func singleMatch(left: [LeafPattern]) -> SingleMatchResult {
+        for var i = 0; i < count(left); i++ {
+            let pattern = left[i]
+            if pattern.name == name {
+                return SingleMatchResult(i, match: pattern)
+            }
+        }
+        return SingleMatchResult(0)
+    }
 }
 
 internal func ==(lhs: Option, rhs: Option) -> Bool {
+    let valEqual = lhs as LeafPattern == rhs as LeafPattern
     return lhs.short == rhs.short
         && lhs.long == lhs.long
         && lhs.argCount == rhs.argCount
-        && lhs.value == rhs.value
+        && valEqual
 }

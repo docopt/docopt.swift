@@ -25,7 +25,7 @@ public extension String {
         let re = NSRegularExpression(pattern: regex, options: flags, error: nil)!
         let all = NSMakeRange(0, count(self))
         if let matches = re.matchesInString(self, options: .allZeros, range: all) as? Array<NSTextCheckingResult> {
-            var stringMatches = matches.map {(self as NSString).substringWithRange($0.range)}
+            var stringMatches = matches.map {(self as NSString).substringWithRange($0.rangeAtIndex(1))}
             return stringMatches.map {$0.strip()}
         }
         return []
@@ -37,7 +37,6 @@ public extension String {
     
     public func splitByRegex(regex: String) -> Array<String> {
         let re = NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators, error: nil)!
-//        let hg = hasGrouping(regex)
         let all = NSMakeRange(0, count(self))
         var result = Array<String>()
         let source = self as NSString
@@ -68,30 +67,3 @@ public extension String {
         return result
     }
 }
-
-//private func hasGrouping(pattern: String) -> Bool {
-//    var range = pattern.startIndex..<pattern.endIndex;
-//    
-//    // Find the potential beginning of a group by looking for a left parenthesis character.
-//    while let idx = pattern.rangeOfString("(", options: NSStringCompareOptions.allZeros, range: range) {
-//        var c = 0
-//
-//        // Count the number of escape characters immediately preceding the left parenthesis character.
-//        for j in pattern.startIndex..<idx.startIndex {
-//            if (pattern[j] != "\\") {
-//                break
-//            }
-//
-//            c++
-//        }
-//    
-//        // If there is an even number of consecutive escape characters, the character is not escaped and begins a group.
-//        if c % 2 == 0 {
-//            return true
-//        }
-//        
-//        range = idx.endIndex..<pattern.endIndex
-//    }
-//    
-//    return false
-//}

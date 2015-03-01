@@ -10,19 +10,21 @@ import Foundation
 
 internal class Tokens: Equatable {
     private var tokensArray: Array<String>
+    internal var error: DocoptError
     
-    internal convenience init(_ source: String) {
-        self.init(source.splitR())
+    internal convenience init(_ source: String, error: DocoptError = DocoptExit()) {
+        self.init(source.splitR(), error: error)
     }
     
-    internal init(_ source: Array<String>) {
+    internal init(_ source: Array<String>, error: DocoptError = DocoptExit() ) {
         tokensArray = source
+        self.error = error
     }
     
     static internal func fromPattern(source: String) -> Tokens {
         let res = source.stringByReplacingOccurrencesOfString("([\\[\\]\\(\\)\\|]|\\.\\.\\.)", withString: " $1 ", options: .RegularExpressionSearch, range: nil)
         var result = res.splitByRegex("\\s+|(\\S*<.*?>)").filter { !$0.isEmpty }
-        return Tokens(result)
+        return Tokens(result, error: DocoptLanguageError())
     }
     
     internal func current() -> String? {

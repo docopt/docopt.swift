@@ -52,6 +52,11 @@ class DocoptTests: XCTestCase {
 //            }
 //        }
 //    }
+    
+    func testPatternFlat() {
+        XCTAssertEqual(Required([OneOrMore(Argument("N")), Option("-a"), Argument("M")]).flat(), [Argument("N"), Option("-a"), Argument("M")])
+        XCTAssertEqual(Required([Optional(OptionsShortcut()), Optional(Option("-a"))]).flat(OptionsShortcut), [OptionsShortcut()])
+    }
 
     func testParseDefaults() {
         let section = "options:\n\t-a        Add\n\t-r        Remote\n\t-m <msg>  Message"
@@ -91,11 +96,65 @@ class DocoptTests: XCTestCase {
     
     func testParseArgv() {
         var o = [Option("-h"), Option("-v", long: "--verbose"), Option("-f", long:"--file", argCount: 1)]
-        var TS = {(s: String) in return Tokens(s) }
+        var TS = {(s: String) in return Tokens(s, error: DocoptExit()) }
         
-        XCTAssertEqual(TS(""), Tokens([]))
+        XCTAssertEqual(Docopt.parseArgv(TS(""), options: o), [])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h"), options: o), [Option("-h", value: true)])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --verbose"), options:o),
+            [Option("-h", value: true), Option("-v", long: "--verbose", value: true)])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt"), options:o),
+            [Option("-h", value: true), Option("-f", long: "--file", argCount: 1, value: "f.txt")])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg"), options:o),
+            [Option("-h", value: true),
+                Option("-f", long: "--file", argCount: 1, value: "f.txt"),
+                Argument(nil, value: "arg")])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg arg2"), options:o),
+            [Option("-h", value: true),
+                Option("-f", long: "--file", argCount: 1, value: "f.txt"),
+                Argument(nil, value: "arg"),
+                Argument(nil, value: "arg2")])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h arg -- -v"), options:o),
+            [Option("-h", value: true),
+                Argument(nil, value: "arg"),
+                Argument(nil, value: "--"),
+                Argument(nil, value: "-v")])
     }
     
+    func testOptionParse() {
+        XCTAssertEqual(Option.parse("-h"), Option("-h"))
+        XCTAssertEqual(Option.parse("--help"), Option(long: "--help"))
+        XCTAssertEqual(Option.parse("-h --help"), Option("-h", long: "--help"))
+        XCTAssertEqual(Option.parse("-h, --help"), Option("-h", long: "--help"))
+
+        XCTAssertEqual(Option.parse("-h TOPIC"), Option("-h", argCount: 1))
+        XCTAssertEqual(Option.parse("--help TOPIC"), Option(long: "--help", argCount: 1))
+        XCTAssertEqual(Option.parse("-h TOPIC --help TOPIC"), Option("-h", long: "--help", argCount: 1))
+        XCTAssertEqual(Option.parse("-h TOPIC, --help TOPIC"), Option("-h", long: "--help", argCount: 1))
+        XCTAssertEqual(Option.parse("-h TOPIC, --help=TOPIC"), Option("-h", long: "--help", argCount: 1))
+
+        XCTAssertEqual(Option.parse("-h  Description..."), Option("-h"))
+        XCTAssertEqual(Option.parse("-h --help  Description..."), Option("-h", long: "--help"))
+        XCTAssertEqual(Option.parse("-h TOPIC  Description..."), Option("-h", argCount: 1))
+
+        XCTAssertEqual(Option.parse("    -h"), Option("-h"))
+
+        XCTAssertEqual(Option.parse("-h TOPIC  Descripton... [default: 2]"),
+            Option("-h", argCount: 1, value: "2"))
+        XCTAssertEqual(Option.parse("-h TOPIC  Descripton... [default: topic-1]"),
+            Option("-h", argCount: 1, value: "topic-1"))
+        XCTAssertEqual(Option.parse("--help=TOPIC  ... [default: 3.14]"),
+            Option(long: "--help", argCount: 1, value: "3.14"))
+        XCTAssertEqual(Option.parse("-h, --help=DIR  ... [default: ./]"),
+            Option("-h", long: "--help", argCount: 1, value: "./"))
+        XCTAssertEqual(Option.parse("-h TOPIC  Descripton... [dEfAuLt: 2]"),
+            Option("-h", argCount: 1, value: "2"))
+    }
+    
+    func testOptionName() {
+        XCTAssertEqual(Option("-h").name!, "-h")
+        XCTAssertEqual(Option("-h", long: "--help").name!, "--help")
+        XCTAssertEqual(Option(long: "--help").name!, "--help")
+    }
     
     func testParsePattern() {
         var o = [Option("-h"), Option("-v", long: "--verbose"), Option("-f", long:"--file", argCount: 1)]
@@ -123,16 +182,29 @@ class DocoptTests: XCTestCase {
             Required([Optional(Option("-h")),
                 Optional(Argument("N"))]))
         XCTAssertEqual(Docopt.parsePattern("[options]", options: o),
-            Required(Optional(OptionsShortcut([]))))
+            Required(Optional(OptionsShortcut())))
         XCTAssertEqual(Docopt.parsePattern("[options] A", options: o),
-            Required([Optional(OptionsShortcut([])),
+            Required([Optional(OptionsShortcut()),
                 Argument("A")]))
         XCTAssertEqual(Docopt.parsePattern("-v [options]", options: o),
             Required([Option("-v", long: "--verbose"),
-                Optional(OptionsShortcut([]))]))
+                Optional(OptionsShortcut())]))
         XCTAssertEqual(Docopt.parsePattern("ADD", options: o), Required(Argument("ADD")))
         XCTAssertEqual(Docopt.parsePattern("<add>", options: o), Required(Argument("<add>")))
         XCTAssertEqual(Docopt.parsePattern("add", options: o), Required(Command("add")))
+    }
+    
+    func testOptionMatch() {
+        XCTAssertEqual(Option("-a").match([Option("-a", value: true)]),
+            MatchResult(true, left: [], collected: [Option("-a", value: true)]))
+        XCTAssertEqual(Option("-a").match([Option("-x")]),
+            MatchResult(false, left: [Option("-x")], collected: []))
+        XCTAssertEqual(Option("-a").match([Argument("N")]),
+            MatchResult(false, left: [Argument("N")], collected: []))
+        XCTAssertEqual(Option("-a").match([Option("-x"), Option("-a"), Argument("N")]),
+            MatchResult(true, left: [Option("-x"), Argument("N")], collected: [Option("-a")]))
+        XCTAssertEqual(Option("-a").match([Option("-a", value: true), Option("-a")]),
+            MatchResult(true, left: [Option("-a")], collected: [Option("-a", value: true)]))
     }
     
     private func fixturesFilePath() -> String? {

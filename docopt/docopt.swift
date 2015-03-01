@@ -58,7 +58,7 @@ public struct Docopt {
         return defaults
     }
     
-    static internal func parseLong(tokens: Tokens, var options: [Option]) -> [Pattern] {
+    static internal func parseLong(tokens: Tokens, var options: [Option]) -> Array<Option> {
         var (long, eq, val) = tokens.move()!.partition("=")
         assert(long.hasPrefix("--"))
         var value: String?
@@ -82,8 +82,9 @@ public struct Docopt {
             let argCount: UInt = (eq == "=") ? 1 : 0
             o = Option(nil, long: long, argCount: argCount, value: nil)
             options.append(o!)
-//            if tokens.error is DocoptExit:
-//                o = Option(None, long, argcount, value if argcount else True)
+            if tokens.error is DocoptExit {
+                o = Option(nil, long: long, argCount: argCount, value: argCount > 0 ? value : true)
+            }
         } else {
             o = Option(similar[0])
             if o!.argCount == 0 {
@@ -99,15 +100,18 @@ public struct Docopt {
                     }
                 }
             }
+            if tokens.error is DocoptExit {
+                o!.value = value ?? true
+            }
         }
         return [o!]
     }
     
-    static internal func parseShorts(tokens: Tokens, var options: [Option]) -> [Pattern] {
+    static internal func parseShorts(tokens: Tokens, var options: [Option]) -> [Option] {
         let token = tokens.move()!
         assert(token.hasPrefix("-") && !token.hasPrefix("--"))
         var left = token.stringByReplacingOccurrencesOfString("-", withString: "", options: .AnchoredSearch, range: nil)
-        var parsed = [Pattern]()
+        var parsed = [Option]()
         while left != "" {
             let short = "-" + left.substringToIndex(advance(left.startIndex, 1))
             left = left.substringFromIndex(advance(left.startIndex, 1))
@@ -119,8 +123,9 @@ public struct Docopt {
             } else if count(similar) < 1 {
                 o = Option(short)
                 options.append(o!)
-//                if tokens.error is DocoptExit:
-//                    o = Option(short, None, 0, True)
+                if tokens.error is DocoptExit {
+                    o = Option(short, value: true)
+                }
             } else {
                 o = Option(short, long: similar[0].long, argCount: similar[0].argCount, value: similar[0].value)
                 var value: String? = nil
@@ -137,8 +142,9 @@ public struct Docopt {
                         left = ""
                     }
                 }
-//                if tokens.error is DocoptExit:
-//                    o.value = value if value is not None else True
+                if tokens.error is DocoptExit {
+                    o!.value = value ?? true
+                }
             }
             if let o = o {
                 parsed.append(o)
@@ -177,7 +183,7 @@ public struct Docopt {
         
         if token == "options" {
             tokens.move()
-            return [OptionsShortcut([])]
+            return [OptionsShortcut()]
         }
         
         if token.hasPrefix("--") && token != "--" {
@@ -235,6 +241,37 @@ public struct Docopt {
             return [Either(result)]
         }
         return result
+    }
+
+    static internal func parseArgv(tokens: Tokens, var options: [Option], optionsFirst: Bool = false) -> [LeafPattern] {
+        var parsed = Array<LeafPattern>()
+        while let current = tokens.current() {
+            if tokens.current() == "--" {
+                while let token = tokens.move() {
+                    parsed.append(Argument(nil, value: token))
+                }
+                return parsed
+            }
+            else if current.hasPrefix("--") {
+//                parsed += parseLong(tokens, options: options)
+                for arg in parseLong(tokens, options: options) {
+                    parsed.append(arg)
+                }
+            } else if current.hasPrefix("-") && current != "-" {
+//                parsed += parseShorts(tokens, options: options)
+                for arg in parseShorts(tokens, options: options) {
+                    parsed.append(arg)
+                }
+            } else if optionsFirst {
+                while let token = tokens.move() {
+                    parsed.append(Argument(nil, value: token))
+                }
+                return parsed
+            } else {
+                parsed.append(Argument(nil, value: tokens.move()))
+            }
+        }
+        return parsed
     }
     
     static internal func parsePattern(source: String, var options: [Option]) -> Required {

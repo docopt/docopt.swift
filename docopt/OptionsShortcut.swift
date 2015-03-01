@@ -9,5 +9,7 @@
 import Foundation
 
 internal class OptionsShortcut: Optional {
-    
+    internal init() {
+        super.init([])
+    }
 }
