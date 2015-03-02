@@ -14,4 +14,14 @@ internal class Argument: LeafPattern {
             return "Argument(\(name), \(value))"
         }
     }
+    
+    override internal func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
+        for var i = 0; i < count(left); i++ {
+            let pattern = left[i]
+            if pattern is Argument {
+                return (i, Argument(self.name, value: pattern.value))
+            }
+        }
+        return (0, nil)
+    }
 }

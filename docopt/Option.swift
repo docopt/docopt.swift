@@ -70,7 +70,7 @@ internal class Option: LeafPattern, Equatable {
         return Option(short, long: long, argCount: argCount, value: value)
     }
     
-    override internal func singleMatch(left: [LeafPattern]) -> SingleMatchResult {
+    override internal func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
         for var i = 0; i < count(left); i++ {
             let pattern = left[i]
             if pattern.name == name {

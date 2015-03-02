@@ -15,4 +15,18 @@ internal class Required: BranchPattern {
         }
     }
 
+    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+        var collected: [Pattern] = clld ?? []
+        var l: [Pattern] = left
+        var c = collected
+        for pattern in children {
+            var m: Bool
+            (m, l, c) = pattern.match(l, collected: c)
+            if !m {
+                return (false, left, collected)
+            }
+        }
+        
+        return (true, l, c)
+    }
 }

@@ -15,4 +15,28 @@ internal class OneOrMore: BranchPattern {
         }
     }
     
+    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+        assert(count(children) == 1)
+        var collected: [Pattern] = clld ?? []
+        var l: [Pattern] = left
+        var c = collected
+        var l_: [Pattern]? = nil
+        var matched = true
+        var times = 0
+        while matched {
+            // could it be that something didn't match but changed l or c?
+            (matched, l, c) = self.children[0].match(l, collected: c)
+            times += matched ? 1 : 0
+            if l_ != nil && l_! == l {
+                break
+            }
+            l_ = l
+        }
+        
+        if times >= 1 {
+            return (true, l, c)
+        }
+        
+        return (false, left, collected)
+    }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias SingleMatchResult = (position: Int, match: LeafPattern?)
+typealias SingleMatchResult = (position: Int, match: Pattern?)
 
 internal class LeafPattern : Pattern, Equatable {
     var name: String?
@@ -31,20 +31,21 @@ internal class LeafPattern : Pattern, Equatable {
         return []
     }
     
-    internal func match(left: [LeafPattern], collected clld: [LeafPattern]? = nil) -> MatchResult {
+    override internal func match<T: LeafPattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
         var collected: [LeafPattern] = clld ?? []
-        let (pos, match) = singleMatch(left)
+        let (pos, mtch) = singleMatch(left)
         
-        if match == nil {
+        if mtch == nil {
             return (false, left, collected)
         }
+        let match = mtch as! LeafPattern
         
         var left_ = left
         left_.removeAtIndex(pos)
         
         var sameName = collected.filter({self.name == $0.name})
         if sameName.isEmpty {
-            collected.append(match!)
+            collected.append(match)
             return MatchResult(true, left_, collected)
         }
 
@@ -52,19 +53,17 @@ internal class LeafPattern : Pattern, Equatable {
         case let val as Int:
             sameName[0].value = val + 1
         case var val as Array<String>:
-            if let v = match!.value as? String {
+            if let v = match.value as? String {
                 val += [v]
             } else {
-                val += match!.value as! Array<String>
+                val += match.value as! Array<String>
             }
         default:
-            collected.append(match!)
+            collected.append(match)
         }
         
         return (true, left_, collected)
     }
-    
-    internal func singleMatch(left: [LeafPattern]) -> SingleMatchResult {return (0, nil)}
 }
 
 internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {

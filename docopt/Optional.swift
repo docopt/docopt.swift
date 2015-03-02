@@ -14,4 +14,14 @@ internal class Optional: BranchPattern {
             return "Optional(\(children))"
         }
     }
+    
+    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+        var collected: [Pattern] = clld ?? []
+        var l: [Pattern] = left
+        for pattern in children {
+            (_, l, collected) = pattern.match(l, collected: collected)
+        }
+        
+        return (true, l, collected)
+    }
 }
