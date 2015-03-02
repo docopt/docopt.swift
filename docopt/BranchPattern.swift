@@ -24,6 +24,20 @@ internal class BranchPattern : Pattern, Equatable {
         self.children = children
     }
     
+    override internal func fixIdentities(_ unq: Array<Pattern>? = nil) {
+        var uniq: [Pattern] = unq ?? Array<Pattern>(Set<Pattern>(flat()))
+        
+        for var i = 0; i < count(children); i++ {
+            let child = children[i]
+            if !(child is BranchPattern) {
+                assert(contains(uniq, child));
+                children[i] = uniq[find(uniq, child)!]
+            } else {
+                child.fixIdentities(uniq)
+            }
+        }
+    }
+    
     override internal func flat<T: Pattern>(_: T.Type) -> Array<Pattern> {
         if let cast = self as? T {
             return [self]

@@ -27,24 +27,7 @@ internal class Pattern: Equatable, Hashable, Printable {
         }
     }
 
-    internal func fixIdentities(_ unq: Array<Pattern>? = nil) {
-        if !(self is BranchPattern) {
-            return
-        }
-        var uniq: [Pattern] = unq ?? Array<Pattern>(Set<Pattern>(flat()))
-        
-        var children: Array<Pattern> = (self as! BranchPattern).children
-        
-        for var i = 0; i < count(children); i++ {
-            let child = children[i]
-            if !(child is BranchPattern) {
-                assert(contains(uniq, child));
-                children[i] = uniq[find(uniq, child)!]
-            } else {
-                child.fixIdentities(uniq)
-            }
-        }
-    }
+    internal func fixIdentities(_ unq: Array<Pattern>? = nil) {}
     
     internal func fixRepeatingArguments() -> Pattern {
         var either = Pattern.transform(self).children.map { ($0 as! Required).children }
@@ -57,7 +40,7 @@ internal class Pattern: Equatable, Hashable, Printable {
                         var e = child as! LeafPattern
                         if (e as? Argument != nil) || ((e as? Option != nil) && (e as! Option).argCount != 0) {
                             if e.value == nil {
-                                e.value = []
+                                e.value = Array<String>()
                             } else if (e.value as? Array<String> == nil) {
                                 e.value = e.value!.description.splitR()
                             }

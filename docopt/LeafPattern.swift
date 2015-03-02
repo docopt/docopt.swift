@@ -44,25 +44,32 @@ internal class LeafPattern : Pattern, Equatable {
         left_.removeAtIndex(pos)
         
         var sameName = collected.filter({self.name == $0.name})
-        if sameName.isEmpty {
-            collected.append(match)
-            return MatchResult(true, left_, collected)
-        }
 
-        switch value {
-        case let val as Int:
-            sameName[0].value = val + 1
-        case var val as Array<String>:
-            if let v = match.value as? String {
-                val += [v]
+        if (value as? Int != nil) || (value as? Array<String> != nil) {
+            var increment: AnyObject?
+            if value as? Int != nil {
+                increment = 1
             } else {
-                val += match.value as! Array<String>
+                if let val = match.value as? String {
+                    increment = Array<String>([val])
+                } else {
+                    increment = match.value
+                }
             }
-        default:
-            collected.append(match)
+            if sameName.isEmpty {
+                match.value = increment
+                collected.append(match)
+                return (true, left_, collected)
+            }
+            if let inc = increment as? Int {
+                sameName[0].value = (sameName[0].value as? Int) ?? 0 + inc
+            } else if let inc = increment as? Array<String> {
+                sameName[0].value = ((sameName[0].value as? Array<String>) ?? Array<String>()) + inc
+            }
+            return (true, left_, collected)
         }
         
-        return (true, left_, collected)
+        return (true, left_, collected + [match])
     }
 }
 
@@ -72,6 +79,8 @@ internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
         valEqual = lhs.value as! String == rhs.value as! String
     } else if lhs.value is Bool && rhs.value is Bool {
         valEqual = lhs.value as! Bool == rhs.value as! Bool
+    } else if lhs.value is Array<String> && rhs.value is Array<String> {
+        valEqual = lhs.value as! Array<String> == rhs.value as! Array<String>
     } else {
         valEqual = lhs.value === rhs.value
     }

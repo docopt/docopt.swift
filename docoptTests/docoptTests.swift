@@ -324,30 +324,30 @@ class DocoptTests: XCTestCase {
     }
     
     func testFixRepeatingArguments() {
-//        XCTAssertEqual(Option("-a").fixRepeatingArguments(), Option("-a"));
-//        XCTAssertEqual(Argument("N").fixRepeatingArguments(), Argument("N"));
-//        XCTAssertEqual(Required([Argument("N"),
-//            Argument("N")]).fixRepeatingArguments(),
-//            Required([Argument("N", value: []), Argument("N", value: [])]));
+        XCTAssertEqual(Option("-a").fixRepeatingArguments(), Option("-a"));
+        XCTAssertEqual(Argument("N").fixRepeatingArguments(), Argument("N"));
+        XCTAssertEqual(Required([Argument("N"),
+            Argument("N")]).fixRepeatingArguments(),
+            Required([Argument("N", value: []), Argument("N", value: [])]));
         XCTAssertEqual(Either([Argument("N"),
             OneOrMore(Argument("N"))]).fix(),
             Either([Argument("N", value: []), OneOrMore(Argument("N", value: []))]));
     }
     
-//    func testListArgumentMatch() {
-//        XCTAssertTrue(Required([Argument("N"), Argument("N")]).fix().match(
-//            [Argument(nil, value: "1"), Argument(nil, value: "2")]) ==
-//            (true, [], [Argument("N", value: ["1", "2"])]));
-//        XCTAssertTrue(OneOrMore(Argument("N")).fix().match(
-//            [Argument(nil, value: "1"), Argument(nil, value: "2"), Argument(nil, value: "3")]) ==
-//            (true, [], [Argument("N", value: ["1", "2", "3"])]));
-//        XCTAssertTrue(Required([Argument("N"), OneOrMore(Argument("N"))]).fix().match(
-//            [Argument(nil, value: "1"), Argument(nil, value: "2"), Argument(nil, value: "3")]) ==
-//            (true, [], [Argument("N", value: ["1", "2", "3"])]));
-//        XCTAssertTrue(Required([Argument("N"), Required(Argument("N"))]).fix().match(
-//            [Argument(nil, value: "1"), Argument(nil, value: "2")]) ==
-//            (true, [], [Argument("N", value: ["1", "2"])]));
-//    }
+    func testListArgumentMatch() {
+        XCTAssertTrue(Required([Argument("N"), Argument("N")]).fix().match(
+            [Argument(nil, value: "1"), Argument(nil, value: "2")]) ==
+            (true, [], [Argument("N", value: ["1", "2"])]));
+        XCTAssertTrue(OneOrMore(Argument("N")).fix().match(
+            [Argument(nil, value: "1"), Argument(nil, value: "2"), Argument(nil, value: "3")]) ==
+            (true, [], [Argument("N", value: ["1", "2", "3"])]));
+        XCTAssertTrue(Required([Argument("N"), OneOrMore(Argument("N"))]).fix().match(
+            [Argument(nil, value: "1"), Argument(nil, value: "2"), Argument(nil, value: "3")]) ==
+            (true, [], [Argument("N", value: ["1", "2", "3"])]));
+        XCTAssertTrue(Required([Argument("N"), Required(Argument("N"))]).fix().match(
+            [Argument(nil, value: "1"), Argument(nil, value: "2")]) ==
+            (true, [], [Argument("N", value: ["1", "2"])]));
+    }
     
     private func fixturesFilePath() -> String? {
         let testBundle: NSBundle = NSBundle(forClass: self.dynamicType)
