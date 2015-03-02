@@ -24,7 +24,7 @@ internal class BranchPattern : Pattern, Equatable {
         self.children = children
     }
     
-    override internal func flat<T>(_: T.Type) -> Array<Pattern> {
+    override internal func flat<T: Pattern>(_: T.Type) -> Array<Pattern> {
         if let cast = self as? T {
             return [self]
         }

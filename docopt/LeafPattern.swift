@@ -8,21 +8,7 @@
 
 import Foundation
 
-internal struct SingleMatchResult: Printable {
-    let position: Int
-    let match: LeafPattern?
-    
-    internal var description: String {
-        get {
-            return "SingleMatchResult(\(position), \(match))"
-        }
-    }
-
-    init(_ position: Int, match: LeafPattern? = nil) {
-        self.position = position
-        self.match = match
-    }
-}
+typealias SingleMatchResult = (position: Int, match: LeafPattern?)
 
 internal class LeafPattern : Pattern, Equatable {
     var name: String?
@@ -38,7 +24,7 @@ internal class LeafPattern : Pattern, Equatable {
         self.value = value
     }
     
-    override internal func flat<T>(_: T.Type) -> Array<Pattern> {
+    override internal func flat<T: Pattern>(_: T.Type) -> Array<Pattern> {
         if let cast = self as? T {
             return [self]
         }
@@ -47,59 +33,38 @@ internal class LeafPattern : Pattern, Equatable {
     
     internal func match(left: [LeafPattern], collected clld: [LeafPattern]? = nil) -> MatchResult {
         var collected: [LeafPattern] = clld ?? []
-        let m = singleMatch(left)
-        let pos = m.position
-        let match = m.match
+        let (pos, match) = singleMatch(left)
         
         if match == nil {
-            return MatchResult(false, left: left, collected: collected)
+            return (false, left, collected)
         }
         
-        var left_ = [LeafPattern]()
-        left_ += left[0..<pos]
-        if (pos + 1 < count(left)) {
-            left_ += left[(pos + 1)..<count(left)]
-        }
+        var left_ = left
+        left_.removeAtIndex(pos)
         
         var sameName = collected.filter({self.name == $0.name})
-        var increment: AnyObject?
+        if sameName.isEmpty {
+            collected.append(match!)
+            return MatchResult(true, left_, collected)
+        }
+
         switch value {
         case let val as Int:
-            increment = 1
-        case let val as Array<String>:
-            let v: AnyObject? = match!.value
-            if let v = v as? String {
-                increment = [v]
+            sameName[0].value = val + 1
+        case var val as Array<String>:
+            if let v = match!.value as? String {
+                val += [v]
             } else {
-                increment = v
+                val += match!.value as! Array<String>
             }
         default:
             collected.append(match!)
-            return MatchResult(true, left: left_, collected: collected)
         }
         
-        if sameName.isEmpty {
-            collected.append(match!)
-            return MatchResult(true, left: left_, collected: collected)
-        }
-        
-        let p = sameName[0]
-        let v: AnyObject? = p.value
-        
-        switch value {
-        case let val as Int:
-            let b: Int = increment as! Int
-            p.value = val + b
-        case var val as Array<String>:
-            let b: Array<String> = increment as! Array<String>
-            val += b
-        default: () // not possible
-        }
-        
-        return MatchResult(true, left: left_, collected: collected)
+        return (true, left_, collected)
     }
     
-    internal func singleMatch(left: [LeafPattern]) -> SingleMatchResult {return SingleMatchResult(0)}
+    internal func singleMatch(left: [LeafPattern]) -> SingleMatchResult {return (0, nil)}
 }
 
 internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {

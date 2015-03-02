@@ -69,7 +69,7 @@ public struct Docopt {
         }
         var similar = options.filter {$0.long == long}
         
-        if /*tokens.error is DocoptExit and */ similar == [] {  // if no exact match
+        if tokens.error is DocoptExit && similar == [] {  // if no exact match
             similar = options.filter {($0.long as String! == long) ?? false}
         }
 

@@ -195,16 +195,16 @@ class DocoptTests: XCTestCase {
     }
     
     func testOptionMatch() {
-        XCTAssertEqual(Option("-a").match([Option("-a", value: true)]),
-            MatchResult(true, left: [], collected: [Option("-a", value: true)]))
-        XCTAssertEqual(Option("-a").match([Option("-x")]),
-            MatchResult(false, left: [Option("-x")], collected: []))
-        XCTAssertEqual(Option("-a").match([Argument("N")]),
-            MatchResult(false, left: [Argument("N")], collected: []))
-        XCTAssertEqual(Option("-a").match([Option("-x"), Option("-a"), Argument("N")]),
-            MatchResult(true, left: [Option("-x"), Argument("N")], collected: [Option("-a")]))
-        XCTAssertEqual(Option("-a").match([Option("-a", value: true), Option("-a")]),
-            MatchResult(true, left: [Option("-a")], collected: [Option("-a", value: true)]))
+        let result1: MatchResult = (true, [], [Option("-a", value: true)])
+        XCTAssertTrue(Option("-a").match([Option("-a", value: true)]) == result1)
+        XCTAssertTrue(Option("-a").match([Option("-x")]) ==
+            (false, [Option("-x")], []))
+        XCTAssertTrue(Option("-a").match([Argument("N")]) ==
+            (false, [Argument("N")], []))
+        XCTAssertTrue(Option("-a").match([Option("-x"), Option("-a"), Argument("N")]) ==
+            (true, [Option("-x"), Argument("N")], [Option("-a")]))
+        XCTAssertTrue(Option("-a").match([Option("-a", value: true), Option("-a")]) ==
+            (true, [Option("-a")], [Option("-a", value: true)]))
     }
     
     private func fixturesFilePath() -> String? {

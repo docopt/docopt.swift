@@ -74,10 +74,10 @@ internal class Option: LeafPattern, Equatable {
         for var i = 0; i < count(left); i++ {
             let pattern = left[i]
             if pattern.name == name {
-                return SingleMatchResult(i, match: pattern)
+                return (i, pattern)
             }
         }
-        return SingleMatchResult(0)
+        return (0, nil)
     }
 }
 
