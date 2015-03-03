@@ -24,15 +24,15 @@ internal class LeafPattern : Pattern, Equatable {
         self.value = value
     }
     
-    override internal func flat<T: Pattern>(_: T.Type) -> Array<Pattern> {
+    override internal func flat<T: LeafPattern>(_: T.Type) -> Array<T> {
         if let cast = self as? T {
-            return [self]
+            return [cast]
         }
         return []
     }
     
-    override internal func match<T: LeafPattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
-        var collected: [LeafPattern] = clld ?? []
+    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+        var collected: [Pattern] = clld ?? []
         let (pos, mtch) = singleMatch(left)
         
         if mtch == nil {
@@ -43,7 +43,12 @@ internal class LeafPattern : Pattern, Equatable {
         var left_ = left
         left_.removeAtIndex(pos)
         
-        var sameName = collected.filter({self.name == $0.name})
+        var sameName = collected.filter({ item in
+            if let cast = item as? LeafPattern {
+                return self.name == cast.name
+            }
+            return false
+        }) as! [LeafPattern]
 
         if (value as? Int != nil) || (value as? Array<String> != nil) {
             var increment: AnyObject?
@@ -62,7 +67,7 @@ internal class LeafPattern : Pattern, Equatable {
                 return (true, left_, collected)
             }
             if let inc = increment as? Int {
-                sameName[0].value = (sameName[0].value as? Int) ?? 0 + inc
+                sameName[0].value = sameName[0].value ?? 0 + inc
             } else if let inc = increment as? Array<String> {
                 sameName[0].value = ((sameName[0].value as? Array<String>) ?? Array<String>()) + inc
             }

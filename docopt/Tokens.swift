@@ -13,7 +13,7 @@ internal class Tokens: Equatable {
     internal var error: DocoptError
     
     internal convenience init(_ source: String, error: DocoptError = DocoptExit()) {
-        self.init(source.splitR(), error: error)
+        self.init(source.split(), error: error)
     }
     
     internal init(_ source: Array<String>, error: DocoptError = DocoptExit() ) {

@@ -349,6 +349,32 @@ class DocoptTests: XCTestCase {
             (true, [], [Argument("N", value: ["1", "2"])]));
     }
     
+    func testBasicPatternMatch() {
+        // ( -a N [ -x Z ] )
+        let pattern = Required([Option("-a"), Argument("N"), Optional([Option("-x"), Argument("Z")])])
+        
+        // -a N
+        XCTAssertTrue(pattern.match([Option("-a"), Argument(nil, value: 9)]) ==
+            (true, [], [Option("-a"), Argument("N", value: 9)]))
+        // -a -x N Z
+        XCTAssertTrue(pattern.match([Option("-a"), Option("-x"), Argument(nil, value: 9), Argument(nil, value: 5)]) ==
+            (true, [], [Option("-a"), Argument("N", value: 9), Option("-x"), Argument("Z", value: 5)]))
+        // -x N Z  # BZZ!
+        XCTAssertTrue(pattern.match([Option("-x"), Argument(nil, value: 9), Argument(nil, value: 5)]) ==
+            (false, [Option("-x"), Argument(nil, value: 9), Argument(nil, value: 5)], []))
+    }
+    
+    func testSet() {
+        XCTAssertEqual(Argument("N"), Argument("N"))
+        XCTAssertEqual(Set([Argument("N"), Argument("N")]), Set([Argument("N")]))
+    }
+    
+//    func testDocopt() {
+//        let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
+//        let result: Dictionary<String, DocoptValue> = Docopt(doc, argv: ["arg"]).result as! DocoptResult
+//        XCTAssertTrue(result.description == ["-v": false, "A": "arg"].description)
+//    }
+    
     private func fixturesFilePath() -> String? {
         let testBundle: NSBundle = NSBundle(forClass: self.dynamicType)
         return testBundle.pathForResource("testcases", ofType: "docopt")
@@ -361,4 +387,20 @@ class DocoptTests: XCTestCase {
         }
         return nil;
     }
+}
+
+internal func ==<K: Hashable, V: DocoptValue>(lhs: [K: V], rhs: [K: V]) -> Bool {
+    if lhs.count != rhs.count { return false }
+    
+    for (key, lhsub) in lhs {
+        if let rhsub = rhs[key] {
+            if lhsub != rhsub {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    
+    return true
 }

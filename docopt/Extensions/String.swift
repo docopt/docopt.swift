@@ -31,8 +31,8 @@ public extension String {
         return []
     }
     
-    public func splitR() -> Array<String> {
-        return split(self, isSeparator: {$0 == " " || $0 == "\n"})
+    public func split() -> Array<String> {
+        return Swift.split(self, isSeparator: {$0 == " " || $0 == "\n"})
     }
     
     public func splitByRegex(regex: String) -> Array<String> {

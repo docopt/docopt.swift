@@ -27,7 +27,7 @@ internal class Pattern: Equatable, Hashable, Printable {
         }
     }
 
-    internal func fixIdentities(_ unq: Array<Pattern>? = nil) {}
+    internal func fixIdentities(_ unq: Array<LeafPattern>? = nil) {}
     
     internal func fixRepeatingArguments() -> Pattern {
         var either = Pattern.transform(self).children.map { ($0 as! Required).children }
@@ -42,7 +42,7 @@ internal class Pattern: Equatable, Hashable, Printable {
                             if e.value == nil {
                                 e.value = Array<String>()
                             } else if (e.value as? Array<String> == nil) {
-                                e.value = e.value!.description.splitR()
+                                e.value = e.value!.description.split()
                             }
                         }
                         if (e as? Command != nil) || ((e as? Option != nil) && (e as! Option).argCount != 0) {
@@ -108,11 +108,11 @@ internal class Pattern: Equatable, Hashable, Printable {
         return Either(required)
     }
 
-    internal func flat() -> Array<Pattern> {
+    internal func flat() -> Array<LeafPattern> {
         return flat(LeafPattern)
     }
 
-    internal func flat<T: Pattern>(_: T.Type) -> Array<Pattern> {
+    internal func flat<T: Pattern>(_: T.Type) -> Array<T> {
         return []
     }
     

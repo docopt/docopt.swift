@@ -8,19 +8,22 @@
 
 import Foundation
 
+class DocoptValue: Equatable { }
+typealias DocoptResult = Dictionary<String, DocoptValue>
+
 public struct Docopt {
     public var result: AnyObject!
     public let doc: String
 
-    private let arguments: String
+    private let arguments: Array<String>
     
-    public init(doc: String, argv: String = "", help: Bool = false, optionsFirst: Bool = false) {
+    public init(_ doc: String, argv: Array<String> = [""], help: Bool = false, optionsFirst: Bool = false) {
         self.doc = doc
         arguments = argv
-        result = parse()
+        result = parse(optionsFirst)
     }
     
-    private func parse() -> AnyObject {
+    private func parse(optionsFirst: Bool) -> AnyObject {
         let usageSections = Docopt.parseSection("usage:", source: doc)
 //        if count(usageSections) == 0 {
 //            return "user-error"
@@ -29,8 +32,22 @@ public struct Docopt {
 //        }
         
         var options = Docopt.parseDefaults(doc)
-        var pattern = Docopt.parsePattern(Docopt.formalUsage(usageSections[0]), options: options)
-        println(pattern)
+        let pattern = Docopt.parsePattern(Docopt.formalUsage(usageSections[0]), options: options)
+        let argv = Docopt.parseArgv(Tokens(arguments), options: options, optionsFirst: optionsFirst)
+        let patternOptions = Set(pattern.flat(Option))
+        
+        for optionsShortcut in pattern.flat(OptionsShortcut) {
+            let docOptions = Set(Docopt.parseDefaults(doc))
+            optionsShortcut.children = Array(docOptions.subtract(patternOptions))
+        }
+
+//        extras(help, version, argv, doc)
+        
+        let (matched, left, collected) = pattern.fix().match(argv)
+        
+        if matched && left.isEmpty {
+            return "user-error" //(pattern.flat() as! [Pattern] + collected)
+        }
 
         return "user-error"
     }
@@ -274,7 +291,7 @@ public struct Docopt {
         return parsed
     }
     
-    static internal func parsePattern(source: String, var options: [Option]) -> Required {
+    static internal func parsePattern(source: String, var options: [Option]) -> Pattern {
         let tokens = Tokens.fromPattern(source)
         let result: Array<Pattern> = parseExpr(tokens, options: options)
         
@@ -287,7 +304,7 @@ public struct Docopt {
     
     static internal func formalUsage(section: String) -> String {
         let (_, _, s) = section.partition(":") // drop "usage:"
-        var pu = s.splitR()
+        var pu = s.split()
         let u = pu[0]
         pu.removeAtIndex(0)
         var result = "( "
@@ -306,4 +323,8 @@ public struct Docopt {
         result += " )"
         return result
     }
+}
+
+func ==(lhs: DocoptValue, rhs: DocoptValue) -> Bool {
+    return lhs == rhs
 }
