@@ -9,10 +9,29 @@
 import Foundation
 
 typealias SingleMatchResult = (position: Int, match: Pattern?)
+enum ValueType {
+    case Nil, Bool, Int, List, String
+}
 
 internal class LeafPattern : Pattern, Equatable {
     var name: String?
-    var value: AnyObject?
+    var value: AnyObject? {
+        willSet {
+            switch newValue {
+            case is Bool:
+                valueType = valueType != .Int ? .Bool : valueType
+            case is Array<String>:
+                valueType = .List
+            case is String:
+                valueType = .String
+            case is Int:
+                valueType = .Int // never happens. Set manually when explicitly set value to int :(
+            default:
+                valueType = .Nil
+            }
+        }
+    }
+    var valueType: ValueType = .Nil
     override internal var description: String {
         get {
             return "LeafPattern(\(name), \(value))"
@@ -49,10 +68,10 @@ internal class LeafPattern : Pattern, Equatable {
             }
             return false
         }) as! [LeafPattern]
-
-        if ((value is Int) && !(value is Bool)) || (value is Array<String>) {
+        
+        if (valueType == .Int) || (valueType == .List) {
             var increment: AnyObject?
-            if value is Int {
+            if valueType == .Int {
                 increment = 1
             } else {
                 if let val = match.value as? String {
@@ -63,11 +82,13 @@ internal class LeafPattern : Pattern, Equatable {
             }
             if sameName.isEmpty {
                 match.value = increment
+                match.valueType = valueType
                 collected.append(match)
                 return (true, left_, collected)
             }
             if let inc = increment as? Int {
-                sameName[0].value = sameName[0].value ?? 0 + inc
+                sameName[0].value = sameName[0].value as! Int + inc
+                sameName[0].valueType = .Int
             } else if let inc = increment as? Array<String> {
                 sameName[0].value = ((sameName[0].value as? Array<String>) ?? Array<String>()) + inc
             }

@@ -38,7 +38,7 @@ internal class Pattern: Equatable, Hashable, Printable {
                 if count(filteredChildren) > 1 {
                     for child in filteredChildren {
                         var e = child as! LeafPattern
-                        if (e is Argument) || ((e is Option) && (e as! Option).argCount != 0) {
+                        if ((e is Argument) && !(e is Command)) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
                                 e.value = Array<String>()
                             } else if !(e.value is Array<String>) {
@@ -47,6 +47,7 @@ internal class Pattern: Equatable, Hashable, Printable {
                         }
                         if (e is Command) || ((e is Option) && (e as! Option).argCount == 0) {
                             e.value = 0
+                            e.valueType = .Int
                         }
                     }
                 }

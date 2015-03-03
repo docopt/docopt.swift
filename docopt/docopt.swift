@@ -31,7 +31,7 @@ public struct Docopt {
             args = argv!
         }
         println(args)
-        arguments = args
+        arguments = args.filter { $0 != "" }
         result = parse(optionsFirst)
     }
     
