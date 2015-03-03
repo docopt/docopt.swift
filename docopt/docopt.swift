@@ -66,7 +66,7 @@ public struct Docopt {
                 if let val: AnyObject = leafChild.value {
                     result[leafChild.name!] = val
                 } else if let lc = leafChild as? Option where lc.argCount > 0 {
-                    println(leafChild.name)
+//                    println(leafChild.name)
                 }
             }
             return result

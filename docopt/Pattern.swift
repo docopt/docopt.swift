@@ -45,7 +45,7 @@ internal class Pattern: Equatable, Hashable, Printable {
                                 e.value = e.value!.description.split()
                             }
                         }
-                        if (e is Command) || ((e is Option) && (e as! Option).argCount != 0) {
+                        if (e is Command) || ((e is Option) && (e as! Option).argCount == 0) {
                             e.value = 0
                         }
                     }

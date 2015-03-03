@@ -9,6 +9,10 @@
 import Foundation
 
 internal class Command: Argument {
+    override internal init(_ name: String?, value: AnyObject? = false) {
+        super.init(name, value: value)
+    }
+
     override internal func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
         for var i = 0; i < count(left); i++ {
             let pattern = left[i]
