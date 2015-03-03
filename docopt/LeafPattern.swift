@@ -84,8 +84,8 @@ internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
         valEqual = lhs.value as! String == rhs.value as! String
     } else if let lval = lhs.value as? Bool, let rval = rhs.value as? Bool {
         valEqual = lval == rval
-    } else if lhs.value is Array<String> && rhs.value is Array<String> {
-        valEqual = lhs.value as! Array<String> == rhs.value as! Array<String>
+    } else if let lval = lhs.value as? Array<String>, let rval = rhs.value as? Array<String> {
+        valEqual = lval == rval
     } else {
         valEqual = lhs.value === rhs.value
     }

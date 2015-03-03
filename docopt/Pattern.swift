@@ -41,7 +41,7 @@ internal class Pattern: Equatable, Hashable, Printable {
                         if (e is Argument) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
                                 e.value = Array<String>()
-                            } else if (e.value is Array<String>) {
+                            } else if !(e.value is Array<String>) {
                                 e.value = e.value!.description.split()
                             }
                         }
