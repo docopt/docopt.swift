@@ -8,9 +8,16 @@
 
 import Foundation
 
-internal class Tokens: Equatable {
+internal class Tokens: Equatable, Printable {
     private var tokensArray: Array<String>
     internal var error: DocoptError
+    
+    internal var description: String {
+        get {
+            return " ".join(tokensArray)
+        }
+    }
+
     
     internal convenience init(_ source: String, error: DocoptError = DocoptExit()) {
         self.init(source.split(), error: error)

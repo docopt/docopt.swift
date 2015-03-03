@@ -25,33 +25,36 @@ class DocoptTests: XCTestCase {
         XCTAssertNotNil(fixturesFileContents(), "Could not read fixtures file")
     }
     
-//    func testTestCases() {
-//        var rawTestCases = fixturesFileContents();
-//        var parser: DocoptTestCaseParser = DocoptTestCaseParser(stringOfTestCases: rawTestCases!)
-//        
-//        for testCase in parser.testCases {
-//            let docopt: Docopt = Docopt(doc: testCase.usage, argv: testCase.arguments)
-//            let result: AnyObject = docopt.result
-//            let expectedOutput: AnyObject = testCase.expectedOutput
-//            switch expectedOutput {
-//            case let expectedOutput as NSDictionary:
-//                if let result = result as? NSDictionary {
-//                    XCTAssertTrue(result == expectedOutput, "Test \(testCase.name) failed");
-//                } else {
-////                    XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
-//                }
-//                
-//            case let expectedOutput as String:
-//                if let result = result as? String {
-//                    XCTAssertTrue(result == expectedOutput, "Test \(testCase.name) failed");
-//                } else {
-//                    XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
-//                }
-//            default:
-//                XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
-//            }
-//        }
-//    }
+    func testTestCases() {
+        var rawTestCases = fixturesFileContents();
+        var parser = DocoptTestCaseParser(rawTestCases)
+        
+        for testCase in parser.testCases {
+            var result: AnyObject = "user-error"
+            var capture = NMBExceptionCapture(handler: nil, finally: nil)
+            capture.tryBlock {
+                result = Docopt(testCase.usage, argv: testCase.arguments).result
+            }
+            
+            let expectedOutput: AnyObject = testCase.expectedOutput
+            switch expectedOutput {
+            case let expectedOutput as NSDictionary:
+                if let result = result as? NSDictionary {
+                    XCTAssertTrue(result == expectedOutput, "Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n");
+                } else {
+                    XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
+                }
+            case let expectedOutput as String:
+                if let result = result as? String {
+                    XCTAssertTrue(result == expectedOutput, "Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n");
+                } else {
+                    XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
+                }
+            default:
+                XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
+            }
+        }
+    }
     
     func testPatternFlat() {
         XCTAssertEqual(Required([OneOrMore(Argument("N")), Option("-a"), Argument("M")]).flat(), [Argument("N"), Option("-a"), Argument("M")])
@@ -98,22 +101,22 @@ class DocoptTests: XCTestCase {
         var o = [Option("-h"), Option("-v", long: "--verbose"), Option("-f", long:"--file", argCount: 1)]
         var TS = {(s: String) in return Tokens(s, error: DocoptExit()) }
         
-        XCTAssertEqual(Docopt.parseArgv(TS(""), options: o), [])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h"), options: o), [Option("-h", value: true)])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h --verbose"), options:o),
+        XCTAssertEqual(Docopt.parseArgv(TS(""), options: &o), [])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h"), options: &o), [Option("-h", value: true)])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --verbose"), options: &o),
             [Option("-h", value: true), Option("-v", long: "--verbose", value: true)])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt"), options:o),
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt"), options: &o),
             [Option("-h", value: true), Option("-f", long: "--file", argCount: 1, value: "f.txt")])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg"), options:o),
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg"), options: &o),
             [Option("-h", value: true),
                 Option("-f", long: "--file", argCount: 1, value: "f.txt"),
                 Argument(nil, value: "arg")])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg arg2"), options:o),
+        XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg arg2"), options: &o),
             [Option("-h", value: true),
                 Option("-f", long: "--file", argCount: 1, value: "f.txt"),
                 Argument(nil, value: "arg"),
                 Argument(nil, value: "arg2")])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h arg -- -v"), options:o),
+        XCTAssertEqual(Docopt.parseArgv(TS("-h arg -- -v"), options: &o),
             [Option("-h", value: true),
                 Argument(nil, value: "arg"),
                 Argument(nil, value: "--"),
@@ -158,40 +161,41 @@ class DocoptTests: XCTestCase {
     
     func testParsePattern() {
         var o = [Option("-h"), Option("-v", long: "--verbose"), Option("-f", long:"--file", argCount: 1)]
-        XCTAssertEqual(Docopt.parsePattern("[ -h ]", options: o), Required(Optional(Option("-h"))))
-        XCTAssertEqual(Docopt.parsePattern("[ ARG ... ]", options: o), Required(Optional(OneOrMore(Argument("ARG")))))
-        XCTAssertEqual(Docopt.parsePattern("[ -h | -v ]", options: o), Required(Optional(Either([Option("-h"), Option("-v", long: "--verbose")]))))
-        XCTAssertEqual(Docopt.parsePattern("( -h | -v [ --file <f> ] )", options: o),
+        XCTAssertEqual(Docopt.parsePattern("[ -h ]", options: &o), Required(Optional(Option("-h"))))
+        XCTAssertEqual(Docopt.parsePattern("[ ARG ... ]", options: &o), Required(Optional(OneOrMore(Argument("ARG")))))
+        XCTAssertEqual(Docopt.parsePattern("[ -h | -v ]", options: &o), Required(Optional(Either([Option("-h"), Option("-v", long: "--verbose")]))))
+        XCTAssertEqual(Docopt.parsePattern("( -h | -v [ --file <f> ] )", options: &o),
             Required(Required(
                 Either([Option("-h"),
                     Required([Option("-v", long: "--verbose"),
                         Optional(Option("-f", long: "--file", argCount: 1))])]))))
-        XCTAssertEqual(Docopt.parsePattern("(-h|-v[--file=<f>]N...)", options: o),
+        XCTAssertEqual(Docopt.parsePattern("(-h|-v[--file=<f>]N...)", options: &o),
             Required(Required(Either([Option("-h"),
                 Required([Option("-v", long: "--verbose"),
                     Optional(Option("-f", long: "--file", argCount: 1)),
                     OneOrMore(Argument("N"))])]))))
-        XCTAssertEqual(Docopt.parsePattern("(N [M | (K | L)] | O P)", options: []),
+        var tmp = Array<Option>()
+        XCTAssertEqual(Docopt.parsePattern("(N [M | (K | L)] | O P)", options: &tmp),
             Required(Required(Either([
                 Required([Argument("N"),
                     Optional(Either([Argument("M"),
                         Required(Either([Argument("K"),
                             Argument("L")]))]))]),
                 Required([Argument("O"), Argument("P")])]))))
-        XCTAssertEqual(Docopt.parsePattern("[ -h ] [N]", options: o),
+        XCTAssertEqual(Docopt.parsePattern("[ -h ] [N]", options: &o),
             Required([Optional(Option("-h")),
                 Optional(Argument("N"))]))
-        XCTAssertEqual(Docopt.parsePattern("[options]", options: o),
+        XCTAssertEqual(Docopt.parsePattern("[options]", options: &o),
             Required(Optional(OptionsShortcut())))
-        XCTAssertEqual(Docopt.parsePattern("[options] A", options: o),
+        XCTAssertEqual(Docopt.parsePattern("[options] A", options: &o),
             Required([Optional(OptionsShortcut()),
                 Argument("A")]))
-        XCTAssertEqual(Docopt.parsePattern("-v [options]", options: o),
+        XCTAssertEqual(Docopt.parsePattern("-v [options]", options: &o),
             Required([Option("-v", long: "--verbose"),
                 Optional(OptionsShortcut())]))
-        XCTAssertEqual(Docopt.parsePattern("ADD", options: o), Required(Argument("ADD")))
-        XCTAssertEqual(Docopt.parsePattern("<add>", options: o), Required(Argument("<add>")))
-        XCTAssertEqual(Docopt.parsePattern("add", options: o), Required(Command("add")))
+        XCTAssertEqual(Docopt.parsePattern("ADD", options: &o), Required(Argument("ADD")))
+        XCTAssertEqual(Docopt.parsePattern("<add>", options: &o), Required(Argument("<add>")))
+        XCTAssertEqual(Docopt.parsePattern("add", options: &o), Required(Command("add")))
     }
     
     func testOptionMatch() {
@@ -369,23 +373,23 @@ class DocoptTests: XCTestCase {
         XCTAssertEqual(Set([Argument("N"), Argument("N")]), Set([Argument("N")]))
     }
     
-//    func testDocopt() {
-//        let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
-//        let result: Dictionary<String, DocoptValue> = Docopt(doc, argv: ["arg"]).result as! DocoptResult
-//        XCTAssertTrue(result.description == ["-v": false, "A": "arg"].description)
-//    }
+    func testDocopt() {
+        let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
+        let result = Docopt(doc, argv: ["arg"]).result as! Dictionary<String, AnyObject>
+        XCTAssertEqual(result.description, ["-v": false, "A": "arg"].description)
+    }
     
     private func fixturesFilePath() -> String? {
         let testBundle: NSBundle = NSBundle(forClass: self.dynamicType)
         return testBundle.pathForResource("testcases", ofType: "docopt")
     }
     
-    private func fixturesFileContents() -> String? {
+    private func fixturesFileContents() -> String {
         if let filePath = self.fixturesFilePath() {
             let fileContents = String(contentsOfFile: filePath, encoding: NSUTF8StringEncoding, error: nil)
-            return fileContents
+            return fileContents!
         }
-        return nil;
+        return "";
     }
 }
 

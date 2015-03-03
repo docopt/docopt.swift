@@ -7,34 +7,37 @@
 //
 
 import Foundation
-import Darwin
 
 internal class DocoptError {
     internal var message: String
-    internal init (_ message: String) {
+    internal var name: String
+    internal init (_ message: String, name: String) {
         self.message = message
+        self.name = name
     }
     
-    internal func raise() {
-        println("\(message)".strip())
-        exit(0)
+    internal func raise(_ message: String? = nil) {
+        var msg = (message ?? self.message).strip()
+        NSException(
+            name: NSInternalInconsistencyException,
+            reason: msg,
+            userInfo: nil).raise()
     }
 }
 
 internal class DocoptLanguageError: DocoptError {
-    override internal init (_ message: String = "Error in construction of usage-message by developer.") {
-        super.init(message)
+    internal init (_ message: String = "Error in construction of usage-message by developer.") {
+        super.init(message, name: "DocoptLanguageError")
     }
 }
 
 internal class DocoptExit: DocoptError {
     static var usage: String = ""
-    override internal init (_ message: String = "Exit in case user invoked program with incorrect arguments.") {
-        super.init(message)
+    internal init (_ message: String = "Exit in case user invoked program with incorrect arguments.") {
+        super.init(message, name: "DocoptExit")
     }
 
-    override internal func raise() {
-        println("\(message)\n\(DocoptExit.usage)".strip())
-        exit(0)
+    override internal func raise(_ message: String? = nil) {
+        super.raise("\(message ?? self.message)\(DocoptExit.usage)")
     }
 }

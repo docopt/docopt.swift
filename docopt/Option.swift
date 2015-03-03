@@ -29,15 +29,16 @@ internal class Option: LeafPattern, Equatable {
         self.init(option.short, long: option.long, argCount: option.argCount, value: option.value)
     }
     
-    internal init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = nil) {
+    internal init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = false) {
         assert(argCount <= 1)
         self.short = short
         self.long = long
         self.argCount = argCount
 
         super.init("", value: value)
-        
-        if argCount == 0 && value != nil {
+        if argCount > 0 && value as? Bool == false {
+            self.value = nil
+        } else {
             self.value = value
         }
     }
@@ -46,7 +47,7 @@ internal class Option: LeafPattern, Equatable {
         var short: String? = nil
         var long: String? = nil
         var argCount: UInt = 0
-        var value: String? = nil
+        var value: AnyObject? = false
         
         var (options, _, description) = optionDescription.strip().partition("  ")
         options = options.stringByReplacingOccurrencesOfString(",", withString: " ", options: .allZeros, range: nil)

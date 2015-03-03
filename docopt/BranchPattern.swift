@@ -39,8 +39,8 @@ internal class BranchPattern : Pattern, Equatable {
     }
     
     override internal func flat<T: Pattern>(type: T.Type) -> Array<T> {
-        if let cast = self as? T {
-            return [cast]
+        if self.dynamicType === T.self {
+            return [self as! T]
         }
         var result = Array<T>()
         for child in children {

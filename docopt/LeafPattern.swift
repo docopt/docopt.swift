@@ -50,9 +50,9 @@ internal class LeafPattern : Pattern, Equatable {
             return false
         }) as! [LeafPattern]
 
-        if (value as? Int != nil) || (value as? Array<String> != nil) {
+        if ((value is Int) && !(value is Bool)) || (value is Array<String>) {
             var increment: AnyObject?
-            if value as? Int != nil {
+            if value is Int {
                 increment = 1
             } else {
                 if let val = match.value as? String {
@@ -82,8 +82,8 @@ internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
     let valEqual: Bool
     if lhs.value is String && rhs.value is String {
         valEqual = lhs.value as! String == rhs.value as! String
-    } else if lhs.value is Bool && rhs.value is Bool {
-        valEqual = lhs.value as! Bool == rhs.value as! Bool
+    } else if let lval = lhs.value as? Bool, let rval = rhs.value as? Bool {
+        valEqual = lval == rval
     } else if lhs.value is Array<String> && rhs.value is Array<String> {
         valEqual = lhs.value as! Array<String> == rhs.value as! Array<String>
     } else {

@@ -11,7 +11,7 @@ import Foundation
 public struct DocoptTestCaseParser {
     public var testCases: Array<DocoptTestCase>!
     
-    public init(stringOfTestCases: String) {
+    public init(_ stringOfTestCases: String) {
         testCases = parse(stringOfTestCases)
     }
     
@@ -86,7 +86,6 @@ public struct DocoptTestCaseParser {
         var inputComponents: Array<String> = input.componentsSeparatedByString(" ");
         let programName: String = inputComponents[0]; // first part
         inputComponents.removeAtIndex(0);
-        let arguments: String = " ".join(inputComponents);
         
         var error : NSError?;
         let jsonData: NSData? = expectedOutput.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
@@ -100,7 +99,7 @@ public struct DocoptTestCaseParser {
             return nil
         }
         
-        let testCase: DocoptTestCase = DocoptTestCase(programName: programName, arguments: arguments, expectedOutput: expectedOutputJSON!)
+        let testCase: DocoptTestCase = DocoptTestCase(programName, arguments: inputComponents, expectedOutput: expectedOutputJSON!)
         return testCase
     }
     

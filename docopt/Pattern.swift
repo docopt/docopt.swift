@@ -38,14 +38,14 @@ internal class Pattern: Equatable, Hashable, Printable {
                 if count(filteredChildren) > 1 {
                     for child in filteredChildren {
                         var e = child as! LeafPattern
-                        if (e as? Argument != nil) || ((e as? Option != nil) && (e as! Option).argCount != 0) {
+                        if (e is Argument) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
                                 e.value = Array<String>()
-                            } else if (e.value as? Array<String> == nil) {
+                            } else if (e.value is Array<String>) {
                                 e.value = e.value!.description.split()
                             }
                         }
-                        if (e as? Command != nil) || ((e as? Option != nil) && (e as! Option).argCount != 0) {
+                        if (e is Command) || ((e is Option) && (e as! Option).argCount != 0) {
                             e.value = 0
                         }
                     }
