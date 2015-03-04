@@ -66,4 +66,10 @@ public extension String {
         }
         return result
     }
+    
+    public func isupper() -> Bool {
+        var charset = NSCharacterSet.uppercaseLetterCharacterSet().invertedSet
+        var range = self.rangeOfCharacterFromSet(charset)
+        return range == nil
+    }
 }

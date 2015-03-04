@@ -229,7 +229,7 @@ public struct Docopt {
         if token.hasPrefix("-") && !(token == "--" || token == "-") {
             return parseShorts(tokens, options: &options)
         }
-        if (token.hasPrefix("<") && token.hasSuffix(">")) || (token.uppercaseString == token) {
+        if (token.hasPrefix("<") && token.hasSuffix(">")) || token.isupper() {
             return [Argument(tokens.move()!)]
         }
         
@@ -304,7 +304,7 @@ public struct Docopt {
                 }
                 return parsed
             } else {
-                parsed.append(Argument(nil, value: tokens.move()))
+                parsed.append(Command(nil, value: tokens.move()))
             }
         }
         return parsed
