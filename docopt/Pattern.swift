@@ -14,9 +14,8 @@ internal class Pattern: Equatable, Hashable, Printable {
     internal func fix() -> Pattern {
         fixIdentities()
         fixRepeatingArguments()
-        return self;
+        return self
     }
-    
     internal var description: String {
         get {
             return "Pattern"
@@ -26,7 +25,7 @@ internal class Pattern: Equatable, Hashable, Printable {
             return self.description.hashValue
         }
     }
-
+    
     internal func fixIdentities(_ unq: [LeafPattern]? = nil) {}
     
     internal func fixRepeatingArguments() -> Pattern {
@@ -67,53 +66,37 @@ internal class Pattern: Equatable, Hashable, Printable {
     
     internal static func transform(pattern: Pattern) -> Either {
         var result = [[Pattern]]()
-        var groups = [[Pattern]]()
-        groups.append([pattern])
+        var groups = [[pattern]]
         while !groups.isEmpty {
-            var children = groups[0]
-            groups.removeAtIndex(0)
-            var child: BranchPattern? = nil
-            for c in children {
-                if isInParents(c) {
-                    child = c as? BranchPattern
-                    break
-                }
-            }
+            var children = groups.removeAtIndex(0)
+            var child: BranchPattern? = children.filter({ self.isInParents($0) }).first as? BranchPattern
             
             if let child = child {
-                var index = find(children, child)
-                children.removeAtIndex(index!)
+                let index = find(children, child)!
+                children.removeAtIndex(index)
                 
-                if (child as? Either != nil) {
+                if child is Either {
                     for pattern in child.children {
-                        var group = [pattern]
-                        group += children
-                        groups.append(group)
+                        groups.append([pattern] + children)
                     }
-                } else if (child as? OneOrMore != nil) {
-                    var group = child.children
-                    group += child.children
-                    group += children
-                    groups.append(group)
+                } else if child is OneOrMore {
+                    groups.append(child.children + child.children + children)
                 } else {
-                    var group = child.children
-                    group += children
-                    groups.append(group)
+                    groups.append(child.children + children)
                 }
             } else {
                 result.append(children)
             }
         }
         
-        var required = result.map {Required($0)}
-        return Either(required)
+        return Either(result.map {Required($0)})
     }
 
     internal func flat() -> [LeafPattern] {
         return flat(LeafPattern)
     }
 
-    internal func flat<T: Pattern>(_: T.Type) -> [T] {
+    internal func flat<T: Pattern>(_: T.Type) -> [T] {  // abstract
         return []
     }
     
@@ -121,24 +104,18 @@ internal class Pattern: Equatable, Hashable, Printable {
         return match([left], collected: clld)
     }
     
-    internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+    internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {  // abstract
         return (false, [], [])
     }
 
-    internal func singleMatch<T: Pattern>(left: [T]) -> SingleMatchResult {return (0, nil)}
+    internal func singleMatch<T: Pattern>(left: [T]) -> SingleMatchResult {return (0, nil)} // abstract
 }
 
 internal func ==(lhs: Pattern, rhs: Pattern) -> Bool {
-    if lhs is BranchPattern && rhs is BranchPattern {
-        return lhs as! BranchPattern == rhs as! BranchPattern
-    } else if lhs is LeafPattern && rhs is LeafPattern {
-        return lhs as! LeafPattern == rhs as! LeafPattern
+    if let lval = lhs as? BranchPattern, let rval = rhs as? BranchPattern {
+        return lval == rval
+    } else if let lval = lhs as? LeafPattern, let rval = rhs as? LeafPattern {
+        return lval == rval
     }
-    return lhs === rhs // Pattern is abstract and shouldn't be instantiated :)
-}
-
-internal func ==(lhs: MatchResult, rhs: MatchResult) -> Bool {
-    return lhs.match == rhs.match
-        && lhs.left == rhs.left
-        && lhs.collected == rhs.collected
+    return lhs === rhs // Pattern is "abstract" and shouldn't be instantiated :)
 }

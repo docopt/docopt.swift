@@ -104,9 +104,9 @@ public struct Docopt {
         for s in optionsSection {
             // FIXME corner case "bla: options: --foo"
             let (_, _, s) = s.partition(":")  // get rid of "options:"
-            var splgen = ("\n" + s).split("\n[ \t]*(-\\S+?)").generate()
+            var splitgen = ("\n" + s).split("\n[ \t]*(-\\S+?)").generate()
             var split = [String]()
-            while let s1 = splgen.next(), let s2 = splgen.next() {
+            while let s1 = splitgen.next(), let s2 = splitgen.next() {
                 split.append(s1 + s2)
             }
             defaults += split.filter({$0.hasPrefix("-")}).map {
@@ -124,40 +124,41 @@ public struct Docopt {
         var similar = options.filter {$0.long == long}
         
         if tokens.error is DocoptExit && similar.isEmpty {  // if no exact match
-            similar = options.filter {(($0.long as String!).hasPrefix(long)) ?? false}
+            similar = options.filter {$0.long?.hasPrefix(long) ?? false}
         }
 
-        var o: Option? = nil
+        var o: Option
         if count(similar) > 1 {
-            let allSimilar = " ".join(similar.map {$0.long as String! ?? ""})
+            let allSimilar = " ".join(similar.map {$0.long ?? ""})
             tokens.error.raise("\(long) is not a unique prefix: \(allSimilar)")
+            return []
         } else if count(similar) < 1 {
             let argCount: UInt = (eq == "=") ? 1 : 0
             o = Option(nil, long: long, argCount: argCount)
-            options.append(o!)
+            options.append(o)
             if tokens.error is DocoptExit {
                 o = Option(nil, long: long, argCount: argCount, value: argCount > 0 ? value : true)
             }
         } else {
             o = Option(similar[0])
-            if o!.argCount == 0 {
+            if o.argCount == 0 {
                 if value != nil {
-                    tokens.error.raise("\(o!.long) requires argument")
+                    tokens.error.raise("\(o.long) requires argument")
                 }
             } else {
                 if value == nil {
                     if let current = tokens.current() where current != "--" {
                         value = tokens.move()
                     } else {
-                        tokens.error.raise("\(o!.long) requires argument")
+                        tokens.error.raise("\(o.long) requires argument")
                     }
                 }
             }
             if tokens.error is DocoptExit {
-                o!.value = value ?? true
+                o.value = value ?? true
             }
         }
-        return [o!]
+        return [o]
     }
     
     static internal func parseShorts(tokens: Tokens, inout options: [Option]) -> [Option] {
@@ -168,21 +169,22 @@ public struct Docopt {
         while left != "" {
             let short = "-" + left[0..<1]
             let similar = options.filter {$0.short == short}
-            var o: Option? = nil
+            var o: Option
             left = left[1..<count(left)]
             
             if count(similar) > 1 {
                 tokens.error.raise("\(short) is specified ambiguously \(count(similar)) times")
+                return []
             } else if count(similar) < 1 {
                 o = Option(short)
-                options.append(o!)
+                options.append(o)
                 if tokens.error is DocoptExit {
                     o = Option(short, value: true)
                 }
             } else {
                 var value: String? = nil
-                o = Option(short, long: similar[0].long, argCount: similar[0].argCount, value: similar[0].value)
-                if o!.argCount != 0 {
+                o = Option(similar[0])
+                if o.argCount != 0 {
                     if let current = tokens.current() where current != "--" && left == "" {
                         value = tokens.move()
                     } else if left == "" {
@@ -193,12 +195,11 @@ public struct Docopt {
                     left = ""
                 }
                 if tokens.error is DocoptExit {
-                    o!.value = value ?? true
+                    o.value = value ?? true
                 }
             }
-            if let o = o {
-                parsed.append(o)
-            }
+            
+            parsed.append(o)
         }
         return parsed
     }
@@ -208,10 +209,12 @@ public struct Docopt {
         if contains(["(", "["], token) {
             tokens.move()
             let u = parseExpr(tokens, options: &options)
-            let (matching: String, result) = (token == "(") ? (")", [Required(u)]) : ("]", [Optional(u)])
+            let (matching: String, result) = (token == "(")
+                                            ? (")", [Required(u)])
+                                            : ("]", [Optional(u)])
             
             if tokens.move() != matching {
-                tokens.error.raise("unmatched '\(token)'");
+                tokens.error.raise("unmatched '\(token)'")
             }
             
             return result
@@ -305,7 +308,7 @@ public struct Docopt {
         let result: [Pattern] = parseExpr(tokens, options: &options)
         
         if tokens.current() != nil {
-            tokens.error.raise("unexpected ending: \(tokens)");
+            tokens.error.raise("unexpected ending: \(tokens)")
         }
         
         return Required(result)

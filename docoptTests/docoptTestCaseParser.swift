@@ -16,17 +16,17 @@ public struct DocoptTestCaseParser {
     }
     
     private func parse(stringOfTestCases: String) -> [DocoptTestCase] {
-        let fixturesWithCommentsStripped: String = removeComments(stringOfTestCases);
+        let fixturesWithCommentsStripped: String = removeComments(stringOfTestCases)
         let fixtures: [String] = parseFixtures(fixturesWithCommentsStripped)
         let testCases: [DocoptTestCase] = parseFixturesArray(fixtures)
         
-        return testCases;
+        return testCases
     }
     
     private func removeComments(string: String) -> String {
         let removeCommentsRegEx: NSRegularExpression? = NSRegularExpression(pattern: "(?m)#.*$", options: .allZeros, error: nil)
         if let removeCommentsRegEx = removeCommentsRegEx {
-            let fullRange: NSRange = NSMakeRange(0, count(string));
+            let fullRange: NSRange = NSMakeRange(0, count(string))
             return removeCommentsRegEx.stringByReplacingMatchesInString(string, options: .allZeros, range: fullRange, withTemplate: "")
         }
         
@@ -64,7 +64,7 @@ public struct DocoptTestCaseParser {
         
         let testInvocations: [String] = parseTestInvocations(testInvocationString)
         for testInvocation in testInvocations {
-            let testCase: DocoptTestCase? = parseTestCase(testInvocation);
+            let testCase: DocoptTestCase? = parseTestCase(testInvocation)
             if let testCase = testCase {
                 testCase.usage = usageDoc
                 testCases.append(testCase)
@@ -75,19 +75,17 @@ public struct DocoptTestCaseParser {
     }
     
     private func parseTestCase(invocationString: String) -> DocoptTestCase? {
-        let trimmedTestInvocation: String = invocationString.strip();
-        var testInvocationComponents: [String] = trimmedTestInvocation.componentsSeparatedByString("\n");
-        assert(count(testInvocationComponents) >= 2, "Could not split test case: \(trimmedTestInvocation) into components");
+        let trimmedTestInvocation: String = invocationString.strip()
+        var testInvocationComponents: [String] = trimmedTestInvocation.componentsSeparatedByString("\n")
+        assert(count(testInvocationComponents) >= 2, "Could not split test case: \(trimmedTestInvocation) into components")
         
-        let input: String = testInvocationComponents[0]; // first line
-        testInvocationComponents.removeAtIndex(0);
-        let expectedOutput: String = "\n".join(testInvocationComponents); // all remaining lines
+        let input: String = testInvocationComponents.removeAtIndex(0) // first line
+        let expectedOutput: String = "\n".join(testInvocationComponents) // all remaining lines
         
-        var inputComponents: [String] = input.componentsSeparatedByString(" ");
-        let programName: String = inputComponents[0]; // first part
-        inputComponents.removeAtIndex(0);
+        var inputComponents: [String] = input.componentsSeparatedByString(" ")
+        let programName: String = inputComponents.removeAtIndex(0) // first part
         
-        var error : NSError?;
+        var error : NSError?
         let jsonData: NSData? = expectedOutput.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         if jsonData == nil {
             NSLog("Error parsing \(expectedOutput) to JSON: \(error)")

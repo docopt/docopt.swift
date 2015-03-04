@@ -46,9 +46,7 @@ internal class Tokens: Equatable, Printable {
         if tokensArray.isEmpty {
             return nil
         }
-        let result = tokensArray[0]
-        tokensArray.removeAtIndex(0)
-        return result
+        return tokensArray.removeAtIndex(0)
     }
 }
 

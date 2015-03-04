@@ -30,7 +30,7 @@ internal class BranchPattern : Pattern, Equatable {
         for var i = 0; i < count(children); i++ {
             let child = children[i]
             if let leafChild = child as? LeafPattern {
-                assert(contains(uniq, leafChild));
+                assert(contains(uniq, leafChild))
                 children[i] = uniq[find(uniq, leafChild)!]
             } else {
                 child.fixIdentities(uniq)
