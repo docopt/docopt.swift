@@ -30,7 +30,7 @@ internal class Tokens: Equatable, Printable {
     
     static internal func fromPattern(source: String) -> Tokens {
         let res = source.stringByReplacingOccurrencesOfString("([\\[\\]\\(\\)\\|]|\\.\\.\\.)", withString: " $1 ", options: .RegularExpressionSearch, range: nil)
-        var result = res.splitByRegex("\\s+|(\\S*<.*?>)").filter { !$0.isEmpty }
+        var result = res.split("\\s+|(\\S*<.*?>)").filter { !$0.isEmpty }
         return Tokens(result, error: DocoptLanguageError())
     }
     

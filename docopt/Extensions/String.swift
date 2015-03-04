@@ -12,7 +12,7 @@ public extension String {
     public func partition(separator: String) -> (String, String, String) {
         let components = self.componentsSeparatedByString(separator)
         if count(components) > 1 {
-            return (components[0], separator, separator.join(components[1...count(components) - 1]))
+            return (components[0], separator, separator.join(components[1..<count(components)]))
         }
         return (self, "", "")
     }
@@ -35,7 +35,7 @@ public extension String {
         return Swift.split(self, isSeparator: {$0 == " " || $0 == "\n"})
     }
     
-    public func splitByRegex(regex: String) -> Array<String> {
+    public func split(regex: String) -> Array<String> {
         let re = NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators, error: nil)!
         let all = NSMakeRange(0, count(self))
         var result = Array<String>()
@@ -48,10 +48,19 @@ public extension String {
                     if (lastEnd != 0) {
                         let fullRange = match.range
                         result.append(source.substringWithRange(NSMakeRange(lastEnd, fullRange.location - lastEnd)))
+                    } else if range.location == 0 {
+                        // from python docs: If there are capturing groups in the separator and it matches at the start of the string,
+                        // the result will start with an empty string. The same holds for the end of the string:
+                        result.append("")
                     }
                     
                     result.append(source.substringWithRange(range))
                     lastEnd = range.location + range.length
+                    if lastEnd == count(self) {
+                        // from python docs: If there are capturing groups in the separator and it matches at the start of the string,
+                        // the result will start with an empty string. The same holds for the end of the string:
+                        result.append("")
+                    }
                 } else {
                     let fullRange = match.range
                     result.append(source.substringWithRange(NSMakeRange(lastEnd, fullRange.location - lastEnd)))

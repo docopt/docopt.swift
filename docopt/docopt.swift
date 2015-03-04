@@ -76,7 +76,7 @@ public struct Docopt {
     }
     
     static internal func parseSection(name: String, source: String) -> Array<String> {
-      return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: .CaseInsensitive | .AnchorsMatchLines )
+        return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: .CaseInsensitive | .AnchorsMatchLines )
     }
     
     static internal func parseDefaults(doc: String) -> Array<Option> {
@@ -85,7 +85,7 @@ public struct Docopt {
         for s in optionsSection {
             // FIXME corner case "bla: options: --foo"
             let (_, _, s) = s.partition(":")  // get rid of "options:"
-            var split = ("\n" + s).splitByRegex("\n[ \t]*(-\\S+?)")
+            var split = ("\n" + s).split("\n[ \t]*(-\\S+?)")
             var u = Array<String>()
             for var i = 1; i < count(split); i += 2 {
                 u.append(split[i - 1].strip() + split[i])
