@@ -20,7 +20,7 @@ internal class LeafPattern : Pattern, Equatable {
             switch newValue {
             case is Bool:
                 valueType = valueType != .Int ? .Bool : valueType
-            case is Array<String>:
+            case is [String]:
                 valueType = .List
             case is String:
                 valueType = .String
@@ -36,7 +36,7 @@ internal class LeafPattern : Pattern, Equatable {
         get {
             switch valueType {
             case .Bool: return "LeafPattern(\(name), \(value as! Bool))"
-            case .List: return "LeafPattern(\(name), \(value as! Array<String>))"
+            case .List: return "LeafPattern(\(name), \(value as! [String]))"
             case .String: return "LeafPattern(\(name), \(value as! String))"
             case .Int: return "LeafPattern(\(name), \(value as! Int))"
             case .Nil: fallthrough
@@ -51,7 +51,7 @@ internal class LeafPattern : Pattern, Equatable {
         self.value = value
     }
     
-    override internal func flat<T: LeafPattern>(_: T.Type) -> Array<T> {
+    override internal func flat<T: LeafPattern>(_: T.Type) -> [T] {
         if let cast = self as? T {
             return [cast]
         }
@@ -83,7 +83,7 @@ internal class LeafPattern : Pattern, Equatable {
                 increment = 1
             } else {
                 if let val = match.value as? String {
-                    increment = Array<String>([val])
+                    increment = [String]([val])
                 } else {
                     increment = match.value
                 }
@@ -97,8 +97,8 @@ internal class LeafPattern : Pattern, Equatable {
             if let inc = increment as? Int {
                 sameName[0].value = sameName[0].value as! Int + inc
                 sameName[0].valueType = .Int
-            } else if let inc = increment as? Array<String> {
-                sameName[0].value = ((sameName[0].value as? Array<String>) ?? Array<String>()) + inc
+            } else if let inc = increment as? [String] {
+                sameName[0].value = ((sameName[0].value as? [String]) ?? [String]()) + inc
             }
             return (true, left_, collected)
         }
@@ -109,11 +109,11 @@ internal class LeafPattern : Pattern, Equatable {
 
 internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
     let valEqual: Bool
-    if lhs.value is String && rhs.value is String {
-        valEqual = lhs.value as! String == rhs.value as! String
+    if let lval = lhs.value as? String, let rval = rhs.value as? String {
+        valEqual = lval == rval
     } else if let lval = lhs.value as? Bool, let rval = rhs.value as? Bool {
         valEqual = lval == rval
-    } else if let lval = lhs.value as? Array<String>, let rval = rhs.value as? Array<String> {
+    } else if let lval = lhs.value as? [String], let rval = rhs.value as? [String] {
         valEqual = lval == rval
     } else {
         valEqual = lhs.value === rhs.value

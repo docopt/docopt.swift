@@ -27,7 +27,7 @@ internal class Pattern: Equatable, Hashable, Printable {
         }
     }
 
-    internal func fixIdentities(_ unq: Array<LeafPattern>? = nil) {}
+    internal func fixIdentities(_ unq: [LeafPattern]? = nil) {}
     
     internal func fixRepeatingArguments() -> Pattern {
         var either = Pattern.transform(self).children.map { ($0 as! Required).children }
@@ -40,8 +40,8 @@ internal class Pattern: Equatable, Hashable, Printable {
                         var e = child as! LeafPattern
                         if ((e is Argument) && !(e is Command)) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
-                                e.value = Array<String>()
-                            } else if !(e.value is Array<String>) {
+                                e.value = [String]()
+                            } else if !(e.value is [String]) {
                                 e.value = e.value!.description.split()
                             }
                         }
@@ -66,8 +66,8 @@ internal class Pattern: Equatable, Hashable, Printable {
     }
     
     internal static func transform(pattern: Pattern) -> Either {
-        var result = Array<Array<Pattern>>()
-        var groups = Array<Array<Pattern>>()
+        var result = [[Pattern]]()
+        var groups = [[Pattern]]()
         groups.append([pattern])
         while !groups.isEmpty {
             var children = groups[0]
@@ -109,11 +109,11 @@ internal class Pattern: Equatable, Hashable, Printable {
         return Either(required)
     }
 
-    internal func flat() -> Array<LeafPattern> {
+    internal func flat() -> [LeafPattern] {
         return flat(LeafPattern)
     }
 
-    internal func flat<T: Pattern>(_: T.Type) -> Array<T> {
+    internal func flat<T: Pattern>(_: T.Type) -> [T] {
         return []
     }
     

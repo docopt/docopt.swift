@@ -9,7 +9,7 @@
 import Foundation
 
 internal class Tokens: Equatable, Printable {
-    private var tokensArray: Array<String>
+    private var tokensArray: [String]
     internal var error: DocoptError
     
     internal var description: String {
@@ -23,7 +23,7 @@ internal class Tokens: Equatable, Printable {
         self.init(source.split(), error: error)
     }
     
-    internal init(_ source: Array<String>, error: DocoptError = DocoptExit() ) {
+    internal init(_ source: [String], error: DocoptError = DocoptExit() ) {
         tokensArray = source
         self.error = error
     }

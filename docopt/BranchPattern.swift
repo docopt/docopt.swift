@@ -9,7 +9,7 @@
 import Foundation
 
 internal class BranchPattern : Pattern, Equatable {
-    var children: Array<Pattern>
+    var children: [Pattern]
     override internal var description: String {
         get {
             return "BranchPattern(\(children))"
@@ -20,12 +20,12 @@ internal class BranchPattern : Pattern, Equatable {
         self.init([child])
     }
 
-    internal init(_ children: Array<Pattern>) {
+    internal init(_ children: [Pattern]) {
         self.children = children
     }
     
-    override internal func fixIdentities(_ unq: Array<LeafPattern>? = nil) {
-        var uniq: Array<LeafPattern> = unq ?? Array(Set(flat()))
+    override internal func fixIdentities(_ unq: [LeafPattern]? = nil) {
+        var uniq: [LeafPattern] = unq ?? Array(Set(flat()))
         
         for var i = 0; i < count(children); i++ {
             let child = children[i]
@@ -38,11 +38,11 @@ internal class BranchPattern : Pattern, Equatable {
         }
     }
     
-    override internal func flat<T: Pattern>(type: T.Type) -> Array<T> {
+    override internal func flat<T: Pattern>(type: T.Type) -> [T] {
         if self.dynamicType === T.self {
             return [self as! T]
         }
-        var result = Array<T>()
+        var result = [T]()
         for child in children {
             result += child.flat(T)
         }

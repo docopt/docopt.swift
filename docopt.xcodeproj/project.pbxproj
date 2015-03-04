@@ -92,6 +92,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		20A110991AA7699A004D5587 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MyPlayground.playground; path = ../MyPlayground.playground; sourceTree = "<group>"; };
 		20B7D3951AA5DAFE003D56F5 /* docopt.swift.test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = docopt.swift.test; sourceTree = BUILT_PRODUCTS_DIR; };
 		20B7D3971AA5DAFE003D56F5 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		20EB35D21AA5E351009815EE /* NMBExceptionCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMBExceptionCapture.h; sourceTree = "<group>"; };
@@ -177,6 +178,7 @@
 		3CE911241AA1DE7D00082C0B = {
 			isa = PBXGroup;
 			children = (
+				20A110991AA7699A004D5587 /* MyPlayground.playground */,
 				3CE911301AA1DE7D00082C0B /* docopt */,
 				3CE9113D1AA1DE7E00082C0B /* docoptTests */,
 				20B7D3961AA5DAFE003D56F5 /* docopt.swift.test */,

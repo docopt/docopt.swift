@@ -15,21 +15,21 @@ public struct Docopt {
     private let version: String?
     private let help: Bool
     private let optionsFirst: Bool
-    private let arguments: Array<String>
+    private let arguments: [String]
     
-    public init(_ doc: String, argv: Array<String>? = nil, help: Bool = false, version: String? = nil, optionsFirst: Bool = false) {
+    public init(_ doc: String, argv: [String]? = nil, help: Bool = false, version: String? = nil, optionsFirst: Bool = false) {
         self.doc = doc
         self.version = version
         self.help = help
         self.optionsFirst = optionsFirst
         
-        var args: Array<String>
+        var args: [String]
         if argv == nil {
             if Process.argc > 1 {
                 args = Process.arguments
                 args.removeAtIndex(0) // arguments[0] is always the program_name
             } else {
-                args = Array<String>()
+                args = [String]()
             }
         } else {
             args = argv!
@@ -65,7 +65,7 @@ public struct Docopt {
         let (matched, left, collected) = pattern.fix().match(argv)
         
         if matched && left.isEmpty {
-            var result = Dictionary<String, AnyObject>()
+            var result = [String: AnyObject]()
             
             let collectedLeafs = collected as! [LeafPattern]
             let flatPattern = pattern.flat().filter { pattern in
@@ -94,22 +94,21 @@ public struct Docopt {
         }
     }
     
-    static internal func parseSection(name: String, source: String) -> Array<String> {
+    static internal func parseSection(name: String, source: String) -> [String] {
         return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: .CaseInsensitive | .AnchorsMatchLines )
     }
     
-    static internal func parseDefaults(doc: String) -> Array<Option> {
-        var defaults = Array<Option>()
+    static internal func parseDefaults(doc: String) -> [Option] {
+        var defaults = [Option]()
         let optionsSection = parseSection("options:", source: doc)
         for s in optionsSection {
             // FIXME corner case "bla: options: --foo"
             let (_, _, s) = s.partition(":")  // get rid of "options:"
-            var split = ("\n" + s).split("\n[ \t]*(-\\S+?)")
-            var u = Array<String>()
-            for var i = 1; i < count(split); i += 2 {
-                u.append(split[i - 1].strip() + split[i])
+            var splgen = ("\n" + s).split("\n[ \t]*(-\\S+?)").generate()
+            var split = [String]()
+            while let s1 = splgen.next(), let s2 = splgen.next() {
+                split.append(s1 + s2)
             }
-            split = u
             defaults += split.filter({$0.hasPrefix("-")}).map {
                 Option.parse($0)
             }
@@ -117,14 +116,11 @@ public struct Docopt {
         return defaults
     }
     
-    static internal func parseLong(tokens: Tokens, inout options: [Option]) -> Array<Option> {
+    static internal func parseLong(tokens: Tokens, inout options: [Option]) -> [Option] {
         var (long, eq, val) = tokens.move()!.partition("=")
         assert(long.hasPrefix("--"))
         
-        var value: String? = nil
-        if eq != "" || val != "" {
-            value = val
-        }
+        var value: String? = eq != "" || val != "" ? val : nil
         var similar = options.filter {$0.long == long}
         
         if tokens.error is DocoptExit && similar.isEmpty {  // if no exact match
@@ -167,13 +163,14 @@ public struct Docopt {
     static internal func parseShorts(tokens: Tokens, inout options: [Option]) -> [Option] {
         let token = tokens.move()!
         assert(token.hasPrefix("-") && !token.hasPrefix("--"))
-        var left = token.stringByReplacingOccurrencesOfString("-", withString: "", options: .AnchoredSearch, range: nil)
+        var left = token.stringByReplacingOccurrencesOfString("-", withString: "")
         var parsed = [Option]()
         while left != "" {
-            let short = "-" + left.substringToIndex(advance(left.startIndex, 1))
-            left = left.substringFromIndex(advance(left.startIndex, 1))
+            let short = "-" + left[0..<1]
             let similar = options.filter {$0.short == short}
             var o: Option? = nil
+            left = left[1..<count(left)]
+            
             if count(similar) > 1 {
                 tokens.error.raise("\(short) is specified ambiguously \(count(similar)) times")
             } else if count(similar) < 1 {
@@ -183,19 +180,17 @@ public struct Docopt {
                     o = Option(short, value: true)
                 }
             } else {
-                o = Option(short, long: similar[0].long, argCount: similar[0].argCount, value: similar[0].value)
                 var value: String? = nil
+                o = Option(short, long: similar[0].long, argCount: similar[0].argCount, value: similar[0].value)
                 if o!.argCount != 0 {
-                    if left == "" {
-                        if let current = tokens.current() where current != "--" {
-                            value = tokens.move()
-                        } else {
-                            tokens.error.raise("\(short) requires argument")
-                        }
+                    if let current = tokens.current() where current != "--" && left == "" {
+                        value = tokens.move()
+                    } else if left == "" {
+                        tokens.error.raise("\(short) requires argument")
                     } else {
                         value = left
-                        left = ""
                     }
+                    left = ""
                 }
                 if tokens.error is DocoptExit {
                     o!.value = value ?? true
@@ -209,20 +204,11 @@ public struct Docopt {
     }
     
     static internal func parseAtom(tokens: Tokens, inout options: [Option]) -> [Pattern] {
-        var token = tokens.current()!
-        var result = [Pattern]()
+        let token = tokens.current()!
         if contains(["(", "["], token) {
             tokens.move()
-            let matching: String
             let u = parseExpr(tokens, options: &options)
-            
-            if token == "(" {
-                matching = ")"
-                result = [Required(u)]
-            } else {
-                matching = "]"
-                result = [Optional(u)]
-            }
+            let (matching: String, result) = (token == "(") ? (")", [Required(u)]) : ("]", [Optional(u)])
             
             if tokens.move() != matching {
                 tokens.error.raise("unmatched '\(token)'");
@@ -235,11 +221,10 @@ public struct Docopt {
             tokens.move()
             return [OptionsShortcut()]
         }
-        
         if token.hasPrefix("--") && token != "--" {
             return parseLong(tokens, options: &options)
         }
-        if token.hasPrefix("-") && token != "--" && token != "-" {
+        if token.hasPrefix("-") && !contains(["--", "-"], token) {
             return parseShorts(tokens, options: &options)
         }
         if (token.hasPrefix("<") && token.hasSuffix(">")) || token.isupper() {
@@ -268,28 +253,27 @@ public struct Docopt {
         if tokens.current() != "|" {
             return seq
         }
-        var result = seq
-        if count(seq) > 1 {
-            result = [Required(seq)]
-        }
+        
+        var result = count(seq) > 1 ? [Required(seq)] : seq
         while tokens.current() == "|" {
             tokens.move()
             seq = parseSeq(tokens, options: &options)
-            if count(seq) > 1 {
-                result += [Required(seq)]
-            } else {
-                result += seq
-            }
+            result += count(seq) > 1 ? [Required(seq)] : seq
         }
         
-        if count(result) > 1 {
-            return [Either(result)]
-        }
-        return result
+        return count(result) > 1 ? [Either(result)] : result
     }
 
+    /**
+     * Parse command-line argument vector.
+     *
+     * If options_first:
+     *     argv ::= [ long | shorts ]* [ argument ]* [ '--' [ argument ]* ] ;
+     * else:
+     *     argv ::= [ long | shorts | argument ]* [ '--' [ argument ]* ] ;
+     */
     static internal func parseArgv(tokens: Tokens, inout options: [Option], optionsFirst: Bool = false) -> [LeafPattern] {
-        var parsed = Array<LeafPattern>()
+        var parsed = [LeafPattern]()
         while let current = tokens.current() {
             if tokens.current() == "--" {
                 while let token = tokens.move() {
@@ -297,12 +281,10 @@ public struct Docopt {
                 }
                 return parsed
             } else if current.hasPrefix("--") {
-//                parsed += parseLong(tokens, options: options)
                 for arg in parseLong(tokens, options: &options) {
                     parsed.append(arg)
                 }
             } else if current.hasPrefix("-") && current != "-" {
-//                parsed += parseShorts(tokens, options: options)
                 for arg in parseShorts(tokens, options: &options) {
                     parsed.append(arg)
                 }
@@ -319,8 +301,8 @@ public struct Docopt {
     }
     
     static internal func parsePattern(source: String, inout options: [Option]) -> Pattern {
-        let tokens = Tokens.fromPattern(source)
-        let result: Array<Pattern> = parseExpr(tokens, options: &options)
+        let tokens: Tokens = Tokens.fromPattern(source)
+        let result: [Pattern] = parseExpr(tokens, options: &options)
         
         if tokens.current() != nil {
             tokens.error.raise("unexpected ending: \(tokens)");
@@ -330,24 +312,8 @@ public struct Docopt {
     }
     
     static internal func formalUsage(section: String) -> String {
-        let (_, _, s) = section.partition(":") // drop "usage:"
-        var pu = s.split()
-        let u = pu[0]
-        pu.removeAtIndex(0)
-        var result = "( "
-        if !pu.isEmpty {
-            for str in pu {
-                if str == u {
-                    result += ") | ("
-                } else {
-                    result += str
-                }
-                result += " "
-            }
-            result = (result as NSString).substringToIndex(count(result) - 1)
-        }
-        
-        result += " )"
-        return result
+        let (_, _, s: String) = section.partition(":") // drop "usage:"
+        let pu: [String] = s.split()
+        return "( " + " ".join(pu[1..<count(pu)].map { $0 == pu[0] ? ") | (" : $0 }) + " )"
     }
 }

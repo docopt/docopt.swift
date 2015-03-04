@@ -13,10 +13,10 @@ public class DocoptTestCase {
     public var usage: String = ""
     
     public let programName: String
-    public let arguments: Array<String>?
+    public let arguments: [String]?
     public let expectedOutput: AnyObject
     
-    public init(_ programName: String, arguments: Array<String>?, expectedOutput: AnyObject) {
+    public init(_ programName: String, arguments: [String]?, expectedOutput: AnyObject) {
         self.programName = programName
         self.arguments = arguments
         self.expectedOutput = expectedOutput

@@ -63,12 +63,7 @@ class DocoptTests: XCTestCase {
 
     func testParseDefaults() {
         let section = "options:\n\t-a        Add\n\t-r        Remote\n\t-m <msg>  Message"
-        let options = Docopt.parseDefaults(section)
-        var expected = Array<Option>()
-        expected += [Option("-a")]
-        expected += [Option("-r")]
-        expected += [Option("-m", argCount: 1)]
-        XCTAssertEqual(options, expected)
+        XCTAssertEqual(Docopt.parseDefaults(section), [Option("-a"), Option("-r"), Option("-m", argCount: 1)])
     }
     
     func testParseSection() {
@@ -174,7 +169,7 @@ class DocoptTests: XCTestCase {
                 Required([Option("-v", long: "--verbose"),
                     Optional(Option("-f", long: "--file", argCount: 1)),
                     OneOrMore(Argument("N"))])]))))
-        var tmp = Array<Option>()
+        var tmp = [Option]()
         XCTAssertEqual(Docopt.parsePattern("(N [M | (K | L)] | O P)", options: &tmp),
             Required(Required(Either([
                 Required([Argument("N"),
@@ -375,7 +370,7 @@ class DocoptTests: XCTestCase {
     
     func testDocopt() {
         let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
-        let result = Docopt(doc, argv: ["arg"]).result as! Dictionary<String, AnyObject>
+        let result = Docopt(doc, argv: ["arg"]).result as! [String: AnyObject]
         XCTAssertEqual(result.description, ["-v": false, "A": "arg"].description)
     }
     
