@@ -34,7 +34,15 @@ internal class LeafPattern : Pattern, Equatable {
     var valueType: ValueType = .Nil
     override internal var description: String {
         get {
-            return "LeafPattern(\(name), \(value))"
+            switch valueType {
+            case .Bool: return "LeafPattern(\(name), \(value as! Bool))"
+            case .List: return "LeafPattern(\(name), \(value as! Array<String>))"
+            case .String: return "LeafPattern(\(name), \(value as! String))"
+            case .Int: return "LeafPattern(\(name), \(value as! Int))"
+            case .Nil: fallthrough
+            default: return "LeafPattern(\(name), \(value))"
+            }
+            
         }
     }
     

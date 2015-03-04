@@ -392,19 +392,3 @@ class DocoptTests: XCTestCase {
         return "";
     }
 }
-
-internal func ==<K: Hashable, V: DocoptValue>(lhs: [K: V], rhs: [K: V]) -> Bool {
-    if lhs.count != rhs.count { return false }
-    
-    for (key, lhsub) in lhs {
-        if let rhsub = rhs[key] {
-            if lhsub != rhsub {
-                return false
-            }
-        } else {
-            return false
-        }
-    }
-    
-    return true
-}
