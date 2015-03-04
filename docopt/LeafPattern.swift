@@ -9,6 +9,7 @@
 import Foundation
 
 typealias SingleMatchResult = (position: Int, match: Pattern?)
+
 enum ValueType {
     case Nil, Bool, Int, List, String
 }
@@ -78,21 +79,17 @@ internal class LeafPattern : Pattern, Equatable {
         }) as! [LeafPattern]
         
         if (valueType == .Int) || (valueType == .List) {
-            var increment: AnyObject?
-            if valueType == .Int {
-                increment = 1
-            } else {
+            var increment: AnyObject? = 1
+            if valueType != .Int {
+                increment = match.value
                 if let val = match.value as? String {
-                    increment = [String]([val])
-                } else {
-                    increment = match.value
+                    increment = [val]
                 }
             }
             if sameName.isEmpty {
                 match.value = increment
                 match.valueType = valueType
-                collected.append(match)
-                return (true, left_, collected)
+                return (true, left_, collected + [match])
             }
             if let inc = increment as? Int {
                 sameName[0].value = sameName[0].value as! Int + inc

@@ -42,6 +42,7 @@
 		3C0578581AA3529B004E1D1D /* OneOrMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C0578561AA34F12004E1D1D /* OneOrMore.swift */; };
 		3C3B5F5A1AA3991100787183 /* DocoptError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3B5F591AA3991100787183 /* DocoptError.swift */; };
 		3C3B5F5B1AA39B9D00787183 /* DocoptError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3B5F591AA3991100787183 /* DocoptError.swift */; };
+		3C55C2681AA7977500E2B5E1 /* DocoptTestCasesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C55C2671AA7977500E2B5E1 /* DocoptTestCasesTests.swift */; };
 		3CB143841AA3690100964724 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB143831AA3690100964724 /* Argument.swift */; };
 		3CB143851AA3696500964724 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB143831AA3690100964724 /* Argument.swift */; };
 		3CB143871AA36BF500964724 /* OptionsShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB143861AA36BF500964724 /* OptionsShortcut.swift */; };
@@ -92,12 +93,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		20A110991AA7699A004D5587 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MyPlayground.playground; path = ../MyPlayground.playground; sourceTree = "<group>"; };
 		20B7D3951AA5DAFE003D56F5 /* docopt.swift.test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = docopt.swift.test; sourceTree = BUILT_PRODUCTS_DIR; };
 		20B7D3971AA5DAFE003D56F5 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		20EB35D21AA5E351009815EE /* NMBExceptionCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMBExceptionCapture.h; sourceTree = "<group>"; };
 		20EB35D31AA5E351009815EE /* NMBExceptionCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMBExceptionCapture.m; sourceTree = "<group>"; };
-		20EB35D51AA5E3DF009815EE /* docoptTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = docoptTests.h; sourceTree = "<group>"; };
+		20EB35D51AA5E3DF009815EE /* docoptTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = docoptTests.h; path = ../docoptTests.h; sourceTree = "<group>"; };
 		3C0578411AA2830E004E1D1D /* Pattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pattern.swift; sourceTree = "<group>"; };
 		3C0578431AA28404004E1D1D /* BranchPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BranchPattern.swift; sourceTree = "<group>"; };
 		3C0578451AA32C91004E1D1D /* Required.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Required.swift; sourceTree = "<group>"; };
@@ -107,6 +107,7 @@
 		3C0578531AA34D1F004E1D1D /* Either.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Either.swift; sourceTree = "<group>"; };
 		3C0578561AA34F12004E1D1D /* OneOrMore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneOrMore.swift; sourceTree = "<group>"; };
 		3C3B5F591AA3991100787183 /* DocoptError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptError.swift; sourceTree = "<group>"; };
+		3C55C2671AA7977500E2B5E1 /* DocoptTestCasesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCasesTests.swift; sourceTree = "<group>"; };
 		3CB143831AA3690100964724 /* Argument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
 		3CB143861AA36BF500964724 /* OptionsShortcut.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsShortcut.swift; sourceTree = "<group>"; };
 		3CB143891AA36D0900964724 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
@@ -161,6 +162,7 @@
 		20EB35D11AA5E351009815EE /* objc */ = {
 			isa = PBXGroup;
 			children = (
+				20EB35D51AA5E3DF009815EE /* docoptTests.h */,
 				20EB35D21AA5E351009815EE /* NMBExceptionCapture.h */,
 				20EB35D31AA5E351009815EE /* NMBExceptionCapture.m */,
 			);
@@ -178,7 +180,6 @@
 		3CE911241AA1DE7D00082C0B = {
 			isa = PBXGroup;
 			children = (
-				20A110991AA7699A004D5587 /* MyPlayground.playground */,
 				3CE911301AA1DE7D00082C0B /* docopt */,
 				3CE9113D1AA1DE7E00082C0B /* docoptTests */,
 				20B7D3961AA5DAFE003D56F5 /* docopt.swift.test */,
@@ -199,8 +200,8 @@
 		3CE911301AA1DE7D00082C0B /* docopt */ = {
 			isa = PBXGroup;
 			children = (
-				3CC416751AA22FBD008A6C8B /* Extensions */,
 				3CE911311AA1DE7D00082C0B /* Supporting Files */,
+				3CC416751AA22FBD008A6C8B /* Extensions */,
 				3CE911331AA1DE7D00082C0B /* docopt.h */,
 				3CE9114A1AA1DEB700082C0B /* docopt.swift */,
 				3CC416731AA22C2C008A6C8B /* Option.swift */,
@@ -233,11 +234,11 @@
 			children = (
 				20EB35D11AA5E351009815EE /* objc */,
 				3CE9113E1AA1DE7E00082C0B /* Supporting Files */,
-				3CE9114F1AA1E20400082C0B /* testcases.docopt */,
 				3CE911401AA1DE7E00082C0B /* DocoptTests.swift */,
+				3CE9114F1AA1E20400082C0B /* testcases.docopt */,
 				3CE9114D1AA1E1F200082C0B /* DocoptTestCase.swift */,
 				3CE911511AA1E22400082C0B /* DocoptTestCaseParser.swift */,
-				20EB35D51AA5E3DF009815EE /* docoptTests.h */,
+				3C55C2671AA7977500E2B5E1 /* DocoptTestCasesTests.swift */,
 			);
 			path = docoptTests;
 			sourceTree = "<group>";
@@ -429,6 +430,7 @@
 				3C0578581AA3529B004E1D1D /* OneOrMore.swift in Sources */,
 				3CC416791AA22FE2008A6C8B /* String.swift in Sources */,
 				3CE9114C1AA1DEB700082C0B /* docopt.swift in Sources */,
+				3C55C2681AA7977500E2B5E1 /* DocoptTestCasesTests.swift in Sources */,
 				3CE9114E1AA1E1F200082C0B /* DocoptTestCase.swift in Sources */,
 				3C05784B1AA32D3C004E1D1D /* BranchPattern.swift in Sources */,
 				3C05784F1AA32DF7004E1D1D /* LeafPattern.swift in Sources */,
