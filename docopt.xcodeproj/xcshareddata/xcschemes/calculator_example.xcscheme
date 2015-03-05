@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
-               BuildableName = "docopt.framework"
-               BlueprintName = "docopt"
-               ReferencedContainer = "container:docopt.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3CE911381AA1DE7E00082C0B"
-               BuildableName = "docoptTests.xctest"
-               BlueprintName = "docoptTests"
+               BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
+               BuildableName = "calculator_example"
+               BlueprintName = "calculator_example"
                ReferencedContainer = "container:docopt.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,23 +28,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3CE911381AA1DE7E00082C0B"
-               BuildableName = "docoptTests.xctest"
-               BlueprintName = "docoptTests"
-               ReferencedContainer = "container:docopt.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
-            BuildableName = "docopt.framework"
-            BlueprintName = "docopt"
+            BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
+            BuildableName = "calculator_example"
+            BlueprintName = "calculator_example"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -68,19 +44,20 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
-            BuildableName = "docopt.framework"
-            BlueprintName = "docopt"
+            BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
+            BuildableName = "calculator_example"
+            BlueprintName = "calculator_example"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -90,15 +67,16 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
-            BuildableName = "docopt.framework"
-            BlueprintName = "docopt"
+            BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
+            BuildableName = "calculator_example"
+            BlueprintName = "calculator_example"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -8,8 +8,8 @@
 
 import Foundation
 
-public extension String {
-    public func partition(separator: String) -> (String, String, String) {
+internal extension String {
+    func partition(separator: String) -> (String, String, String) {
         let components = self.componentsSeparatedByString(separator)
         if count(components) > 1 {
             return (components[0], separator, separator.join(components[1..<count(components)]))
@@ -17,11 +17,11 @@ public extension String {
         return (self, "", "")
     }
     
-    public func strip() -> String {
+    func strip() -> String {
         return self.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     }
     
-    public func findAll(regex: String, flags: NSRegularExpressionOptions) -> [String] {
+    func findAll(regex: String, flags: NSRegularExpressionOptions) -> [String] {
         let re = NSRegularExpression(pattern: regex, options: flags, error: nil)!
         let all = NSMakeRange(0, count(self))
         if let matches = re.matchesInString(self, options: .allZeros, range: all) as? [NSTextCheckingResult] {
@@ -30,11 +30,11 @@ public extension String {
         return []
     }
     
-    public func split() -> [String] {
+    func split() -> [String] {
         return Swift.split(self, isSeparator: {$0 == " " || $0 == "\n"})
     }
     
-    public func split(regex: String) -> [String] {
+    func split(regex: String) -> [String] {
         let re = NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators, error: nil)!
         let all = NSMakeRange(0, count(self))
         var result = [String]()
@@ -72,7 +72,7 @@ public extension String {
         return [self]
     }
     
-    public func isupper() -> Bool {
+    func isupper() -> Bool {
         var charset = NSCharacterSet.uppercaseLetterCharacterSet().invertedSet
         return self.rangeOfCharacterFromSet(charset) == nil
     }

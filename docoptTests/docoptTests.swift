@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 kovpas. All rights reserved.
 //
 
-import Cocoa
 import XCTest
 
 class DocoptTests: XCTestCase {
+    override func setUp() {
+        DocoptError.test = true
+    }
     
     func testPatternFlat() {
         XCTAssertEqual(Required([OneOrMore(Argument("N")), Option("-a"), Argument("M")]).flat(), [Argument("N"), Option("-a"), Argument("M")])
@@ -325,7 +327,7 @@ class DocoptTests: XCTestCase {
     
     func testDocopt() {
         let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
-        let result = Docopt(doc, argv: ["arg"]).result as! [String: AnyObject]
+        let result = Docopt(doc, argv: ["arg"]).result
         XCTAssertEqual(result.description, ["-v": false, "A": "arg"].description)
     }
 }

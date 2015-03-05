@@ -1,6 +1,6 @@
 //
-//  docopt.swift
-//  docopt
+//  Docopt.swift
+//  Docopt
 //
 //  Created by Pavel S. Mazurin on 2/28/15.
 //  Copyright (c) 2015 kovpas. All rights reserved.
@@ -9,15 +9,20 @@
 import Foundation
 import Darwin
 
-public struct Docopt {
-    public var result: AnyObject!
+@objc
+public class Docopt {
+    private(set) public var result: [String: AnyObject]!
     private let doc: String
     private let version: String?
     private let help: Bool
     private let optionsFirst: Bool
     private let arguments: [String]
     
-    public init(_ doc: String, argv: [String]? = nil, help: Bool = false, version: String? = nil, optionsFirst: Bool = false) {
+    public static func parse(doc: String, argv: [String], help: Bool = false, version: String? = nil, optionsFirst: Bool = false) -> [String: AnyObject] {
+        return Docopt(doc, argv: argv, help: help, version: version, optionsFirst: optionsFirst).result
+    }
+    
+    internal init(_ doc: String, argv: [String]? = nil, help: Bool = false, version: String? = nil, optionsFirst: Bool = false) {
         self.doc = doc
         self.version = version
         self.help = help
@@ -39,7 +44,7 @@ public struct Docopt {
         result = parse(optionsFirst)
     }
     
-    private func parse(optionsFirst: Bool) -> AnyObject {
+    private func parse(optionsFirst: Bool) -> [String: AnyObject] {
         let usageSections = Docopt.parseSection("usage:", source: doc)
 
         if count(usageSections) == 0 {
@@ -64,9 +69,9 @@ public struct Docopt {
         
         let (matched, left, collected) = pattern.fix().match(argv)
         
+        var result = [String: AnyObject]()
+        
         if matched && left.isEmpty {
-            var result = [String: AnyObject]()
-            
             let collectedLeafs = collected as! [LeafPattern]
             let flatPattern = pattern.flat().filter { pattern in
                 (collectedLeafs.filter {$0.name == pattern.name}).isEmpty
@@ -78,7 +83,8 @@ public struct Docopt {
             return result
         }
 
-        return "user-error"
+        DocoptExit().raise()
+        return result
     }
     
     static private func extras(help: Bool, version: String?, options: [LeafPattern], doc: String) {

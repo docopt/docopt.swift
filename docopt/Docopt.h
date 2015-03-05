@@ -1,12 +1,12 @@
 //
-//  docoptTests.h
-//  docopt
+//  Docopt.h
+//  Docopt
 //
-//  Created by Pavel Mazurin on 03/03/15.
+//  Created by Pavel S. Mazurin on 2/28/15.
 //  Copyright (c) 2015 kovpas. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for docopt.
 FOUNDATION_EXPORT double docoptVersionNumber;
@@ -14,5 +14,4 @@ FOUNDATION_EXPORT double docoptVersionNumber;
 //! Project version string for docopt.
 FOUNDATION_EXPORT const unsigned char docoptVersionString[];
 
-#import "NMBExceptionCapture.h"
 

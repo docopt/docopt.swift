@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "20B7D3941AA5DAFE003D56F5"
-               BuildableName = "docopt.swift.test"
-               BlueprintName = "docopt.swift.test"
+               BlueprintIdentifier = "3C4CA30D1AA9045B00027F0F"
+               BuildableName = "arguments_example"
+               BlueprintName = "arguments_example"
                ReferencedContainer = "container:docopt.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "20B7D3941AA5DAFE003D56F5"
-            BuildableName = "docopt.swift.test"
-            BlueprintName = "docopt.swift.test"
+            BlueprintIdentifier = "3C4CA30D1AA9045B00027F0F"
+            BuildableName = "arguments_example"
+            BlueprintName = "arguments_example"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,9 +52,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "20B7D3941AA5DAFE003D56F5"
-            BuildableName = "docopt.swift.test"
-            BlueprintName = "docopt.swift.test"
+            BlueprintIdentifier = "3C4CA30D1AA9045B00027F0F"
+            BuildableName = "arguments_example"
+            BlueprintName = "arguments_example"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,9 +71,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "20B7D3941AA5DAFE003D56F5"
-            BuildableName = "docopt.swift.test"
-            BlueprintName = "docopt.swift.test"
+            BlueprintIdentifier = "3C4CA30D1AA9045B00027F0F"
+            BuildableName = "arguments_example"
+            BlueprintName = "arguments_example"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

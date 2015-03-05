@@ -9,13 +9,13 @@
 import Foundation
 
 internal class Either : BranchPattern {
-    override internal var description: String {
+    override var description: String {
         get {
             return "Either(\(children))"
         }
     }
 
-    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+    override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
         var collected: [T] = clld ?? []
         var outcomes: [MatchResult] = []
         

@@ -33,7 +33,7 @@ internal class LeafPattern : Pattern, Equatable {
         }
     }
     var valueType: ValueType = .Nil
-    override internal var description: String {
+    override var description: String {
         get {
             switch valueType {
             case .Bool: return "LeafPattern(\(name), \(value as! Bool))"
@@ -47,19 +47,19 @@ internal class LeafPattern : Pattern, Equatable {
         }
     }
     
-    internal init(_ name: String?, value: AnyObject? = nil) {
+    init(_ name: String?, value: AnyObject? = nil) {
         self.name = name
         self.value = value
     }
     
-    override internal func flat<T: LeafPattern>(_: T.Type) -> [T] {
+    override func flat<T: LeafPattern>(_: T.Type) -> [T] {
         if let cast = self as? T {
             return [cast]
         }
         return []
     }
     
-    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+    override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
         var collected: [Pattern] = clld ?? []
         let (pos, mtch) = singleMatch(left)
         
@@ -104,7 +104,7 @@ internal class LeafPattern : Pattern, Equatable {
     }
 }
 
-internal func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
+func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
     let valEqual: Bool
     if let lval = lhs.value as? String, let rval = rhs.value as? String {
         valEqual = lval == rval

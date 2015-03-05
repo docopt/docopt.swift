@@ -9,13 +9,13 @@
 import Foundation
 
 internal class Required: BranchPattern {
-    override internal var description: String {
+    override var description: String {
         get {
             return "Required(\(children))"
         }
     }
 
-    override internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+    override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
         var collected: [Pattern] = clld ?? []
         var l: [Pattern] = left
         var c = collected

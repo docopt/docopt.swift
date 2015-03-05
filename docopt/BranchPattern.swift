@@ -10,21 +10,21 @@ import Foundation
 
 internal class BranchPattern : Pattern, Equatable {
     var children: [Pattern]
-    override internal var description: String {
+    override var description: String {
         get {
             return "BranchPattern(\(children))"
         }
     }
 
-    internal convenience init(_ child: Pattern) {
+    convenience init(_ child: Pattern) {
         self.init([child])
     }
 
-    internal init(_ children: [Pattern]) {
+    init(_ children: [Pattern]) {
         self.children = children
     }
     
-    override internal func fixIdentities(_ unq: [LeafPattern]? = nil) {
+    override func fixIdentities(_ unq: [LeafPattern]? = nil) {
         var uniq: [LeafPattern] = unq ?? Array(Set(flat()))
         
         for var i = 0; i < count(children); i++ {
@@ -38,7 +38,7 @@ internal class BranchPattern : Pattern, Equatable {
         }
     }
     
-    override internal func flat<T: Pattern>(type: T.Type) -> [T] {
+    override func flat<T: Pattern>(type: T.Type) -> [T] {
         if self.dynamicType === T.self {
             return [self as! T]
         }
@@ -50,6 +50,6 @@ internal class BranchPattern : Pattern, Equatable {
     }
 }
 
-internal func ==(lhs: BranchPattern, rhs: BranchPattern) -> Bool {
+func ==(lhs: BranchPattern, rhs: BranchPattern) -> Bool {
     return lhs.children == rhs.children
 }

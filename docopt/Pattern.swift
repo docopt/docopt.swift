@@ -11,12 +11,12 @@ import Foundation
 typealias MatchResult = (match: Bool, left: [Pattern], collected: [Pattern])
 
 internal class Pattern: Equatable, Hashable, Printable {
-    internal func fix() -> Pattern {
+    func fix() -> Pattern {
         fixIdentities()
         fixRepeatingArguments()
         return self
     }
-    internal var description: String {
+    var description: String {
         get {
             return "Pattern"
         }
@@ -26,9 +26,9 @@ internal class Pattern: Equatable, Hashable, Printable {
         }
     }
     
-    internal func fixIdentities(_ unq: [LeafPattern]? = nil) {}
+    func fixIdentities(_ unq: [LeafPattern]? = nil) {}
     
-    internal func fixRepeatingArguments() -> Pattern {
+    func fixRepeatingArguments() -> Pattern {
         var either = Pattern.transform(self).children.map { ($0 as! Required).children }
         
         for c in either {
@@ -56,7 +56,7 @@ internal class Pattern: Equatable, Hashable, Printable {
         return self
     }
     
-    internal static func isInParents(child: Pattern) -> Bool {
+    static func isInParents(child: Pattern) -> Bool {
         return (child as? Required != nil)
             || (child as? Optional != nil)
             || (child as? OptionsShortcut != nil)
@@ -64,7 +64,7 @@ internal class Pattern: Equatable, Hashable, Printable {
             || (child as? OneOrMore != nil)
     }
     
-    internal static func transform(pattern: Pattern) -> Either {
+    static func transform(pattern: Pattern) -> Either {
         var result = [[Pattern]]()
         var groups = [[pattern]]
         while !groups.isEmpty {
@@ -92,26 +92,26 @@ internal class Pattern: Equatable, Hashable, Printable {
         return Either(result.map {Required($0)})
     }
 
-    internal func flat() -> [LeafPattern] {
+    func flat() -> [LeafPattern] {
         return flat(LeafPattern)
     }
 
-    internal func flat<T: Pattern>(_: T.Type) -> [T] {  // abstract
+    func flat<T: Pattern>(_: T.Type) -> [T] {  // abstract
         return []
     }
     
-    internal func match<T: Pattern>(left: T, collected clld: [T]? = nil) -> MatchResult {
+    func match<T: Pattern>(left: T, collected clld: [T]? = nil) -> MatchResult {
         return match([left], collected: clld)
     }
     
-    internal func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {  // abstract
+    func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {  // abstract
         return (false, [], [])
     }
 
-    internal func singleMatch<T: Pattern>(left: [T]) -> SingleMatchResult {return (0, nil)} // abstract
+    func singleMatch<T: Pattern>(left: [T]) -> SingleMatchResult {return (0, nil)} // abstract
 }
 
-internal func ==(lhs: Pattern, rhs: Pattern) -> Bool {
+func ==(lhs: Pattern, rhs: Pattern) -> Bool {
     if let lval = lhs as? BranchPattern, let rval = rhs as? BranchPattern {
         return lval == rval
     } else if let lval = lhs as? LeafPattern, let rval = rhs as? LeafPattern {

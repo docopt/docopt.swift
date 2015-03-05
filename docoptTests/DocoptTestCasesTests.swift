@@ -6,10 +6,13 @@
 //  Copyright (c) 2015 kovpas. All rights reserved.
 //
 
-import Cocoa
 import XCTest
 
 class DocoptTestCasesTests: XCTestCase {
+    override func setUp() {
+        DocoptError.test = true
+    }
+
     func testTestCasesFileExists() {
         let fileManager: NSFileManager = NSFileManager.defaultManager()
         let filePath: String? = fixturesFilePath()

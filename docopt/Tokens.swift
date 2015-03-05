@@ -10,31 +10,31 @@ import Foundation
 
 internal class Tokens: Equatable, Printable {
     private var tokensArray: [String]
-    internal var error: DocoptError
+    var error: DocoptError
     
-    internal var description: String {
+    var description: String {
         get {
             return " ".join(tokensArray)
         }
     }
 
     
-    internal convenience init(_ source: String, error: DocoptError = DocoptExit()) {
+    convenience init(_ source: String, error: DocoptError = DocoptExit()) {
         self.init(source.split(), error: error)
     }
     
-    internal init(_ source: [String], error: DocoptError = DocoptExit() ) {
+    init(_ source: [String], error: DocoptError = DocoptExit() ) {
         tokensArray = source
         self.error = error
     }
     
-    static internal func fromPattern(source: String) -> Tokens {
+    static func fromPattern(source: String) -> Tokens {
         let res = source.stringByReplacingOccurrencesOfString("([\\[\\]\\(\\)\\|]|\\.\\.\\.)", withString: " $1 ", options: .RegularExpressionSearch)
         var result = res.split("\\s+|(\\S*<.*?>)").filter { !$0.isEmpty }
         return Tokens(result, error: DocoptLanguageError())
     }
     
-    internal func current() -> String? {
+    func current() -> String? {
         if tokensArray.isEmpty {
             return nil
         }
@@ -42,7 +42,7 @@ internal class Tokens: Equatable, Printable {
         return tokensArray[0]
     }
     
-    internal func move() -> String? {
+    func move() -> String? {
         if tokensArray.isEmpty {
             return nil
         }

@@ -19,17 +19,17 @@ internal class Option: LeafPattern, Equatable {
         set {
         }
     }
-    override internal var description: String {
+    override var description: String {
         get {
             return "Option(\(short), \(long), \(argCount), \(value))"
         }
     }
     
-    internal convenience init(_ option: Option) {
+    convenience init(_ option: Option) {
         self.init(option.short, long: option.long, argCount: option.argCount, value: option.value)
     }
     
-    internal init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = false) {
+    init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = false) {
         assert(argCount <= 1)
         self.short = short
         self.long = long
@@ -43,7 +43,7 @@ internal class Option: LeafPattern, Equatable {
         }
     }
     
-    internal static func parse(optionDescription: String) -> Option {
+    static func parse(optionDescription: String) -> Option {
         var short: String? = nil
         var long: String? = nil
         var argCount: UInt = 0
@@ -71,7 +71,7 @@ internal class Option: LeafPattern, Equatable {
         return Option(short, long: long, argCount: argCount, value: value)
     }
     
-    override internal func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
+    override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
         for var i = 0; i < count(left); i++ {
             let pattern = left[i]
             if pattern.name == name {
@@ -82,7 +82,7 @@ internal class Option: LeafPattern, Equatable {
     }
 }
 
-internal func ==(lhs: Option, rhs: Option) -> Bool {
+func ==(lhs: Option, rhs: Option) -> Bool {
     let valEqual = lhs as LeafPattern == rhs as LeafPattern
     return lhs.short == rhs.short
         && lhs.long == lhs.long
