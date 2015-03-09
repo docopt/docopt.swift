@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
-               BuildableName = "calculator_example"
-               BlueprintName = "calculator_example"
+               BlueprintIdentifier = "3C4CA3361AA90EBD00027F0F"
+               BuildableName = "calculator_example_swift"
+               BlueprintName = "calculator_example_swift"
                ReferencedContainer = "container:docopt.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
-            BuildableName = "calculator_example"
-            BlueprintName = "calculator_example"
+            BlueprintIdentifier = "3C4CA3361AA90EBD00027F0F"
+            BuildableName = "calculator_example_swift"
+            BlueprintName = "calculator_example_swift"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,15 +52,15 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
-            BuildableName = "calculator_example"
-            BlueprintName = "calculator_example"
+            BlueprintIdentifier = "3C4CA3361AA90EBD00027F0F"
+            BuildableName = "calculator_example_swift"
+            BlueprintName = "calculator_example_swift"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "1 + 3 - 5"
+            argument = "1 + 2 - 4"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -77,9 +77,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C4CA2EE1AA9018000027F0F"
-            BuildableName = "calculator_example"
-            BlueprintName = "calculator_example"
+            BlueprintIdentifier = "3C4CA3361AA90EBD00027F0F"
+            BuildableName = "calculator_example_swift"
+            BlueprintName = "calculator_example_swift"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

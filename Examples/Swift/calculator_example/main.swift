@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 kovpas. All rights reserved.
 //
 
-import Docopt
-
 let doc : String = "Not a serious example.\n" +
 "\n" +
 "Usage:\n" +
@@ -22,9 +20,7 @@ let doc : String = "Not a serious example.\n" +
 "Options:\n" +
 "  -h, --help\n"
 
-print(doc)
-
 var args = Process.arguments
 args.removeAtIndex(0) // arguments[0] is always the program_name
-
-println(Docopt.parse(doc, argv: args, help: true, version: "1.0"))
+let result = Docopt.parse(doc, argv: args, help: true, version: "1.0")
+println("Docopt result: \(result)")

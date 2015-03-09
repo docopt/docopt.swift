@@ -14,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3C4CA3161AA9047800027F0F"
-               BuildableName = "ExamplesObjc"
-               BlueprintName = "ExamplesObjc"
+               BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
+               BuildableName = "Docopt.framework"
+               BlueprintName = "Docopt"
+               ReferencedContainer = "container:docopt.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3CE911381AA1DE7E00082C0B"
+               BuildableName = "DocoptTests.xctest"
+               BlueprintName = "DocoptTests"
                ReferencedContainer = "container:docopt.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,7 +42,26 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3CE911381AA1DE7E00082C0B"
+               BuildableName = "DocoptTests.xctest"
+               BlueprintName = "DocoptTests"
+               ReferencedContainer = "container:docopt.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
+            BuildableName = "Docopt.framework"
+            BlueprintName = "Docopt"
+            ReferencedContainer = "container:docopt.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -42,9 +75,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C4CA3161AA9047800027F0F"
-            BuildableName = "ExamplesObjc"
-            BlueprintName = "ExamplesObjc"
+            BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
+            BuildableName = "Docopt.framework"
+            BlueprintName = "Docopt"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -60,9 +93,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C4CA3161AA9047800027F0F"
-            BuildableName = "ExamplesObjc"
-            BlueprintName = "ExamplesObjc"
+            BlueprintIdentifier = "3CE9112D1AA1DE7D00082C0B"
+            BuildableName = "Docopt.framework"
+            BlueprintName = "Docopt"
             ReferencedContainer = "container:docopt.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
