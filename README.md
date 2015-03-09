@@ -1,7 +1,7 @@
-``docopt.swift`` is a Swift port of docopt
+``docopt.swift`` is a Swift port of [docopt](https://github.com/docopt/docopt)
 ======================================================================
 
-**docopt.swift** helps you create command-line interfaces without parsing!
+**docopt.swift** helps you create most beautiful command-line interfaces *easily*:
 
 Swift:
 ``` Swift
@@ -33,3 +33,19 @@ arguments = arguments.count > 1 ? [arguments subarrayWithRange:NSMakeRange(1, ar
 NSDictionary *result = [Docopt parse:doc argv:arguments help:YES version:@"1.0" optionsFirst:NO];
 NSLog(@"Docopt result:\n%@", result);
 ```
+
+Installation
+======
+
+Swift:
+- Check out `docopt.swift`
+- Add `docopt` folder to your project
+
+Objective-C:
+- Check out `docopt.swift`
+- Build `Docopt` target
+- Add `Docopt.framework` to your project
+
+License
+======
+`docopt.swift` is released under the MIT License.
