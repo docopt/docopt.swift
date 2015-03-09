@@ -1,11 +1,10 @@
 ``docopt.swift`` is a Swift port of docopt
 ======================================================================
 
-**docopt.swift** helps you create most beautiful command-line interfaces
-*easily*:
+**docopt.swift** helps you create command-line interfaces without parsing!
 
 Swift:
-```
+``` Swift
 let doc : String = "Not a serious example.\n" +
 "\n" +
 "Usage:\n" +
@@ -27,7 +26,7 @@ println("Docopt result: \(result)")
 ```
 
 Objective-C:
-```
+``` Objective-c
 NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 arguments = arguments.count > 1 ? [arguments subarrayWithRange:NSMakeRange(1, arguments.count - 1)] : @[];
 
