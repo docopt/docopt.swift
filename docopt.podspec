@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :osx, '10.9'
   s.module_name  = 'Docopt'
-  s.source       = { :git => "https://github.com/docopt/docopt.git", :tag => s.version }
+  s.source       = { :git => "https://github.com/docopt/docopt.swift.git", :tag => s.version }
   s.source_files = "docopt/**/*.swift"
   s.requires_arc = true
 end
