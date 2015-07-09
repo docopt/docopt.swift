@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class BranchPattern : Pattern, Equatable {
+internal class BranchPattern : Pattern {
     var children: [Pattern]
     override var description: String {
         get {
@@ -24,14 +24,14 @@ internal class BranchPattern : Pattern, Equatable {
         self.children = children
     }
     
-    override func fixIdentities(_ unq: [LeafPattern]? = nil) {
+    override func fixIdentities(unq: [LeafPattern]? = nil) {
         var uniq: [LeafPattern] = unq ?? Array(Set(flat()))
         
-        for var i = 0; i < count(children); i++ {
+        for var i = 0; i < children.count; i++ {
             let child = children[i]
             if let leafChild = child as? LeafPattern {
-                assert(contains(uniq, leafChild))
-                children[i] = uniq[find(uniq, leafChild)!]
+                assert(uniq.contains(leafChild))
+                children[i] = uniq[uniq.indexOf(leafChild)!]
             } else {
                 child.fixIdentities(uniq)
             }

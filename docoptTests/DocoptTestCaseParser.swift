@@ -24,10 +24,15 @@ public struct DocoptTestCaseParser {
     }
     
     private func removeComments(string: String) -> String {
-        let removeCommentsRegEx: NSRegularExpression? = NSRegularExpression(pattern: "(?m)#.*$", options: .allZeros, error: nil)
+        let removeCommentsRegEx: NSRegularExpression?
+        do {
+            removeCommentsRegEx = try NSRegularExpression(pattern: "(?m)#.*$", options: [])
+        } catch _ {
+            removeCommentsRegEx = nil
+        }
         if let removeCommentsRegEx = removeCommentsRegEx {
-            let fullRange: NSRange = NSMakeRange(0, count(string))
-            return removeCommentsRegEx.stringByReplacingMatchesInString(string, options: .allZeros, range: fullRange, withTemplate: "")
+            let fullRange: NSRange = NSMakeRange(0, string.characters.count)
+            return removeCommentsRegEx.stringByReplacingMatchesInString(string, options: [], range: fullRange, withTemplate: "")
         }
         
         return string
@@ -58,7 +63,7 @@ public struct DocoptTestCaseParser {
     private func testCasesFromFixtureString(fixtureString: String) -> [DocoptTestCase] {
         var testCases = [DocoptTestCase]()
         let fixtureComponents: [String] = fixtureString.componentsSeparatedByString("\"\"\"")
-        assert(count(fixtureComponents) == 2, "Could not split fixture: \(fixtureString) into components")
+        assert(fixtureComponents.count == 2, "Could not split fixture: \(fixtureString) into components")
         let usageDoc: String = fixtureComponents[0]
         let testInvocationString: String = fixtureComponents[1]
         
@@ -77,7 +82,7 @@ public struct DocoptTestCaseParser {
     private func parseTestCase(invocationString: String) -> DocoptTestCase? {
         let trimmedTestInvocation: String = invocationString.strip()
         var testInvocationComponents: [String] = trimmedTestInvocation.componentsSeparatedByString("\n")
-        assert(count(testInvocationComponents) >= 2, "Could not split test case: \(trimmedTestInvocation) into components")
+        assert(testInvocationComponents.count >= 2, "Could not split test case: \(trimmedTestInvocation) into components")
         
         let input: String = testInvocationComponents.removeAtIndex(0) // first line
         let expectedOutput: String = "\n".join(testInvocationComponents) // all remaining lines
@@ -91,7 +96,13 @@ public struct DocoptTestCaseParser {
             NSLog("Error parsing \(expectedOutput) to JSON: \(error)")
             return nil
         }
-        let expectedOutputJSON: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonData!, options: .AllowFragments, error: &error)
+        let expectedOutputJSON: AnyObject?
+        do {
+            expectedOutputJSON = try NSJSONSerialization.JSONObjectWithData(jsonData!, options: .AllowFragments)
+        } catch let error1 as NSError {
+            error = error1
+            expectedOutputJSON = nil
+        }
         if (expectedOutputJSON == nil) {
             NSLog("Error parsing \(expectedOutput) to JSON: \(error)")
             return nil

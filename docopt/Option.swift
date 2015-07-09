@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class Option: LeafPattern, Equatable {
+internal class Option: LeafPattern {
     internal var short: String?
     internal var long: String?
     internal var argCount: UInt
@@ -50,8 +50,8 @@ internal class Option: LeafPattern, Equatable {
         var value: AnyObject? = false
         
         var (options, _, description) = optionDescription.strip().partition("  ")
-        options = options.stringByReplacingOccurrencesOfString(",", withString: " ", options: .allZeros, range: nil)
-        options = options.stringByReplacingOccurrencesOfString("=", withString: " ", options: .allZeros, range: nil)
+        options = options.stringByReplacingOccurrencesOfString(",", withString: " ", options: [], range: nil)
+        options = options.stringByReplacingOccurrencesOfString("=", withString: " ", options: [], range: nil)
         
         for s in options.componentsSeparatedByString(" ").filter({!$0.isEmpty}) {
             if s.hasPrefix("--") {
@@ -65,14 +65,14 @@ internal class Option: LeafPattern, Equatable {
         
         if argCount == 1 {
             let matched = description.findAll("\\[default: (.*)\\]", flags: .CaseInsensitive)
-            value = count(matched) > 0 ? matched[0] : nil
+            value = matched.count > 0 ? matched[0] : nil
         }
         
         return Option(short, long: long, argCount: argCount, value: value)
     }
     
     override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
-        for var i = 0; i < count(left); i++ {
+        for var i = 0; i < left.count; i++ {
             let pattern = left[i]
             if pattern.name == name {
                 return (i, pattern)

@@ -609,7 +609,9 @@
 		3CE911251AA1DE7D00082C0B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = kovpas;
 				TargetAttributes = {
 					3C29E4531AAE380500B75022 = {
@@ -1016,6 +1018,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1090,6 +1093,7 @@
 				INFOPLIST_FILE = docopt/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.kovpas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1110,6 +1114,7 @@
 				INFOPLIST_FILE = docopt/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.kovpas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1130,8 +1135,9 @@
 				);
 				INFOPLIST_FILE = docoptTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.kovpas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = docoptTests/docoptTests.h;
+				SWIFT_OBJC_BRIDGING_HEADER = docoptTests/DocoptTests.h;
 			};
 			name = Debug;
 		};
@@ -1145,8 +1151,9 @@
 				);
 				INFOPLIST_FILE = docoptTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.kovpas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = docoptTests/docoptTests.h;
+				SWIFT_OBJC_BRIDGING_HEADER = docoptTests/DocoptTests.h;
 			};
 			name = Release;
 		};
@@ -1160,6 +1167,7 @@
 				3C29E45A1AAE380500B75022 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3C29E4731AAE394F00B75022 /* Build configuration list for PBXNativeTarget "naval_fate_swift" */ = {
 			isa = XCConfigurationList;
@@ -1168,6 +1176,7 @@
 				3C29E4751AAE394F00B75022 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3C4CA2F31AA9018000027F0F /* Build configuration list for PBXNativeTarget "calculator_example" */ = {
 			isa = XCConfigurationList;

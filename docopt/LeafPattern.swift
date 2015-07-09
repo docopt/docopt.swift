@@ -14,7 +14,7 @@ enum ValueType {
     case Nil, Bool, Int, List, String
 }
 
-internal class LeafPattern : Pattern, Equatable {
+internal class LeafPattern : Pattern {
     var name: String?
     var value: AnyObject? {
         willSet {
@@ -60,7 +60,7 @@ internal class LeafPattern : Pattern, Equatable {
     }
     
     override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
-        var collected: [Pattern] = clld ?? []
+        let collected: [Pattern] = clld ?? []
         let (pos, mtch) = singleMatch(left)
         
         if mtch == nil {

@@ -28,32 +28,27 @@ class DocoptTestCasesTests: XCTestCase {
     }
     
     func testTestCases() {
-        var rawTestCases = fixturesFileContents()
-        var parser = DocoptTestCaseParser(rawTestCases)
+        let rawTestCases = fixturesFileContents()
+        let parser = DocoptTestCaseParser(rawTestCases)
         
         for testCase in parser.testCases {
+            let expectedOutput: AnyObject = testCase.expectedOutput
             var result: AnyObject = "user-error"
-            var capture = NMBExceptionCapture(handler: nil, finally: nil)
+            let capture = NMBExceptionCapture(handler: nil, finally: nil)
             capture.tryBlock {
                 result = Docopt(testCase.usage, argv: testCase.arguments).result
             }
-            
-            let expectedOutput: AnyObject = testCase.expectedOutput
-            switch expectedOutput {
-            case let expectedOutput as NSDictionary:
-                if let result = result as? NSDictionary {
-                    XCTAssertTrue(result == expectedOutput, "Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n")
-                } else {
-                    XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
-                }
-            case let expectedOutput as String:
-                if let result = result as? String {
-                    XCTAssertTrue(result == expectedOutput, "Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n")
-                } else {
-                    XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
-                }
-            default:
-                XCTFail("Test \(testCase.name) failed. Unexpected result type: \(result.dynamicType). Expected: \(expectedOutput.dynamicType)")
+
+            if let expectedDictionary = expectedOutput as? NSDictionary,
+               let resultDictionary = result as? NSDictionary {
+                XCTAssertTrue(resultDictionary == expectedDictionary,
+                    "Test \(testCase.name) failed. Expected:\n\(expectedDictionary)\n\n, got: \(resultDictionary)\n\n")
+            } else if let expectedString = expectedOutput as? String,
+                      let resultString = result as? String {
+                XCTAssertTrue(resultString == expectedString,
+                    "Test \(testCase.name) failed. Expected:\n\(expectedString)\n\n, got: \(resultString)\n\n")
+            } else {
+                XCTFail("Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n\(testCase.usage)\n\(testCase.arguments)\n\n")
             }
         }
     }
@@ -65,7 +60,12 @@ class DocoptTestCasesTests: XCTestCase {
     
     private func fixturesFileContents() -> String {
         if let filePath = self.fixturesFilePath() {
-            let fileContents = String(contentsOfFile: filePath, encoding: NSUTF8StringEncoding, error: nil)
+            let fileContents: String?
+            do {
+                fileContents = try String(contentsOfFile: filePath, encoding: NSUTF8StringEncoding)
+            } catch _ {
+                fileContents = nil
+            }
             return fileContents!
         }
         return ""
