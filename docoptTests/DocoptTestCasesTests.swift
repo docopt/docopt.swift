@@ -60,13 +60,8 @@ class DocoptTestCasesTests: XCTestCase {
     
     private func fixturesFileContents() -> String {
         if let filePath = self.fixturesFilePath() {
-            let fileContents: String?
-            do {
-                fileContents = try String(contentsOfFile: filePath, encoding: NSUTF8StringEncoding)
-            } catch _ {
-                fileContents = nil
-            }
-            return fileContents!
+            let fileContents = try! String(contentsOfFile: filePath, encoding: NSUTF8StringEncoding)
+            return fileContents
         }
         return ""
     }
