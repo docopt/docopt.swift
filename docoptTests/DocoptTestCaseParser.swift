@@ -24,18 +24,9 @@ public struct DocoptTestCaseParser {
     }
     
     private func removeComments(string: String) -> String {
-        let removeCommentsRegEx: NSRegularExpression?
-        do {
-            removeCommentsRegEx = try NSRegularExpression(pattern: "(?m)#.*$", options: [])
-        } catch _ {
-            removeCommentsRegEx = nil
-        }
-        if let removeCommentsRegEx = removeCommentsRegEx {
-            let fullRange: NSRange = NSMakeRange(0, string.characters.count)
-            return removeCommentsRegEx.stringByReplacingMatchesInString(string, options: [], range: fullRange, withTemplate: "")
-        }
-        
-        return string
+        let removeCommentsRegEx = try! NSRegularExpression(pattern: "(?m)#.*$", options: [])
+        let fullRange: NSRange = NSMakeRange(0, string.characters.count)
+        return removeCommentsRegEx.stringByReplacingMatchesInString(string, options: [], range: fullRange, withTemplate: "")
     }
     
     private func parseFixtures(fixturesString: String) -> [String] {
