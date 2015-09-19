@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "docopt"
-  s.version      = "0.6.2"
+  s.version      = "0.6.3"
   s.summary      = "Pythonic command line arguments parser, that will make you smile"
   s.homepage     = "http://docopt.org"
   s.license      = "MIT"
