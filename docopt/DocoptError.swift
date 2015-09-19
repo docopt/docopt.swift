@@ -26,7 +26,7 @@ internal class DocoptError {
                 reason: msg,
                 userInfo: nil).raise()
         } else {
-            print(msg, appendNewline: false)
+            print(msg)
             exit(0)
         }
     }
