@@ -76,7 +76,7 @@ public struct DocoptTestCaseParser {
         assert(testInvocationComponents.count >= 2, "Could not split test case: \(trimmedTestInvocation) into components")
         
         let input: String = testInvocationComponents.removeAtIndex(0) // first line
-        let expectedOutput: String = "\n".join(testInvocationComponents) // all remaining lines
+        let expectedOutput: String = testInvocationComponents.joinWithSeparator("\n") // all remaining lines
         
         var inputComponents: [String] = input.componentsSeparatedByString(" ")
         let programName: String = inputComponents.removeAtIndex(0) // first part

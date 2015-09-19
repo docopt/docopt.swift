@@ -10,7 +10,7 @@ import Foundation
 import Darwin
 
 @objc
-public class Docopt {
+public class Docopt : NSObject {
     private(set) public var result: [String: AnyObject]!
     private let doc: String
     private let version: String?
@@ -41,6 +41,7 @@ public class Docopt {
         }
         
         arguments = args.filter { $0 != "" }
+        super.init()
         result = parse(optionsFirst)
     }
     
@@ -90,12 +91,12 @@ public class Docopt {
     static private func extras(help: Bool, version: String?, options: [LeafPattern], doc: String) {
         let helpOption = options.filter { $0.name == "--help" || $0.name == "-h" }
         if help && !(helpOption.isEmpty) {
-            print(doc.strip(), appendNewline: false)
+            print(doc.strip())
             exit(0)
         }
         let versionOption = options.filter { $0.name == "--version" }
         if version != nil && !(versionOption.isEmpty) {
-            print(version!.strip(), appendNewline: false)
+            print(version!.strip())
             exit(0)
         }
     }
@@ -135,7 +136,7 @@ public class Docopt {
 
         var o: Option
         if similar.count > 1 {
-            let allSimilar = " ".join(similar.map {$0.long ?? ""})
+            let allSimilar = similar.map {$0.long ?? ""}.joinWithSeparator(" ")
             tokens.error.raise("\(long) is not a unique prefix: \(allSimilar)")
             return []
         } else if similar.count < 1 {
@@ -323,6 +324,7 @@ public class Docopt {
     static internal func formalUsage(section: String) -> String {
         let (_, _, s) = section.partition(":") // drop "usage:"
         let pu = s.split()
-        return "( " + " ".join(Array(Array(pu[1..<pu.count].map { $0 == pu[0] ? ") | (" : $0 }))) + " )"
+        let formalUsageArray = Array(Array(pu[1..<pu.count].map { $0 == pu[0] ? ") | (" : $0 }))
+        return "( " + formalUsageArray.joinWithSeparator(" ") + " )"
     }
 }

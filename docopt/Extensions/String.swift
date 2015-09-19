@@ -12,7 +12,7 @@ internal extension String {
     func partition(separator: String) -> (String, String, String) {
         let components = self.componentsSeparatedByString(separator)
         if components.count > 1 {
-            return (components[0], separator, separator.join(components[1..<components.count]))
+            return (components[0], separator, components[1..<components.count].joinWithSeparator(separator))
         }
         return (self, "", "")
     }
@@ -24,21 +24,20 @@ internal extension String {
     func findAll(regex: String, flags: NSRegularExpressionOptions) -> [String] {
         let re = try! NSRegularExpression(pattern: regex, options: flags)
         let all = NSMakeRange(0, self.characters.count)
-        if let matches = re.matchesInString(self, options: [], range: all) as? [NSTextCheckingResult] {
-            return matches.map {self[$0.rangeAtIndex(1)].strip()}
-        }
-        return []
+        let matches = re.matchesInString(self, options: [], range: all)
+        return matches.map {self[$0.rangeAtIndex(1)].strip()}
     }
     
     func split() -> [String] {
-        return Swift.split(self.characters, isSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
+        return self.characters.split(isSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
     }
     
     func split(regex: String) -> [String] {
         let re = try! NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators)
         let all = NSMakeRange(0, self.characters.count)
         var result = [String]()
-        if let matches = re.matchesInString(self, options: [], range: all) as? [NSTextCheckingResult] where matches.count > 0 {
+        let matches = re.matchesInString(self, options: [], range: all)
+        if matches.count > 0 {
             var lastEnd = 0
             for match in matches {
                 let range = match.rangeAtIndex(1)
@@ -78,11 +77,11 @@ internal extension String {
     }
     
     subscript(i: Int) -> Character {
-        return self[advance(startIndex, i)]
+        return self[startIndex.advancedBy(i)]
     }
     
     subscript(range: Range<Int>) -> String {
-        return self[advance(startIndex, range.startIndex)..<advance(startIndex, range.endIndex)]
+        return self[startIndex.advancedBy(range.startIndex)..<startIndex.advancedBy(range.endIndex)]
     }
 
     subscript(range: NSRange) -> String {

@@ -14,7 +14,7 @@ internal class Tokens: Equatable, CustomStringConvertible {
     
     var description: String {
         get {
-            return " ".join(tokensArray)
+            return tokensArray.joinWithSeparator(" ")
         }
     }
 
