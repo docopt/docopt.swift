@@ -51,7 +51,7 @@ class DocoptTests: XCTestCase {
     
     func testParseArgv() {
         var o = [Option("-h"), Option("-v", long: "--verbose"), Option("-f", long:"--file", argCount: 1)]
-        var TS = {(s: String) in return Tokens(s, error: DocoptExit()) }
+        let TS = {(s: String) in return Tokens(s, error: DocoptExit()) }
         
         XCTAssertEqual(Docopt.parseArgv(TS(""), options: &o), [])
         XCTAssertEqual(Docopt.parseArgv(TS("-h"), options: &o), [Option("-h", value: true)])
@@ -215,22 +215,31 @@ class DocoptTests: XCTestCase {
     }
     
     func testEitherMatch() {
-        XCTAssertTrue(Either([Option("-a"), Option("-b")]).match(
-            [Option("-a")]) == (true, [], [Option("-a")]))
-        XCTAssertTrue(Either([Option("-a"), Option("-b")]).match(
-            [Option("-a"), Option("-b")]) ==
-            (true, [Option("-b")], [Option("-a")]))
-        XCTAssertTrue(Either([Option("-a"), Option("-b")]).match(
-            [Option("-x")]) == (false, [Option("-x")], []))
-        XCTAssertTrue(Either([Option("-a"), Option("-b"), Option("-c")]).match(
-            [Option("-x"), Option("-b")]) ==
-            (true, [Option("-x")], [Option("-b")]))
-        XCTAssertTrue(Either([Argument("M"),
-            Required([Argument("N"), Argument("M")])]).match(
-                [Argument(nil, value: 1), Argument(nil, value: 2)]) ==
-            (true, [], [Argument("N", value: 1), Argument("M", value: 2)]))
+        // i'm too lazy to mock up a fixture of some kind. deal with it.
+        var expected: MatchResult
+        var actual: MatchResult
+
+        expected = (true, [], [Option("-a")])
+        actual = Either([Option("-a"), Option("-b")]).match([Option("-a")])
+        XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
+
+        expected = (true, [Option("-b")], [Option("-a")])
+        actual = Either([Option("-a"), Option("-b")]).match([Option("-a"), Option("-b")])
+        XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
+
+        expected = (false, [Option("-x")], [])
+        actual = Either([Option("-a"), Option("-b")]).match([Option("-x")])
+        XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
+
+        expected = (true, [Option("-x")], [Option("-b")])
+        actual = Either([Option("-a"), Option("-b"), Option("-c")]).match([Option("-x"), Option("-b")])
+        XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
+
+        expected = (true, [], [Argument("N", value: 1), Argument("M", value: 2)])
+        actual = Either([Argument("M"), Required([Argument("N"), Argument("M")])]).match([Argument(nil, value: 1), Argument(nil, value: 2)])
+        XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
     }
-    
+
     func testOneOrMoreMatch() {
         XCTAssertTrue(OneOrMore(Argument("N")).match([Argument(nil, value: 9)]) ==
             (true, [], [Argument("N", value: 9)]))

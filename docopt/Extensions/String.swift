@@ -11,8 +11,8 @@ import Foundation
 internal extension String {
     func partition(separator: String) -> (String, String, String) {
         let components = self.componentsSeparatedByString(separator)
-        if count(components) > 1 {
-            return (components[0], separator, separator.join(components[1..<count(components)]))
+        if components.count > 1 {
+            return (components[0], separator, separator.join(components[1..<components.count]))
         }
         return (self, "", "")
     }
@@ -22,23 +22,23 @@ internal extension String {
     }
     
     func findAll(regex: String, flags: NSRegularExpressionOptions) -> [String] {
-        let re = NSRegularExpression(pattern: regex, options: flags, error: nil)!
-        let all = NSMakeRange(0, count(self))
-        if let matches = re.matchesInString(self, options: .allZeros, range: all) as? [NSTextCheckingResult] {
+        let re = try! NSRegularExpression(pattern: regex, options: flags)
+        let all = NSMakeRange(0, self.characters.count)
+        if let matches = re.matchesInString(self, options: [], range: all) as? [NSTextCheckingResult] {
             return matches.map {self[$0.rangeAtIndex(1)].strip()}
         }
         return []
     }
     
     func split() -> [String] {
-        return Swift.split(self, isSeparator: {$0 == " " || $0 == "\n"})
+        return Swift.split(self.characters, isSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
     }
     
     func split(regex: String) -> [String] {
-        let re = NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators, error: nil)!
-        let all = NSMakeRange(0, count(self))
+        let re = try! NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators)
+        let all = NSMakeRange(0, self.characters.count)
         var result = [String]()
-        if let matches = re.matchesInString(self, options: .allZeros, range: all) as? [NSTextCheckingResult] where count(matches) > 0 {
+        if let matches = re.matchesInString(self, options: [], range: all) as? [NSTextCheckingResult] where matches.count > 0 {
             var lastEnd = 0
             for match in matches {
                 let range = match.rangeAtIndex(1)
@@ -53,7 +53,7 @@ internal extension String {
                     
                     result.append(self[range])
                     lastEnd = range.location + range.length
-                    if lastEnd == count(self) {
+                    if lastEnd == self.characters.count {
                         // from python docs: If there are capturing groups in the separator and it matches at the start of the string,
                         // the result will start with an empty string. The same holds for the end of the string:
                         result.append("")
@@ -63,8 +63,8 @@ internal extension String {
                     lastEnd = match.range.location + match.range.length
                 }
             }
-            if lastEnd != count(self) {
-                result.append(self[lastEnd..<count(self)])
+            if lastEnd != self.characters.count {
+                result.append(self[lastEnd..<self.characters.count])
             }
             return result
         }
@@ -73,7 +73,7 @@ internal extension String {
     }
     
     func isupper() -> Bool {
-        var charset = NSCharacterSet.uppercaseLetterCharacterSet().invertedSet
+        let charset = NSCharacterSet.uppercaseLetterCharacterSet().invertedSet
         return self.rangeOfCharacterFromSet(charset) == nil
     }
     

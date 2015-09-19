@@ -27,4 +27,4 @@ let doc : String = "Usage: arguments_example.py [-vqrh] [FILE] ... \n" +
 var args = Process.arguments
 args.removeAtIndex(0) // arguments[0] is always the program_name
 let result = Docopt.parse(doc, argv: args, help: true, version: "1.0")
-println("Docopt result: \(result)")
+print("Docopt result: \(result)")

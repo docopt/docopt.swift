@@ -10,7 +10,7 @@ import Foundation
 
 typealias MatchResult = (match: Bool, left: [Pattern], collected: [Pattern])
 
-internal class Pattern: Equatable, Hashable, Printable {
+internal class Pattern: Equatable, Hashable, CustomStringConvertible {
     func fix() -> Pattern {
         fixIdentities()
         fixRepeatingArguments()
@@ -26,17 +26,17 @@ internal class Pattern: Equatable, Hashable, Printable {
         }
     }
     
-    func fixIdentities(_ unq: [LeafPattern]? = nil) {}
+    func fixIdentities(unq: [LeafPattern]? = nil) {}
     
     func fixRepeatingArguments() -> Pattern {
-        var either = Pattern.transform(self).children.map { ($0 as! Required).children }
+        let either = Pattern.transform(self).children.map { ($0 as! Required).children }
         
         for c in either {
             for ch in c {
                 let filteredChildren = c.filter {$0 == ch}
-                if count(filteredChildren) > 1 {
+                if filteredChildren.count > 1 {
                     for child in filteredChildren {
-                        var e = child as! LeafPattern
+                        let e = child as! LeafPattern
                         if ((e is Argument) && !(e is Command)) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
                                 e.value = [String]()
@@ -69,10 +69,10 @@ internal class Pattern: Equatable, Hashable, Printable {
         var groups = [[pattern]]
         while !groups.isEmpty {
             var children = groups.removeAtIndex(0)
-            var child: BranchPattern? = children.filter({ self.isInParents($0) }).first as? BranchPattern
+            let child: BranchPattern? = children.filter({ self.isInParents($0) }).first as? BranchPattern
             
             if let child = child {
-                let index = find(children, child)!
+                let index = children.indexOf(child)!
                 children.removeAtIndex(index)
                 
                 if child is Either {

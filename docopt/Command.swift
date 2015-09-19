@@ -14,7 +14,7 @@ internal class Command: Argument {
     }
 
     override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
-        for var i = 0; i < count(left); i++ {
+        for var i = 0; i < left.count; i++ {
             let pattern = left[i]
             if pattern is Argument {
                 if pattern.value as? String == self.name {

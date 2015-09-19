@@ -47,9 +47,9 @@ public class Docopt {
     private func parse(optionsFirst: Bool) -> [String: AnyObject] {
         let usageSections = Docopt.parseSection("usage:", source: doc)
 
-        if count(usageSections) == 0 {
+        if usageSections.count == 0 {
             DocoptLanguageError("\"usage:\" (case-insensitive) not found.").raise()
-        } else if count(usageSections) > 1 {
+        } else if usageSections.count > 1 {
             DocoptLanguageError("More than one \"usage:\" (case-insensitive).").raise()
         }
         
@@ -90,18 +90,18 @@ public class Docopt {
     static private func extras(help: Bool, version: String?, options: [LeafPattern], doc: String) {
         let helpOption = options.filter { $0.name == "--help" || $0.name == "-h" }
         if help && !(helpOption.isEmpty) {
-            println(doc.strip())
+            print(doc.strip(), appendNewline: false)
             exit(0)
         }
         let versionOption = options.filter { $0.name == "--version" }
         if version != nil && !(versionOption.isEmpty) {
-            println(version!.strip())
+            print(version!.strip(), appendNewline: false)
             exit(0)
         }
     }
     
     static internal func parseSection(name: String, source: String) -> [String] {
-        return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: .CaseInsensitive | .AnchorsMatchLines )
+        return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: [.CaseInsensitive, .AnchorsMatchLines] )
     }
     
     static internal func parseDefaults(doc: String) -> [Option] {
@@ -123,7 +123,7 @@ public class Docopt {
     }
     
     static internal func parseLong(tokens: Tokens, inout options: [Option]) -> [Option] {
-        var (long, eq, val) = tokens.move()!.partition("=")
+        let (long, eq, val) = tokens.move()!.partition("=")
         assert(long.hasPrefix("--"))
         
         var value: String? = eq != "" || val != "" ? val : nil
@@ -134,11 +134,11 @@ public class Docopt {
         }
 
         var o: Option
-        if count(similar) > 1 {
+        if similar.count > 1 {
             let allSimilar = " ".join(similar.map {$0.long ?? ""})
             tokens.error.raise("\(long) is not a unique prefix: \(allSimilar)")
             return []
-        } else if count(similar) < 1 {
+        } else if similar.count < 1 {
             let argCount: UInt = (eq == "=") ? 1 : 0
             o = Option(nil, long: long, argCount: argCount)
             options.append(o)
@@ -176,12 +176,12 @@ public class Docopt {
             let short = "-" + left[0..<1]
             let similar = options.filter {$0.short == short}
             var o: Option
-            left = left[1..<count(left)]
+            left = left[1..<left.characters.count]
             
-            if count(similar) > 1 {
-                tokens.error.raise("\(short) is specified ambiguously \(count(similar)) times")
+            if similar.count > 1 {
+                tokens.error.raise("\(short) is specified ambiguously \(similar.count) times")
                 return []
-            } else if count(similar) < 1 {
+            } else if similar.count < 1 {
                 o = Option(short)
                 options.append(o)
                 if tokens.error is DocoptExit {
@@ -212,10 +212,10 @@ public class Docopt {
     
     static internal func parseAtom(tokens: Tokens, inout options: [Option]) -> [Pattern] {
         let token = tokens.current()!
-        if contains(["(", "["], token) {
+        if ["(", "["].contains(token) {
             tokens.move()
             let u = parseExpr(tokens, options: &options)
-            let (matching: String, result) = (token == "(")
+            let (matching, result): (String, [BranchPattern]) = (token == "(")
                                             ? (")", [Required(u)])
                                             : ("]", [Optional(u)])
             
@@ -233,7 +233,7 @@ public class Docopt {
         if token.hasPrefix("--") && token != "--" {
             return parseLong(tokens, options: &options)
         }
-        if token.hasPrefix("-") && !contains(["--", "-"], token) {
+        if token.hasPrefix("-") && !["--", "-"].contains(token) {
             return parseShorts(tokens, options: &options)
         }
         if (token.hasPrefix("<") && token.hasSuffix(">")) || token.isupper() {
@@ -245,7 +245,7 @@ public class Docopt {
 
     static internal func parseSeq(tokens: Tokens, inout options: [Option]) -> [Pattern] {
         var result = [Pattern]()
-        while let current = tokens.current() where !contains(["]", ")", "|"], current) {
+        while let current = tokens.current() where !["]", ")", "|"].contains(current) {
             var atom = parseAtom(tokens, options: &options)
             if tokens.current() == "..." {
                 atom = [OneOrMore(atom)]
@@ -263,14 +263,14 @@ public class Docopt {
             return seq
         }
         
-        var result = count(seq) > 1 ? [Required(seq)] : seq
+        var result = seq.count > 1 ? [Required(seq)] : seq
         while tokens.current() == "|" {
             tokens.move()
             seq = parseSeq(tokens, options: &options)
-            result += count(seq) > 1 ? [Required(seq)] : seq
+            result += seq.count > 1 ? [Required(seq)] : seq
         }
         
-        return count(result) > 1 ? [Either(result)] : result
+        return result.count > 1 ? [Either(result)] : result
     }
 
     /**
@@ -321,8 +321,8 @@ public class Docopt {
     }
     
     static internal func formalUsage(section: String) -> String {
-        let (_, _, s: String) = section.partition(":") // drop "usage:"
-        let pu: [String] = s.split()
-        return "( " + " ".join(pu[1..<count(pu)].map { $0 == pu[0] ? ") | (" : $0 }) + " )"
+        let (_, _, s) = section.partition(":") // drop "usage:"
+        let pu = s.split()
+        return "( " + " ".join(Array(Array(pu[1..<pu.count].map { $0 == pu[0] ? ") | (" : $0 }))) + " )"
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class Tokens: Equatable, Printable {
+internal class Tokens: Equatable, CustomStringConvertible {
     private var tokensArray: [String]
     var error: DocoptError
     
@@ -30,7 +30,7 @@ internal class Tokens: Equatable, Printable {
     
     static func fromPattern(source: String) -> Tokens {
         let res = source.stringByReplacingOccurrencesOfString("([\\[\\]\\(\\)\\|]|\\.\\.\\.)", withString: " $1 ", options: .RegularExpressionSearch)
-        var result = res.split("\\s+|(\\S*<.*?>)").filter { !$0.isEmpty }
+        let result = res.split("\\s+|(\\S*<.*?>)").filter { !$0.isEmpty }
         return Tokens(result, error: DocoptLanguageError())
     }
     

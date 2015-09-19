@@ -16,7 +16,7 @@ internal class Either : BranchPattern {
     }
 
     override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
-        var collected: [T] = clld ?? []
+        let collected: [T] = clld ?? []
         var outcomes: [MatchResult] = []
         
         for pattern in children {
@@ -26,7 +26,7 @@ internal class Either : BranchPattern {
             }
         }
         if !outcomes.isEmpty {
-            return outcomes.sorted({count($0.left) < count($1.left)})[0]
+            return outcomes.sort({$0.left.count < $1.left.count})[0]
         }
         
         return (false, left, collected)
