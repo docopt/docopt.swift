@@ -16,7 +16,7 @@ internal class Argument: LeafPattern {
     }
     
     override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
-        for var i = 0; i < left.count; i++ {
+        for i in 0..<left.count {
             let pattern = left[i]
             if pattern is Argument {
                 return (i, Argument(self.name, value: pattern.value))

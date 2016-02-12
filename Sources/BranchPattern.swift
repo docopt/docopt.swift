@@ -27,7 +27,7 @@ internal class BranchPattern : Pattern {
     override func fixIdentities(unq: [LeafPattern]? = nil) {
         var uniq: [LeafPattern] = unq ?? Array(Set(flat()))
         
-        for var i = 0; i < children.count; i++ {
+        for i in 0..<children.count {
             let child = children[i]
             if let leafChild = child as? LeafPattern {
                 assert(uniq.contains(leafChild))
