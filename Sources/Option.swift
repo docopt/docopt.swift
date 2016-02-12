@@ -72,7 +72,7 @@ internal class Option: LeafPattern {
     }
     
     override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
-        for var i = 0; i < left.count; i++ {
+        for i in 0..<left.count {
             let pattern = left[i]
             if pattern.name == name {
                 return (i, pattern)

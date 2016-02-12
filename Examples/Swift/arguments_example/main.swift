@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 kovpas. All rights reserved.
 //
 
+import Docopt
+
 let doc : String = "Usage: arguments_example.py [-vqrh] [FILE] ... \n" +
 "          arguments_example.py (--left | --right) CORRECTION FILE\n" +
 "\n" +

@@ -1,5 +1,6 @@
 xcuserdata
 Build
+.build
 *.framework
 
 .idea
