@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import Docopt
 
 class DocoptTests: XCTestCase {
     override func setUp() {

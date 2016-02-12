@@ -7,6 +7,7 @@
 //
 
 import Foundation
+@testable import Docopt
 
 public struct DocoptTestCaseParser {
     public var testCases: [DocoptTestCase]!
