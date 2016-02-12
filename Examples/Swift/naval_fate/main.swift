@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 kovpas. All rights reserved.
 //
 
+import Docopt
+
 let doc : String = "Naval Fate.\n" +
 "\n" +
 "Usage:\n" +
