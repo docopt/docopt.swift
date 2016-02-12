@@ -1,3 +1,4 @@
+![build status](https://travis-ci.org/docopt/docopt.swift.svg)
 ``docopt.swift`` is a Swift port of [docopt](https://github.com/docopt/docopt)
 ======================================================================
 
