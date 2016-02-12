@@ -1,4 +1,4 @@
 language: swift
 osx_image: xcode7.2
-xcode_project: docopt.xcodeproj
-xcode_scheme: Docopt
+script:
+  - xctool -scheme 'Docopt' clean build test
