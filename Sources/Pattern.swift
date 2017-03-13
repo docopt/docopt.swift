@@ -13,7 +13,7 @@ typealias MatchResult = (match: Bool, left: [Pattern], collected: [Pattern])
 internal class Pattern: Equatable, Hashable, CustomStringConvertible {
     func fix() -> Pattern {
         fixIdentities()
-        fixRepeatingArguments()
+        _ = fixRepeatingArguments()
         return self
     }
     var description: String {
@@ -26,7 +26,7 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
-    func fixIdentities(unq: [LeafPattern]? = nil) {}
+    func fixIdentities(_ unq: [LeafPattern]? = nil) {}
     
     func fixRepeatingArguments() -> Pattern {
         let either = Pattern.transform(self).children.map { ($0 as! Required).children }
@@ -39,14 +39,14 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
                         let e = child as! LeafPattern
                         if ((e is Argument) && !(e is Command)) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
-                                e.value = [String]()
+                                e.value = [String]() as AnyObject
                             } else if !(e.value is [String]) {
-                                e.value = e.value!.description.split()
+                                e.value = String(describing:e.value!).split() as AnyObject
                             }
                         }
                         if (e is Command) || ((e is Option) && (e as! Option).argCount == 0) {
-                            e.value = 0
-                            e.valueType = .Int
+                            e.value = 0 as AnyObject
+                            e.valueType = .int
                         }
                     }
                 }
@@ -56,7 +56,7 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
         return self
     }
     
-    static func isInParents(child: Pattern) -> Bool {
+    static func isInParents(_ child: Pattern) -> Bool {
         return (child as? Required != nil)
             || (child as? Optional != nil)
             || (child as? OptionsShortcut != nil)
@@ -64,16 +64,16 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
             || (child as? OneOrMore != nil)
     }
     
-    static func transform(pattern: Pattern) -> Either {
+    static func transform(_ pattern: Pattern) -> Either {
         var result = [[Pattern]]()
         var groups = [[pattern]]
         while !groups.isEmpty {
-            var children = groups.removeAtIndex(0)
+            var children = groups.remove(at: 0)
             let child: BranchPattern? = children.filter({ self.isInParents($0) }).first as? BranchPattern
             
             if let child = child {
-                let index = children.indexOf(child)!
-                children.removeAtIndex(index)
+                let index = children.index(of: child)!
+                children.remove(at: index)
                 
                 if child is Either {
                     for pattern in child.children {
@@ -93,22 +93,22 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
     }
 
     func flat() -> [LeafPattern] {
-        return flat(LeafPattern)
+        return flat(LeafPattern.self)
     }
 
     func flat<T: Pattern>(_: T.Type) -> [T] {  // abstract
         return []
     }
     
-    func match<T: Pattern>(left: T, collected clld: [T]? = nil) -> MatchResult {
+    func match<T: Pattern>(_ left: T, collected clld: [T]? = nil) -> MatchResult {
         return match([left], collected: clld)
     }
     
-    func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {  // abstract
+    func match<T: Pattern>(_ left: [T], collected clld: [T]? = nil) -> MatchResult {  // abstract
         return (false, [], [])
     }
 
-    func singleMatch<T: Pattern>(left: [T]) -> SingleMatchResult {return (0, nil)} // abstract
+    func singleMatch<T: Pattern>(_ left: [T]) -> SingleMatchResult {return (0, nil)} // abstract
 }
 
 func ==(lhs: Pattern, rhs: Pattern) -> Bool {

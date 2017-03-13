@@ -11,45 +11,51 @@ import Foundation
 typealias SingleMatchResult = (position: Int, match: Pattern?)
 
 enum ValueType {
-    case Nil, Bool, Int, List, String
+    case `nil`, bool, int, list, string
 }
 
 internal class LeafPattern : Pattern {
     var name: String?
+    var valueDescription: String = "Never been set!"
+
     var value: AnyObject? {
         willSet {
+            valueDescription = newValue.debugDescription
             switch newValue {
             case is Bool:
-                valueType = valueType != .Int ? .Bool : valueType
+                valueType = valueType != .int ? .bool : valueType
             case is [String]:
-                valueType = .List
+                valueType = .list
             case is String:
-                valueType = .String
+                valueType = .string
             case is Int:
-                valueType = .Int // never happens. Set manually when explicitly set value to int :(
+                valueType = .int // never happens. Set manually when explicitly set value to int :(
             default:
-                valueType = .Nil
+                valueType = .nil
             }
         }
     }
-    var valueType: ValueType = .Nil
+    var valueType: ValueType = .nil
     override var description: String {
         get {
             switch valueType {
-            case .Bool: return "LeafPattern(\(name), \(value as! Bool))"
-            case .List: return "LeafPattern(\(name), \(value as! [String]))"
-            case .String: return "LeafPattern(\(name), \(value as! String))"
-            case .Int: return "LeafPattern(\(name), \(value as! Int))"
-            case .Nil: fallthrough
-            default: return "LeafPattern(\(name), \(value))"
+            case .bool: return "LeafPattern(\(String(describing: name)), \(value as! Bool))"
+            case .list: return "LeafPattern(\(String(describing: name)), \(value as! [String]))"
+            case .string: return "LeafPattern(\(String(describing: name)), \(value as! String))"
+            case .int: return "LeafPattern(\(String(describing: name)), \(value as! Int))"
+            case .nil: fallthrough
+            default: return "LeafPattern(\(String(describing: name)), \(String(describing: value)))"
             }
             
         }
     }
     
-    init(_ name: String?, value: AnyObject? = nil) {
+    init(_ name: String?, value: Any? = nil) {
         self.name = name
-        self.value = value
+        if let val = value
+        {
+            self.value = val as AnyObject
+        }
     }
     
     override func flat<T: LeafPattern>(_: T.Type) -> [T] {
@@ -59,7 +65,7 @@ internal class LeafPattern : Pattern {
         return []
     }
     
-    override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+    override func match<T: Pattern>(_ left: [T], collected clld: [T]? = nil) -> MatchResult {
         let collected: [Pattern] = clld ?? []
         let (pos, mtch) = singleMatch(left)
         
@@ -69,7 +75,7 @@ internal class LeafPattern : Pattern {
         let match = mtch as! LeafPattern
         
         var left_ = left
-        left_.removeAtIndex(pos)
+        left_.remove(at: pos)
         
         var sameName = collected.filter({ item in
             if let cast = item as? LeafPattern {
@@ -78,12 +84,12 @@ internal class LeafPattern : Pattern {
             return false
         }) as! [LeafPattern]
         
-        if (valueType == .Int) || (valueType == .List) {
-            var increment: AnyObject? = 1
-            if valueType != .Int {
+        if (valueType == .int) || (valueType == .list) {
+            var increment: AnyObject? = 1 as NSNumber
+            if valueType != .int {
                 increment = match.value
                 if let val = match.value as? String {
-                    increment = [val]
+                    increment = [val] as NSArray
                 }
             }
             if sameName.isEmpty {
@@ -92,10 +98,10 @@ internal class LeafPattern : Pattern {
                 return (true, left_, collected + [match])
             }
             if let inc = increment as? Int {
-                sameName[0].value = sameName[0].value as! Int + inc
-                sameName[0].valueType = .Int
+                sameName[0].value = (sameName[0].value as! Int + inc) as NSNumber
+                sameName[0].valueType = .int
             } else if let inc = increment as? [String] {
-                sameName[0].value = ((sameName[0].value as? [String]) ?? [String]()) + inc
+                sameName[0].value = (((sameName[0].value as? [String]) ?? [String]()) + inc) as NSArray
             }
             return (true, left_, collected)
         }
@@ -111,6 +117,8 @@ func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
     } else if let lval = lhs.value as? Bool, let rval = rhs.value as? Bool {
         valEqual = lval == rval
     } else if let lval = lhs.value as? [String], let rval = rhs.value as? [String] {
+        valEqual = lval == rval
+    } else if let lval = lhs.value as? NSNumber, let rval = rhs.value as? NSNumber {
         valEqual = lval == rval
     } else {
         valEqual = lhs.value === rhs.value

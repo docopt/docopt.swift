@@ -15,11 +15,11 @@ class DocoptTestCasesTests: XCTestCase {
     }
 
     func testTestCasesFileExists() {
-        let fileManager: NSFileManager = NSFileManager.defaultManager()
+        let fileManager: FileManager = FileManager.default
         let filePath: String? = fixturesFilePath()
         XCTAssertNotNil(filePath, "Fixtures file testcases.docopt does not exist in testing bundle")
         if let filePath = filePath {
-            let exists: Bool = fileManager.fileExistsAtPath(filePath)
+            let exists: Bool = fileManager.fileExists(atPath: filePath)
             XCTAssertTrue(exists, "Fixtures file testcases.docopt does not exist in testing bundle")
         }
     }
@@ -34,34 +34,38 @@ class DocoptTestCasesTests: XCTestCase {
         
         for testCase in parser.testCases {
             let expectedOutput: AnyObject = testCase.expectedOutput
-            var result: AnyObject = "user-error"
+            var result: AnyObject = "user-error" as AnyObject
             let capture = NMBExceptionCapture(handler: nil, finally: nil)
-            capture.tryBlock {
-                result = Docopt(testCase.usage, argv: testCase.arguments).result
+            capture?.try {
+                let opt = Docopt(testCase.usage, argv: testCase.arguments)
+                result = opt.result as AnyObject
             }
 
             if let expectedDictionary = expectedOutput as? NSDictionary,
                let resultDictionary = result as? NSDictionary {
-                XCTAssertTrue(resultDictionary == expectedDictionary,
+                if resultDictionary != expectedDictionary
+                {
+                    XCTAssert(false,
                     "Test \(testCase.name) failed. Expected:\n\(expectedDictionary)\n\n, got: \(resultDictionary)\n\n")
+                }
             } else if let expectedString = expectedOutput as? String,
                       let resultString = result as? String {
                 XCTAssertTrue(resultString == expectedString,
                     "Test \(testCase.name) failed. Expected:\n\(expectedString)\n\n, got: \(resultString)\n\n")
             } else {
-                XCTFail("Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n\(testCase.usage)\n\(testCase.arguments)\n\n")
+                XCTFail("Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n\(testCase.usage)\n\(String(describing: testCase.arguments))\n\n")
             }
         }
     }
     
     private func fixturesFilePath() -> String? {
-        let testBundle: NSBundle = NSBundle(forClass: self.dynamicType)
-        return testBundle.pathForResource("testcases", ofType: "docopt")
+        let testBundle: Bundle = Bundle(for: type(of: self))
+        return testBundle.path(forResource: "testcases", ofType: "docopt")
     }
     
     private func fixturesFileContents() -> String {
         if let filePath = self.fixturesFilePath() {
-            let fileContents = try! String(contentsOfFile: filePath, encoding: NSUTF8StringEncoding)
+            let fileContents = try! String(contentsOfFile: filePath, encoding: String.Encoding.utf8)
             return fileContents
         }
         return ""

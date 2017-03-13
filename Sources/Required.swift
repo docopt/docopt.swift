@@ -15,7 +15,7 @@ internal class Required: BranchPattern {
         }
     }
 
-    override func match<T: Pattern>(left: [T], collected clld: [T]? = nil) -> MatchResult {
+    override func match<T: Pattern>(_ left: [T], collected clld: [T]? = nil) -> MatchResult {
         let collected: [Pattern] = clld ?? []
         var l: [Pattern] = left
         var c = collected

@@ -16,12 +16,14 @@ class DocoptTests: XCTestCase {
     
     func testPatternFlat() {
         XCTAssertEqual(Required([OneOrMore(Argument("N")), Option("-a"), Argument("M")]).flat(), [Argument("N"), Option("-a"), Argument("M")])
-        XCTAssertEqual(Required([Optional(OptionsShortcut()), Optional(Option("-a"))]).flat(OptionsShortcut), [OptionsShortcut()])
+        XCTAssertEqual(Required([Optional(OptionsShortcut()), Optional(Option("-a"))]).flat(OptionsShortcut.self), [OptionsShortcut()])
     }
 
     func testParseDefaults() {
         let section = "options:\n\t-a        Add\n\t-r        Remote\n\t-m <msg>  Message"
-        XCTAssertEqual(Docopt.parseDefaults(section), [Option("-a"), Option("-r"), Option("-m", argCount: 1)])
+        let parsedDefaults = Docopt.parseDefaults(section)
+        let fixture = [Option("-a"), Option("-r"), Option("-m", argCount: 1)]
+        XCTAssertEqual(parsedDefaults, fixture)
     }
     
     func testParseSection() {
@@ -49,31 +51,31 @@ class DocoptTests: XCTestCase {
         XCTAssertEqual(usage, "Usage: prog [-hv] ARG\n        prog N M")
         XCTAssertEqual(formalUsage, "( [-hv] ARG ) | ( N M )")
     }
-    
+
     func testParseArgv() {
         var o = [Option("-h"), Option("-v", long: "--verbose"), Option("-f", long:"--file", argCount: 1)]
         let TS = {(s: String) in return Tokens(s, error: DocoptExit()) }
         
         XCTAssertEqual(Docopt.parseArgv(TS(""), options: &o), [])
-        XCTAssertEqual(Docopt.parseArgv(TS("-h"), options: &o), [Option("-h", value: true)])
+        XCTAssertEqual(Docopt.parseArgv(TS("-h"), options: &o), [Option("-h", value: true as AnyObject)])
         XCTAssertEqual(Docopt.parseArgv(TS("-h --verbose"), options: &o),
-            [Option("-h", value: true), Option("-v", long: "--verbose", value: true)])
+            [Option("-h", value: true as AnyObject), Option("-v", long: "--verbose", value: true as AnyObject)])
         XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt"), options: &o),
-            [Option("-h", value: true), Option("-f", long: "--file", argCount: 1, value: "f.txt")])
+            [Option("-h", value: true as AnyObject), Option("-f", long: "--file", argCount: 1, value: "f.txt" as AnyObject)])
         XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg"), options: &o),
-            [Option("-h", value: true),
-                Option("-f", long: "--file", argCount: 1, value: "f.txt"),
-                Argument(nil, value: "arg")])
+            [Option("-h", value: true as AnyObject),
+                Option("-f", long: "--file", argCount: 1, value: "f.txt" as AnyObject),
+                Argument(nil, value: "arg" as AnyObject)])
         XCTAssertEqual(Docopt.parseArgv(TS("-h --file f.txt arg arg2"), options: &o),
-            [Option("-h", value: true),
-                Option("-f", long: "--file", argCount: 1, value: "f.txt"),
-                Argument(nil, value: "arg"),
-                Argument(nil, value: "arg2")])
+            [Option("-h", value: true as AnyObject),
+                Option("-f", long: "--file", argCount: 1, value: "f.txt" as AnyObject),
+                Argument(nil, value: "arg" as AnyObject),
+                Argument(nil, value: "arg2" as AnyObject)])
         XCTAssertEqual(Docopt.parseArgv(TS("-h arg -- -v"), options: &o),
-            [Option("-h", value: true),
-                Argument(nil, value: "arg"),
-                Argument(nil, value: "--"),
-                Argument(nil, value: "-v")])
+            [Option("-h", value: true as AnyObject),
+                Argument(nil, value: "arg" as AnyObject),
+                Argument(nil, value: "--" as AnyObject),
+                Argument(nil, value: "-v" as AnyObject)])
     }
     
     func testOptionParse() {
@@ -95,15 +97,15 @@ class DocoptTests: XCTestCase {
         XCTAssertEqual(Option.parse("    -h"), Option("-h"))
 
         XCTAssertEqual(Option.parse("-h TOPIC  Descripton... [default: 2]"),
-            Option("-h", argCount: 1, value: "2"))
+            Option("-h", argCount: 1, value: "2" as AnyObject))
         XCTAssertEqual(Option.parse("-h TOPIC  Descripton... [default: topic-1]"),
-            Option("-h", argCount: 1, value: "topic-1"))
+            Option("-h", argCount: 1, value: "topic-1" as AnyObject))
         XCTAssertEqual(Option.parse("--help=TOPIC  ... [default: 3.14]"),
-            Option(long: "--help", argCount: 1, value: "3.14"))
+            Option(long: "--help", argCount: 1, value: "3.14" as AnyObject))
         XCTAssertEqual(Option.parse("-h, --help=DIR  ... [default: ./]"),
-            Option("-h", long: "--help", argCount: 1, value: "./"))
+            Option("-h", long: "--help", argCount: 1, value: "./" as AnyObject))
         XCTAssertEqual(Option.parse("-h TOPIC  Descripton... [dEfAuLt: 2]"),
-            Option("-h", argCount: 1, value: "2"))
+            Option("-h", argCount: 1, value: "2" as AnyObject))
     }
     
     func testOptionName() {
@@ -152,16 +154,16 @@ class DocoptTests: XCTestCase {
     }
     
     func testOptionMatch() {
-        XCTAssertTrue(Option("-a").match([Option("-a", value: true)]) ==
-            (true, [], [Option("-a", value: true)]))
+        XCTAssertTrue(Option("-a").match([Option("-a", value: true as AnyObject)]) ==
+            (true, [], [Option("-a", value: true as AnyObject)]))
         XCTAssertTrue(Option("-a").match([Option("-x")]) ==
             (false, [Option("-x")], []))
         XCTAssertTrue(Option("-a").match([Argument("N")]) ==
             (false, [Argument("N")], []))
         XCTAssertTrue(Option("-a").match([Option("-x"), Option("-a"), Argument("N")]) ==
             (true, [Option("-x"), Argument("N")], [Option("-a")]))
-        XCTAssertTrue(Option("-a").match([Option("-a", value: true), Option("-a")]) ==
-            (true, [Option("-a")], [Option("-a", value: true)]))
+        XCTAssertTrue(Option("-a").match([Option("-a", value: true as AnyObject), Option("-a")]) ==
+            (true, [Option("-a")], [Option("-a", value: true as AnyObject)]))
     }
     
     func testArgumentMatch() {
@@ -169,21 +171,21 @@ class DocoptTests: XCTestCase {
             (true, [], [Argument("N", value: 9)]))
         XCTAssertTrue(Argument("N").match(Option("-x")) ==
             (false, [Option("-x")], []))
-        XCTAssertTrue(Argument("N").match([Option("-x"), Option("-a"), Argument(nil, value: 5)]) ==
-            (true, [Option("-x"), Option("-a")], [Argument("N", value: 5)]))
-        XCTAssertTrue(Argument("N").match([Argument(nil, value: 9), Argument(nil, value: 0)]) ==
-            (true, [Argument(nil, value: 0)], [Argument("N", value: 9)]))
+        XCTAssertTrue(Argument("N").match([Option("-x"), Option("-a"), Argument(nil, value: 5 as AnyObject)]) ==
+            (true, [Option("-x"), Option("-a")], [Argument("N", value: 5 as AnyObject)]))
+        XCTAssertTrue(Argument("N").match([Argument(nil, value: 9 as AnyObject), Argument(nil, value: 0 as AnyObject)]) ==
+            (true, [Argument(nil, value: 0 as AnyObject)], [Argument("N", value: 9 as AnyObject)]))
     }
     
     func testCommandMatch() {
-        XCTAssertTrue(Command("c").match(Argument(nil, value: "c")) ==
-            (true, [], [Command("c", value: true)]))
+        XCTAssertTrue(Command("c").match(Argument(nil, value: "c" as AnyObject)) ==
+            (true, [], [Command("c", value: true as AnyObject)]))
         XCTAssertTrue(Command("c").match(Option("-x")) ==
             (false, [Option("-x")], []))
-        XCTAssertTrue(Command("c").match([Option("-x"), Option("-a"), Argument(nil, value: "c")]) ==
-            (true, [Option("-x"), Option("-a")], [Command("c", value: true)]))
-        XCTAssertTrue(Either([Command("add"), Command("rm")]).match(Argument(nil, value: "rm")) ==
-            (true, [], [Command("rm", value: true)]))
+        XCTAssertTrue(Command("c").match([Option("-x"), Option("-a"), Argument(nil, value: "c" as AnyObject)]) ==
+            (true, [Option("-x"), Option("-a")], [Command("c", value: true as AnyObject)]))
+        XCTAssertTrue(Either([Command("add"), Command("rm")]).match(Argument(nil, value: "rm" as AnyObject)) ==
+            (true, [], [Command("rm", value: true as AnyObject)]))
     }
     
     func testOptionalMatch() {
@@ -198,8 +200,8 @@ class DocoptTests: XCTestCase {
             (true, [], [Option("-b")]))
         XCTAssertTrue(Optional([Option("-a"), Option("-b")]).match([Option("-x")]) ==
             (true, [Option("-x")], []))
-        XCTAssertTrue(Optional(Argument("N")).match([Argument(nil, value: 9)]) ==
-            (true, [], [Argument("N", value: 9)]))
+        XCTAssertTrue(Optional(Argument("N")).match([Argument(nil, value: 9 as AnyObject)]) ==
+            (true, [], [Argument("N", value: 9 as AnyObject)]))
         XCTAssertTrue(Optional([Option("-a"), Option("-b")]).match(
             [Option("-b"), Option("-x"), Option("-a")]) ==
             (true, [Option("-x")], [Option("-a"), Option("-b")]))
@@ -236,36 +238,36 @@ class DocoptTests: XCTestCase {
         actual = Either([Option("-a"), Option("-b"), Option("-c")]).match([Option("-x"), Option("-b")])
         XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
 
-        expected = (true, [], [Argument("N", value: 1), Argument("M", value: 2)])
-        actual = Either([Argument("M"), Required([Argument("N"), Argument("M")])]).match([Argument(nil, value: 1), Argument(nil, value: 2)])
+        expected = (true, [], [Argument("N", value: 1 as AnyObject), Argument("M", value: 2 as AnyObject)])
+        actual = Either([Argument("M"), Required([Argument("N"), Argument("M")])]).match([Argument(nil, value: 1 as AnyObject), Argument(nil, value: 2 as AnyObject)])
         XCTAssertTrue(actual == expected, "\nExpected: \(expected)\nActual: \(actual)\n\n")
     }
 
     func testOneOrMoreMatch() {
-        XCTAssertTrue(OneOrMore(Argument("N")).match([Argument(nil, value: 9)]) ==
-            (true, [], [Argument("N", value: 9)]))
+        XCTAssertTrue(OneOrMore(Argument("N")).match([Argument(nil, value: 9 as AnyObject)]) ==
+            (true, [], [Argument("N", value: 9 as AnyObject)]))
         XCTAssertTrue(OneOrMore(Argument("N")).match([]) == (false, [], []))
         XCTAssertTrue(OneOrMore(Argument("N")).match([Option("-x")]) ==
             (false, [Option("-x")], []))
         XCTAssertTrue(OneOrMore(Argument("N")).match(
-            [Argument(nil, value: 9), Argument(nil, value: 8)]) == (
-                true, [], [Argument("N", value: 9), Argument("N", value: 8)]))
+            [Argument(nil, value: 9 as AnyObject), Argument(nil, value: 8 as AnyObject)]) == (
+                true, [], [Argument("N", value: 9 as AnyObject), Argument("N", value: 8 as AnyObject)]))
         XCTAssertTrue(OneOrMore(Argument("N")).match(
-            [Argument(nil, value: 9), Option("-x"), Argument(nil, value: 8)]) == (
-                true, [Option("-x")], [Argument("N", value: 9), Argument("N", value: 8)]))
+            [Argument(nil, value: 9 as AnyObject), Option("-x"), Argument(nil, value: 8 as AnyObject)]) == (
+                true, [Option("-x")], [Argument("N", value: 9 as AnyObject), Argument("N", value: 8 as AnyObject)]))
         XCTAssertTrue(OneOrMore(Option("-a")).match(
-            [Option("-a"), Argument(nil, value: 8), Option("-a")]) ==
-            (true, [Argument(nil, value: 8)], [Option("-a"), Option("-a")]))
-        XCTAssertTrue(OneOrMore(Option("-a")).match([Argument(nil, value: 8),
+            [Option("-a"), Argument(nil, value: 8 as AnyObject), Option("-a")]) ==
+            (true, [Argument(nil, value: 8 as AnyObject)], [Option("-a"), Option("-a")]))
+        XCTAssertTrue(OneOrMore(Option("-a")).match([Argument(nil, value: 8 as AnyObject),
             Option("-x")]) ==
-            (false, [Argument(nil, value: 8), Option("-x")], []))
+            (false, [Argument(nil, value: 8 as AnyObject), Option("-x")], []))
         XCTAssertTrue(OneOrMore(Required([Option("-a"), Argument("N")])).match(
-            [Option("-a"), Argument(nil, value: 1), Option("-x"),
-                Option("-a"), Argument(nil, value: 2)]) ==
+            [Option("-a"), Argument(nil, value: 1 as AnyObject), Option("-x"),
+                Option("-a"), Argument(nil, value: 2 as AnyObject)]) ==
             (true, [Option("-x")],
-                [Option("-a"), Argument("N", value: 1), Option("-a"), Argument("N", value: 2)]))
-        XCTAssertTrue(OneOrMore(Optional(Argument("N"))).match([Argument(nil, value: 9)]) ==
-            (true, [], [Argument("N", value: 9)]))
+                [Option("-a"), Argument("N", value: 1 as AnyObject), Option("-a"), Argument("N", value: 2 as AnyObject)]))
+        XCTAssertTrue(OneOrMore(Optional(Argument("N"))).match([Argument(nil, value: 9 as AnyObject)]) ==
+            (true, [], [Argument("N", value: 9 as AnyObject)]))
     }
     
     func testPatternEither() {
@@ -302,16 +304,16 @@ class DocoptTests: XCTestCase {
     
     func testListArgumentMatch() {
         XCTAssertTrue(Required([Argument("N"), Argument("N")]).fix().match(
-            [Argument(nil, value: "1"), Argument(nil, value: "2")]) ==
+            [Argument(nil, value: "1" as AnyObject), Argument(nil, value: "2" as AnyObject)]) ==
             (true, [], [Argument("N", value: ["1", "2"])]))
         XCTAssertTrue(OneOrMore(Argument("N")).fix().match(
-            [Argument(nil, value: "1"), Argument(nil, value: "2"), Argument(nil, value: "3")]) ==
+            [Argument(nil, value: "1" as AnyObject), Argument(nil, value: "2" as AnyObject), Argument(nil, value: "3" as AnyObject)]) ==
             (true, [], [Argument("N", value: ["1", "2", "3"])]))
         XCTAssertTrue(Required([Argument("N"), OneOrMore(Argument("N"))]).fix().match(
-            [Argument(nil, value: "1"), Argument(nil, value: "2"), Argument(nil, value: "3")]) ==
+            [Argument(nil, value: "1" as AnyObject), Argument(nil, value: "2" as AnyObject), Argument(nil, value: "3" as AnyObject)]) ==
             (true, [], [Argument("N", value: ["1", "2", "3"])]))
         XCTAssertTrue(Required([Argument("N"), Required(Argument("N"))]).fix().match(
-            [Argument(nil, value: "1"), Argument(nil, value: "2")]) ==
+            [Argument(nil, value: "1" as AnyObject), Argument(nil, value: "2" as AnyObject)]) ==
             (true, [], [Argument("N", value: ["1", "2"])]))
     }
     
@@ -320,14 +322,14 @@ class DocoptTests: XCTestCase {
         let pattern = Required([Option("-a"), Argument("N"), Optional([Option("-x"), Argument("Z")])])
         
         // -a N
-        XCTAssertTrue(pattern.match([Option("-a"), Argument(nil, value: 9)]) ==
-            (true, [], [Option("-a"), Argument("N", value: 9)]))
+        XCTAssertTrue(pattern.match([Option("-a"), Argument(nil, value: 9 as AnyObject)]) ==
+            (true, [], [Option("-a"), Argument("N", value: 9 as AnyObject)]))
         // -a -x N Z
-        XCTAssertTrue(pattern.match([Option("-a"), Option("-x"), Argument(nil, value: 9), Argument(nil, value: 5)]) ==
-            (true, [], [Option("-a"), Argument("N", value: 9), Option("-x"), Argument("Z", value: 5)]))
+        XCTAssertTrue(pattern.match([Option("-a"), Option("-x"), Argument(nil, value: 9 as AnyObject), Argument(nil, value: 5 as AnyObject)]) ==
+            (true, [], [Option("-a"), Argument("N", value: 9 as AnyObject), Option("-x"), Argument("Z", value: 5 as AnyObject)]))
         // -x N Z  # BZZ!
-        XCTAssertTrue(pattern.match([Option("-x"), Argument(nil, value: 9), Argument(nil, value: 5)]) ==
-            (false, [Option("-x"), Argument(nil, value: 9), Argument(nil, value: 5)], []))
+        XCTAssertTrue(pattern.match([Option("-x"), Argument(nil, value: 9 as AnyObject), Argument(nil, value: 5 as AnyObject)]) ==
+            (false, [Option("-x"), Argument(nil, value: 9 as AnyObject), Argument(nil, value: 5 as AnyObject)], []))
     }
     
     func testSet() {
@@ -338,7 +340,12 @@ class DocoptTests: XCTestCase {
     func testDocopt() {
         let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
         let result = Docopt(doc, argv: ["arg"]).result
-        XCTAssertEqual(result.description, ["-v": false, "A": "arg"].description)
+        let fixture = ["-v": false as AnyObject, "A": "arg" as AnyObject]
+        for (key, value) in result!
+        {
+            XCTAssertEqual(value as! NSObject, fixture[key]! as! NSObject)
+        }
+        XCTAssertEqual(result!.count, fixture.count)
     }
 }
 

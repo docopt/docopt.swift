@@ -21,7 +21,12 @@ internal class Option: LeafPattern {
     }
     override var description: String {
         get {
-            return "Option(\(short), \(long), \(argCount), \(value))"
+            var valueDescription : String = value?.description ?? "nil"
+            if value is Bool, let val = value as? Bool
+            {
+                valueDescription = val ? "true" : "false"
+            }
+            return "Option(\(String(describing: short)), \(String(describing: long)), \(argCount), \(valueDescription))"
         }
     }
     
@@ -29,7 +34,7 @@ internal class Option: LeafPattern {
         self.init(option.short, long: option.long, argCount: option.argCount, value: option.value)
     }
     
-    init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = false) {
+    init(_ short: String? = nil, long: String? = nil, argCount: UInt = 0, value: AnyObject? = false as NSNumber) {
         assert(argCount <= 1)
         self.short = short
         self.long = long
@@ -43,17 +48,17 @@ internal class Option: LeafPattern {
         }
     }
     
-    static func parse(optionDescription: String) -> Option {
+    static func parse(_ optionDescription: String) -> Option {
         var short: String? = nil
         var long: String? = nil
         var argCount: UInt = 0
-        var value: AnyObject? = false
+        var value: AnyObject? = kCFBooleanFalse
         
         var (options, _, description) = optionDescription.strip().partition("  ")
-        options = options.stringByReplacingOccurrencesOfString(",", withString: " ", options: [], range: nil)
-        options = options.stringByReplacingOccurrencesOfString("=", withString: " ", options: [], range: nil)
+        options = options.replacingOccurrences(of: ",", with: " ", options: [], range: nil)
+        options = options.replacingOccurrences(of: "=", with: " ", options: [], range: nil)
         
-        for s in options.componentsSeparatedByString(" ").filter({!$0.isEmpty}) {
+        for s in options.components(separatedBy: " ").filter({!$0.isEmpty}) {
             if s.hasPrefix("--") {
                 long = s
             } else if s.hasPrefix("-") {
@@ -64,14 +69,21 @@ internal class Option: LeafPattern {
         }
         
         if argCount == 1 {
-            let matched = description.findAll("\\[default: (.*)\\]", flags: .CaseInsensitive)
-            value = matched.count > 0 ? matched[0] : nil
+            let matched = description.findAll("\\[default: (.*)\\]", flags: .caseInsensitive)
+            if matched.count > 0
+            {
+                value =  matched[0] as AnyObject
+            }
+            else
+            {
+                value = nil
+            }
         }
         
         return Option(short, long: long, argCount: argCount, value: value)
     }
     
-    override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
+    override func singleMatch<T: LeafPattern>(_ left: [T]) -> SingleMatchResult {
         for i in 0..<left.count {
             let pattern = left[i]
             if pattern.name == name {
