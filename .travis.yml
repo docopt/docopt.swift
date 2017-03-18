@@ -1,6 +1,9 @@
 language: objective-c
 osx_image: xcode8.2
+before_script:
+  - brew update
+  - brew outdated xctool || brew upgrade xctool
 script:
-  - xctool -scheme 'Docopt' clean build test
+  - xctool -scheme 'Docopt' build test
 notifications:
   email: false
