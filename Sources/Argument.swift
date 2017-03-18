@@ -11,11 +11,11 @@ import Foundation
 internal class Argument: LeafPattern {
     override internal var description: String {
         get {
-            return "Argument(\(name), \(value))"
+            return "Argument(\(String(describing: name)), \(String(describing: value)))"
         }
     }
     
-    override func singleMatch<T: LeafPattern>(left: [T]) -> SingleMatchResult {
+    override func singleMatch<T: LeafPattern>(_ left: [T]) -> SingleMatchResult {
         for i in 0..<left.count {
             let pattern = left[i]
             if pattern is Argument {

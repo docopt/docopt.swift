@@ -24,27 +24,27 @@ internal class BranchPattern : Pattern {
         self.children = children
     }
     
-    override func fixIdentities(unq: [LeafPattern]? = nil) {
+    override func fixIdentities(_ unq: [LeafPattern]? = nil) {
         var uniq: [LeafPattern] = unq ?? Array(Set(flat()))
         
         for i in 0..<children.count {
             let child = children[i]
             if let leafChild = child as? LeafPattern {
                 assert(uniq.contains(leafChild))
-                children[i] = uniq[uniq.indexOf(leafChild)!]
+                children[i] = uniq[uniq.index(of: leafChild)!]
             } else {
                 child.fixIdentities(uniq)
             }
         }
     }
     
-    override func flat<T: Pattern>(type: T.Type) -> [T] {
-        if self.dynamicType === T.self {
+    override func flat<T: Pattern>(_ type: T.Type) -> [T] {
+        if type(of: self) === T.self {
             return [self as! T]
         }
         var result = [T]()
         for child in children {
-            result += child.flat(T)
+            result += child.flat(T.self)
         }
         return result
     }

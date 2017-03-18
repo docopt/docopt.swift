@@ -18,11 +18,11 @@ internal class DocoptError {
         self.name = name
     }
     
-    func raise(message: String? = nil) {
+    func raise(_ message: String? = nil) {
         let msg = (message ?? self.message).strip()
         if (DocoptError.test) {
             NSException(
-                name: NSInternalInconsistencyException,
+                name: NSExceptionName.internalInconsistencyException,
                 reason: msg,
                 userInfo: nil).raise()
         } else {
@@ -44,7 +44,7 @@ internal class DocoptExit: DocoptError {
         super.init(message, name: "DocoptExit")
     }
 
-    override func raise(message: String? = nil) {
+    override func raise(_ message: String? = nil) {
         super.raise("\(DocoptExit.usage)")
     }
 }

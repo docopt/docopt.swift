@@ -525,13 +525,13 @@ $ prog ship Guardian move 150 300 --speed=20
  "<name>": ["Guardian"],
  "<x>": "150",
  "<y>": "300",
- "mine": false,
+ "mine": null,
  "move": true,
- "new": false,
- "remove": false,
- "set": false,
+ "new": null,
+ "remove": null,
+ "set": null,
  "ship": true,
- "shoot": false}
+ "shoot": null}
 
 
 r"""usage: prog --hello"""
@@ -693,7 +693,7 @@ $ prog -
 {"-": true}
 
 $ prog
-{"-": false}
+{"-": null}
 
 #
 # If argument is repeated, its value should always be a list
@@ -903,7 +903,7 @@ options: --loglevel=N
 
 """
 $ prog fail --loglevel 5
-{"--loglevel": "5", "fail": true, "good": false}
+{"--loglevel": "5", "fail": true, "good": null}
 
 #
 # Usage-section syntax

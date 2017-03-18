@@ -9,38 +9,38 @@
 import Foundation
 
 internal extension String {
-    func partition(separator: String) -> (String, String, String) {
-        let components = self.componentsSeparatedByString(separator)
+    func partition(_ separator: String) -> (String, String, String) {
+        let components = self.components(separatedBy: separator)
         if components.count > 1 {
-            return (components[0], separator, components[1..<components.count].joinWithSeparator(separator))
+            return (components[0], separator, components[1..<components.count].joined(separator: separator))
         }
         return (self, "", "")
     }
     
     func strip() -> String {
-        return self.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
     
-    func findAll(regex: String, flags: NSRegularExpressionOptions) -> [String] {
+    func findAll(_ regex: String, flags: NSRegularExpression.Options) -> [String] {
         let re = try! NSRegularExpression(pattern: regex, options: flags)
         let all = NSMakeRange(0, self.characters.count)
-        let matches = re.matchesInString(self, options: [], range: all)
-        return matches.map {self[$0.rangeAtIndex(1)].strip()}
+        let matches = re.matches(in: self, options: [], range: all)
+        return matches.map {self[$0.rangeAt(1)].strip()}
     }
     
     func split() -> [String] {
-        return self.characters.split(isSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
+        return self.characters.split(whereSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
     }
     
-    func split(regex: String) -> [String] {
-        let re = try! NSRegularExpression(pattern: regex, options: .DotMatchesLineSeparators)
+    func split(_ regex: String) -> [String] {
+        let re = try! NSRegularExpression(pattern: regex, options: .dotMatchesLineSeparators)
         let all = NSMakeRange(0, self.characters.count)
         var result = [String]()
-        let matches = re.matchesInString(self, options: [], range: all)
+        let matches = re.matches(in: self, options: [], range: all)
         if matches.count > 0 {
             var lastEnd = 0
             for match in matches {
-                let range = match.rangeAtIndex(1)
+                let range = match.rangeAt(1)
                 if range.location != NSNotFound {
                     if (lastEnd != 0) {
                         result.append(self[lastEnd..<match.range.location])
@@ -72,16 +72,16 @@ internal extension String {
     }
     
     func isupper() -> Bool {
-        let charset = NSCharacterSet.uppercaseLetterCharacterSet().invertedSet
-        return self.rangeOfCharacterFromSet(charset) == nil
+        let charset = CharacterSet.uppercaseLetters.inverted
+        return self.rangeOfCharacter(from: charset) == nil
     }
     
     subscript(i: Int) -> Character {
-        return self[startIndex.advancedBy(i)]
+        return self[characters.index(startIndex, offsetBy: i)]
     }
     
     subscript(range: Range<Int>) -> String {
-        return self[startIndex.advancedBy(range.startIndex)..<startIndex.advancedBy(range.endIndex)]
+        return self[characters.index(startIndex, offsetBy: range.lowerBound)..<characters.index(startIndex, offsetBy: range.upperBound)]
     }
 
     subscript(range: NSRange) -> String {

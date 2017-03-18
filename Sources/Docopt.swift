@@ -10,15 +10,15 @@ import Foundation
 import Darwin
 
 @objc
-public class Docopt : NSObject {
-    private(set) public var result: [String: AnyObject]!
-    private let doc: String
-    private let version: String?
-    private let help: Bool
-    private let optionsFirst: Bool
-    private let arguments: [String]
+open class Docopt : NSObject {
+    fileprivate(set) open var result: [String: AnyObject]!
+    fileprivate let doc: String
+    fileprivate let version: String?
+    fileprivate let help: Bool
+    fileprivate let optionsFirst: Bool
+    fileprivate let arguments: [String]
     
-    public static func parse(doc: String, argv: [String], help: Bool = false, version: String? = nil, optionsFirst: Bool = false) -> [String: AnyObject] {
+    open static func parse(_ doc: String, argv: [String], help: Bool = false, version: String? = nil, optionsFirst: Bool = false) -> [String: AnyObject] {
         return Docopt(doc, argv: argv, help: help, version: version, optionsFirst: optionsFirst).result
     }
     
@@ -30,9 +30,9 @@ public class Docopt : NSObject {
         
         var args: [String]
         if argv == nil {
-            if Process.argc > 1 {
-                args = Process.arguments
-                args.removeAtIndex(0) // arguments[0] is always the program_name
+            if CommandLine.argc > 1 {
+                args = CommandLine.arguments
+                args.remove(at: 0) // arguments[0] is always the program_name
             } else {
                 args = [String]()
             }
@@ -45,7 +45,7 @@ public class Docopt : NSObject {
         result = parse(optionsFirst)
     }
     
-    private func parse(optionsFirst: Bool) -> [String: AnyObject] {
+    fileprivate func parse(_ optionsFirst: Bool) -> [String: AnyObject] {
         let usageSections = Docopt.parseSection("usage:", source: doc)
 
         if usageSections.count == 0 {
@@ -59,11 +59,11 @@ public class Docopt : NSObject {
         var options = Docopt.parseDefaults(doc)
         let pattern = Docopt.parsePattern(Docopt.formalUsage(DocoptExit.usage), options: &options)
         let argv = Docopt.parseArgv(Tokens(arguments), options: &options, optionsFirst: optionsFirst)
-        let patternOptions = Set(pattern.flat(Option))
+        let patternOptions = Set(pattern.flat(Option.self))
         
-        for optionsShortcut in pattern.flat(OptionsShortcut) {
+        for optionsShortcut in pattern.flat(OptionsShortcut.self) {
             let docOptions = Set(Docopt.parseDefaults(doc))
-            optionsShortcut.children = Array(docOptions.subtract(patternOptions))
+            optionsShortcut.children = Array(docOptions.subtracting(patternOptions))
         }
 
         Docopt.extras(help, version: version, options: argv, doc: doc)
@@ -88,7 +88,7 @@ public class Docopt : NSObject {
         return result
     }
     
-    static private func extras(help: Bool, version: String?, options: [LeafPattern], doc: String) {
+    static fileprivate func extras(_ help: Bool, version: String?, options: [LeafPattern], doc: String) {
         let helpOption = options.filter { $0.name == "--help" || $0.name == "-h" }
         if help && !(helpOption.isEmpty) {
             print(doc.strip())
@@ -101,17 +101,17 @@ public class Docopt : NSObject {
         }
     }
     
-    static internal func parseSection(name: String, source: String) -> [String] {
-        return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: [.CaseInsensitive, .AnchorsMatchLines] )
+    static internal func parseSection(_ name: String, source: String) -> [String] {
+        return source.findAll("^([^\n]*\(name)[^\n]*\n?(?:[ \t].*?(?:\n|$))*)", flags: [.caseInsensitive, .anchorsMatchLines] )
     }
     
-    static internal func parseDefaults(doc: String) -> [Option] {
+    static internal func parseDefaults(_ doc: String) -> [Option] {
         var defaults = [Option]()
         let optionsSection = parseSection("options:", source: doc)
         for s in optionsSection {
             // FIXME corner case "bla: options: --foo"
             let (_, _, s) = s.partition(":")  // get rid of "options:"
-            var splitgen = ("\n" + s).split("\n[ \t]*(-\\S+?)").generate()
+            var splitgen = ("\n" + s).split("\n[ \t]*(-\\S+?)").makeIterator()
             var split = [String]()
             while let s1 = splitgen.next(), let s2 = splitgen.next() {
                 split.append(s1 + s2)
@@ -123,7 +123,7 @@ public class Docopt : NSObject {
         return defaults
     }
     
-    static internal func parseLong(tokens: Tokens, inout options: [Option]) -> [Option] {
+    static internal func parseLong(_ tokens: Tokens, options: inout [Option]) -> [Option] {
         let (long, eq, val) = tokens.move()!.partition("=")
         assert(long.hasPrefix("--"))
         
@@ -136,7 +136,7 @@ public class Docopt : NSObject {
 
         var o: Option
         if similar.count > 1 {
-            let allSimilar = similar.map {$0.long ?? ""}.joinWithSeparator(" ")
+            let allSimilar = similar.map {$0.long ?? ""}.joined(separator: " ")
             tokens.error.raise("\(long) is not a unique prefix: \(allSimilar)")
             return []
         } else if similar.count < 1 {
@@ -144,34 +144,34 @@ public class Docopt : NSObject {
             o = Option(nil, long: long, argCount: argCount)
             options.append(o)
             if tokens.error is DocoptExit {
-                o = Option(nil, long: long, argCount: argCount, value: argCount > 0 ? value : true)
+                o = Option(nil, long: long, argCount: argCount, value: (argCount > 0) ? value as AnyObject : true as AnyObject)
             }
         } else {
             o = Option(similar[0])
             if o.argCount == 0 {
                 if value != nil {
-                    tokens.error.raise("\(o.long) requires argument")
+                    tokens.error.raise("\(String(describing: o.long)) requires argument")
                 }
             } else {
                 if value == nil {
-                    if let current = tokens.current() where current != "--" {
+                    if let current = tokens.current(), current != "--" {
                         value = tokens.move()
                     } else {
-                        tokens.error.raise("\(o.long) requires argument")
+                        tokens.error.raise("\(String(describing: o.long)) requires argument")
                     }
                 }
             }
             if tokens.error is DocoptExit {
-                o.value = value ?? true
+                o.value = value as AnyObject? ?? true as AnyObject
             }
         }
         return [o]
     }
     
-    static internal func parseShorts(tokens: Tokens, inout options: [Option]) -> [Option] {
+    static internal func parseShorts(_ tokens: Tokens, options: inout [Option]) -> [Option] {
         let token = tokens.move()!
         assert(token.hasPrefix("-") && !token.hasPrefix("--"))
-        var left = token.stringByReplacingOccurrencesOfString("-", withString: "")
+        var left = token.replacingOccurrences(of: "-", with: "")
         var parsed = [Option]()
         while left != "" {
             let short = "-" + left[0..<1]
@@ -186,13 +186,13 @@ public class Docopt : NSObject {
                 o = Option(short)
                 options.append(o)
                 if tokens.error is DocoptExit {
-                    o = Option(short, value: true)
+                    o = Option(short, value: true as AnyObject)
                 }
             } else {
                 var value: String? = nil
                 o = Option(similar[0])
                 if o.argCount != 0 {
-                    if let current = tokens.current() where current != "--" && left == "" {
+                    if let current = tokens.current(), current != "--" && left == "" {
                         value = tokens.move()
                     } else if left == "" {
                         tokens.error.raise("\(short) requires argument")
@@ -202,7 +202,11 @@ public class Docopt : NSObject {
                     left = ""
                 }
                 if tokens.error is DocoptExit {
-                    o.value = value ?? true
+                    o.value = true as AnyObject
+                    if let val = value
+                    {
+                        o.value = val as AnyObject
+                    }
                 }
             }
             
@@ -211,10 +215,10 @@ public class Docopt : NSObject {
         return parsed
     }
     
-    static internal func parseAtom(tokens: Tokens, inout options: [Option]) -> [Pattern] {
+    static internal func parseAtom(_ tokens: Tokens, options: inout [Option]) -> [Pattern] {
         let token = tokens.current()!
         if ["(", "["].contains(token) {
-            tokens.move()
+            _ = tokens.move()
             let u = parseExpr(tokens, options: &options)
             let (matching, result): (String, [BranchPattern]) = (token == "(")
                                             ? (")", [Required(u)])
@@ -228,7 +232,7 @@ public class Docopt : NSObject {
         }
         
         if token == "options" {
-            tokens.move()
+            _ = tokens.move()
             return [OptionsShortcut()]
         }
         if token.hasPrefix("--") && token != "--" {
@@ -244,13 +248,13 @@ public class Docopt : NSObject {
         return [Command(tokens.move()!)]
     }
 
-    static internal func parseSeq(tokens: Tokens, inout options: [Option]) -> [Pattern] {
+    static internal func parseSeq(_ tokens: Tokens, options: inout [Option]) -> [Pattern] {
         var result = [Pattern]()
-        while let current = tokens.current() where !["]", ")", "|"].contains(current) {
+        while let current = tokens.current(), !["]", ")", "|"].contains(current) {
             var atom = parseAtom(tokens, options: &options)
             if tokens.current() == "..." {
                 atom = [OneOrMore(atom)]
-                tokens.move()
+                _ = tokens.move()
             }
             result += atom
         }
@@ -258,7 +262,7 @@ public class Docopt : NSObject {
         return result
     }
     
-    static internal func parseExpr(tokens: Tokens, inout options: [Option]) -> [Pattern] {
+    static internal func parseExpr(_ tokens: Tokens, options: inout [Option]) -> [Pattern] {
         var seq = parseSeq(tokens, options: &options)
         if tokens.current() != "|" {
             return seq
@@ -266,7 +270,7 @@ public class Docopt : NSObject {
         
         var result = seq.count > 1 ? [Required(seq)] : seq
         while tokens.current() == "|" {
-            tokens.move()
+            _ = tokens.move()
             seq = parseSeq(tokens, options: &options)
             result += seq.count > 1 ? [Required(seq)] : seq
         }
@@ -282,12 +286,12 @@ public class Docopt : NSObject {
      * else:
      *     argv ::= [ long | shorts | argument ]* [ '--' [ argument ]* ] ;
      */
-    static internal func parseArgv(tokens: Tokens, inout options: [Option], optionsFirst: Bool = false) -> [LeafPattern] {
+    static internal func parseArgv(_ tokens: Tokens, options: inout [Option], optionsFirst: Bool = false) -> [LeafPattern] {
         var parsed = [LeafPattern]()
         while let current = tokens.current() {
             if tokens.current() == "--" {
                 while let token = tokens.move() {
-                    parsed.append(Argument(nil, value: token))
+                    parsed.append(Argument(nil, value: token as AnyObject))
                 }
                 return parsed
             } else if current.hasPrefix("--") {
@@ -300,17 +304,17 @@ public class Docopt : NSObject {
                 }
             } else if optionsFirst {
                 while let token = tokens.move() {
-                    parsed.append(Argument(nil, value: token))
+                    parsed.append(Argument(nil, value: token as AnyObject))
                 }
                 return parsed
             } else {
-                parsed.append(Command(nil, value: tokens.move()))
+                parsed.append(Command(nil, value: tokens.move() as AnyObject))
             }
         }
         return parsed
     }
     
-    static internal func parsePattern(source: String, inout options: [Option]) -> Pattern {
+    static internal func parsePattern(_ source: String, options: inout [Option]) -> Pattern {
         let tokens: Tokens = Tokens.fromPattern(source)
         let result: [Pattern] = parseExpr(tokens, options: &options)
         
@@ -321,10 +325,10 @@ public class Docopt : NSObject {
         return Required(result)
     }
     
-    static internal func formalUsage(section: String) -> String {
+    static internal func formalUsage(_ section: String) -> String {
         let (_, _, s) = section.partition(":") // drop "usage:"
         let pu = s.split()
         let formalUsageArray = Array(Array(pu[1..<pu.count].map { $0 == pu[0] ? ") | (" : $0 }))
-        return "( " + formalUsageArray.joinWithSeparator(" ") + " )"
+        return "( " + formalUsageArray.joined(separator: " ") + " )"
     }
 }
