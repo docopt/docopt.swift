@@ -38,7 +38,7 @@ internal class BranchPattern : Pattern {
         }
     }
     
-    override func flat<T: Pattern>(_ type: T.Type) -> [T] {
+    override func flat<T: Pattern>(_: T.Type) -> [T] {
         if type(of: self) === T.self {
             return [self as! T]
         }
