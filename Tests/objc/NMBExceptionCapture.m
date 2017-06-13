@@ -2,12 +2,12 @@
 
 @interface NMBExceptionCapture ()
 @property (nonatomic, copy) void(^handler)(NSException *exception);
-@property (nonatomic, copy) void(^finally)();
+@property (nonatomic, copy) void(^finally)(void);
 @end
 
 @implementation NMBExceptionCapture
 
-- (id)initWithHandler:(void(^)(NSException *))handler finally:(void(^)())finally {
+- (id)initWithHandler:(void(^)(NSException *))handler finally:(void(^)(void))finally {
     self = [super init];
     if (self) {
         self.handler = handler;
@@ -16,7 +16,7 @@
     return self;
 }
 
-- (void)tryBlock:(void(^)())unsafeBlock {
+- (void)tryBlock:(void(^)(void))unsafeBlock {
     @try {
         unsafeBlock();
     }
