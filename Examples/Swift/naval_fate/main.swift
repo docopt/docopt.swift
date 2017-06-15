@@ -25,7 +25,7 @@ let doc : String = "Naval Fate.\n" +
 "  --moored      Moored (anchored) mine.\n" +
 "  --drifting    Drifting mine.\n"
 
-var args = Process.arguments
-args.removeAtIndex(0) // arguments[0] is always the program_name
+var args = CommandLine.arguments
+_ = args.remove(at: 0) // arguments[0] is always the program_name
 let result = Docopt.parse(doc, argv: args, help: true, version: "1.0")
 print("Docopt result: \(result)")
