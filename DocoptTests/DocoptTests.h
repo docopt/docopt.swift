@@ -13,6 +13,3 @@ FOUNDATION_EXPORT double docoptVersionNumber;
 
 //! Project version string for docopt.
 FOUNDATION_EXPORT const unsigned char docoptVersionString[];
-
-#import "NMBExceptionCapture.h"
-

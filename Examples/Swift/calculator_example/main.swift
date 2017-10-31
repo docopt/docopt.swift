@@ -10,16 +10,19 @@ import Docopt
 
 let doc : String = """
 Not a serious example.
+
 Usage:
-calculator_example <value> ( ( + | - | * | / ) <value> )...
-calculator_example <function> <value> [( , <value> )]...
-calculator_example (-h | --help)
+  calculator_example <value> ( ( + | - | * | / ) <value> )...
+  calculator_example <function> <value> [( , <value> )]...
+  calculator_example (-h | --help)
+
 Examples:
-calculator_example 1 + 2 + 3 + 4 + 5
-calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'
-calculator_example sum 10 , 20 , 30 , 40
+  calculator_example 1 + 2 + 3 + 4 + 5
+  calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'
+  calculator_example sum 10 , 20 , 30 , 40
+
 Options:
--h, --help
+  -h, --help
 """
 
 var args = CommandLine.arguments
