@@ -25,7 +25,7 @@ internal extension String {
         let re = try! NSRegularExpression(pattern: regex, options: flags)
         let all = NSMakeRange(0, self.characters.count)
         let matches = re.matches(in: self, options: [], range: all)
-        return matches.map {self[$0.rangeAt(1)].strip()}
+        return matches.map {self[$0.range(at: 1)].strip()}
     }
     
     func split() -> [String] {
@@ -40,7 +40,7 @@ internal extension String {
         if matches.count > 0 {
             var lastEnd = 0
             for match in matches {
-                let range = match.rangeAt(1)
+                let range = match.range(at: 1)
                 if range.location != NSNotFound {
                     if (lastEnd != 0) {
                         result.append(self[lastEnd..<match.range.location])
