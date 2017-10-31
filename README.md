@@ -6,19 +6,22 @@
 
 Swift:
 ``` Swift
-let doc : String = "Not a serious example.\n" +
-"\n" +
-"Usage:\n" +
-"  calculator_example.py <value> ( ( + | - | * | / ) <value> )...\n" +
-"  calculator_example.py <function> <value> [( , <value> )]...\n" +
-"  calculator_example.py (-h | --help)\n" +
-"\n" +
-"Examples:\n" +
-"  calculator_example.py 1 + 2 + 3 + 4 + 5\n" +
-"  calculator_example.py 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'\n" +
-"  calculator_example.py sum 10 , 20 , 30 , 40\n" +
-"Options:\n" +
-"  -h, --help\n"
+let doc : String = """
+Not a serious example.
+
+Usage:
+  calculator_example.py <value> ( ( + | - | * | / ) <value> )...
+  calculator_example.py <function> <value> [( , <value> )]...
+  calculator_example.py (-h | --help)
+  
+Examples:
+  calculator_example.py 1 + 2 + 3 + 4 + 5
+  calculator_example.py 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'
+  calculator_example.py sum 10 , 20 , 30 , 40
+  
+Options:
+  -h, --help
+"""
 
 var args = Process.arguments
 args.removeAtIndex(0) // arguments[0] is always the program_name
@@ -41,6 +44,11 @@ Installation
 Swift:
 - Check out `docopt.swift`
 - Add `docopt` folder to your project
+
+Swift Package Manager:
+```swift
+.package(url: "https://github.com/docopt/docopt.swift", from: "0.6.6"),
+```
 
 Objective-C:
 - Check out `docopt.swift`
