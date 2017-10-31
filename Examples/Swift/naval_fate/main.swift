@@ -8,22 +8,22 @@
 
 import Docopt
 
-let doc : String = "Naval Fate.\n" +
-"\n" +
-"Usage:\n" +
-"  naval_fate.py ship new <name>...\n" +
-"  naval_fate.py ship <name> move <x> <y> [--speed=<kn>]\n" +
-"  naval_fate.py ship shoot <x> <y>\n" +
-"  naval_fate.py mine (set|remove) <x> <y> [--moored|--drifting]\n" +
-"  naval_fate.py -h | --help\n" +
-"  naval_fate.py --version\n" +
-"\n" +
-"Options:\n" +
-"  -h --help     Show this screen.\n" +
-"  --version     Show version.\n" +
-"  --speed=<kn>  Speed in knots [default: 10].\n" +
-"  --moored      Moored (anchored) mine.\n" +
-"  --drifting    Drifting mine.\n"
+let doc : String = """
+Naval Fate.
+Usage:
+naval_fate ship new <name>...
+naval_fate ship <name> move <x> <y> [--speed=<kn>]
+naval_fate ship shoot <x> <y>
+naval_fate mine (set|remove) <x> <y> [--moored|--drifting]
+naval_fate -h | --help
+naval_fate --version
+Options:
+-h --help     Show this screen.
+--version     Show version.
+--speed=<kn>  Speed in knots [default: 10].
+--moored      Moored (anchored) mine.
+--drifting    Drifting mine.
+"""
 
 var args = CommandLine.arguments
 _ = args.remove(at: 0) // arguments[0] is always the program_name

@@ -8,19 +8,19 @@
 
 import Docopt
 
-let doc : String = "Not a serious example.\n" +
-"\n" +
-"Usage:\n" +
-"  calculator_example.py <value> ( ( + | - | * | / ) <value> )...\n" +
-"  calculator_example.py <function> <value> [( , <value> )]...\n" +
-"  calculator_example.py (-h | --help)\n" +
-"\n" +
-"Examples:\n" +
-"  calculator_example.py 1 + 2 + 3 + 4 + 5\n" +
-"  calculator_example.py 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'\n" +
-"  calculator_example.py sum 10 , 20 , 30 , 40\n" +
-"Options:\n" +
-"  -h, --help\n"
+let doc : String = """
+Not a serious example.
+Usage:
+calculator_example <value> ( ( + | - | * | / ) <value> )...
+calculator_example <function> <value> [( , <value> )]...
+calculator_example (-h | --help)
+Examples:
+calculator_example 1 + 2 + 3 + 4 + 5
+calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'
+calculator_example sum 10 , 20 , 30 , 40
+Options:
+-h, --help
+"""
 
 var args = CommandLine.arguments
 _ = args.remove(at: 0) // arguments[0] is always the program_name
