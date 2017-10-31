@@ -76,10 +76,6 @@ internal extension String {
         return self.rangeOfCharacter(from: charset) == nil
     }
     
-    subscript(i: Int) -> Character {
-        return self[characters.index(startIndex, offsetBy: i)]
-    }
-    
     subscript(range: Range<Int>) -> String {
       return String(self[characters.index(startIndex, offsetBy: range.lowerBound)..<characters.index(startIndex, offsetBy: range.upperBound)])
     }

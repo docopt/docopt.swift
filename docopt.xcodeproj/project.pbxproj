@@ -32,16 +32,15 @@
 		3C59005C1C6E7497001E335F /* Pattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C59004B1C6E7497001E335F /* Pattern.swift */; };
 		3C59005D1C6E7497001E335F /* Required.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C59004C1C6E7497001E335F /* Required.swift */; };
 		3C59005E1C6E7497001E335F /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C59004D1C6E7497001E335F /* Tokens.swift */; };
-		3C5900731C6E7578001E335F /* DocoptTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5900601C6E74A1001E335F /* DocoptTestCase.swift */; };
-		3C5900741C6E757A001E335F /* DocoptTestCaseParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5900611C6E74A1001E335F /* DocoptTestCaseParser.swift */; };
-		3C5900751C6E757C001E335F /* DocoptTestCasesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5900621C6E74A1001E335F /* DocoptTestCasesTests.swift */; };
-		3C5900761C6E7580001E335F /* DocoptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5900641C6E74A1001E335F /* DocoptTests.swift */; };
-		3C5900771C6E7587001E335F /* NMBExceptionCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C5900681C6E74A1001E335F /* NMBExceptionCapture.m */; };
-		3C5900791C6E75AB001E335F /* testcases.docopt in Resources */ = {isa = PBXBuildFile; fileRef = 3C5900691C6E74A1001E335F /* testcases.docopt */; };
 		3C59007B1C6E7F52001E335F /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C59007A1C6E7F52001E335F /* String.swift */; };
 		3C59007C1C6E7F7F001E335F /* Docopt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE9112E1AA1DE7D00082C0B /* Docopt.framework */; };
 		3C59007D1C6E7F9E001E335F /* Docopt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE9112E1AA1DE7D00082C0B /* Docopt.framework */; };
 		3C59007E1C6E7F9E001E335F /* Docopt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE9112E1AA1DE7D00082C0B /* Docopt.framework */; };
+		3C772F021FA90DC2004AF468 /* DocoptTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C772EF81FA90DC2004AF468 /* DocoptTestCase.swift */; };
+		3C772F031FA90DC2004AF468 /* DocoptTestCaseParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C772EF91FA90DC2004AF468 /* DocoptTestCaseParser.swift */; };
+		3C772F041FA90DC2004AF468 /* DocoptTestCasesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C772EFA1FA90DC2004AF468 /* DocoptTestCasesTests.swift */; };
+		3C772F051FA90DC2004AF468 /* DocoptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C772EFC1FA90DC2004AF468 /* DocoptTests.swift */; };
+		3C772F081FA90DC2004AF468 /* testcases.docopt in Resources */ = {isa = PBXBuildFile; fileRef = 3C772F011FA90DC2004AF468 /* testcases.docopt */; };
 		3CE9113A1AA1DE7E00082C0B /* Docopt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE9112E1AA1DE7D00082C0B /* Docopt.framework */; };
 /* End PBXBuildFile section */
 
@@ -184,16 +183,14 @@
 		3C59004B1C6E7497001E335F /* Pattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pattern.swift; sourceTree = "<group>"; };
 		3C59004C1C6E7497001E335F /* Required.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Required.swift; sourceTree = "<group>"; };
 		3C59004D1C6E7497001E335F /* Tokens.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
-		3C5900601C6E74A1001E335F /* DocoptTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCase.swift; sourceTree = "<group>"; };
-		3C5900611C6E74A1001E335F /* DocoptTestCaseParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCaseParser.swift; sourceTree = "<group>"; };
-		3C5900621C6E74A1001E335F /* DocoptTestCasesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCasesTests.swift; sourceTree = "<group>"; };
-		3C5900631C6E74A1001E335F /* DocoptTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocoptTests.h; sourceTree = "<group>"; };
-		3C5900641C6E74A1001E335F /* DocoptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTests.swift; sourceTree = "<group>"; };
-		3C5900651C6E74A1001E335F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3C5900671C6E74A1001E335F /* NMBExceptionCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMBExceptionCapture.h; sourceTree = "<group>"; };
-		3C5900681C6E74A1001E335F /* NMBExceptionCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMBExceptionCapture.m; sourceTree = "<group>"; };
-		3C5900691C6E74A1001E335F /* testcases.docopt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testcases.docopt; sourceTree = "<group>"; };
 		3C59007A1C6E7F52001E335F /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		3C772EF81FA90DC2004AF468 /* DocoptTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCase.swift; sourceTree = "<group>"; };
+		3C772EF91FA90DC2004AF468 /* DocoptTestCaseParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCaseParser.swift; sourceTree = "<group>"; };
+		3C772EFA1FA90DC2004AF468 /* DocoptTestCasesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTestCasesTests.swift; sourceTree = "<group>"; };
+		3C772EFB1FA90DC2004AF468 /* DocoptTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocoptTests.h; sourceTree = "<group>"; };
+		3C772EFC1FA90DC2004AF468 /* DocoptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocoptTests.swift; sourceTree = "<group>"; };
+		3C772EFD1FA90DC2004AF468 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3C772F011FA90DC2004AF468 /* testcases.docopt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testcases.docopt; sourceTree = "<group>"; };
 		3CE9112E1AA1DE7D00082C0B /* Docopt.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Docopt.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CE911391AA1DE7E00082C0B /* DocoptTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocoptTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -342,28 +339,18 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		3C59005F1C6E74A1001E335F /* Tests */ = {
+		3C772EF71FA90DC2004AF468 /* DocoptTests */ = {
 			isa = PBXGroup;
 			children = (
-				3C5900601C6E74A1001E335F /* DocoptTestCase.swift */,
-				3C5900611C6E74A1001E335F /* DocoptTestCaseParser.swift */,
-				3C5900621C6E74A1001E335F /* DocoptTestCasesTests.swift */,
-				3C5900631C6E74A1001E335F /* DocoptTests.h */,
-				3C5900641C6E74A1001E335F /* DocoptTests.swift */,
-				3C5900651C6E74A1001E335F /* Info.plist */,
-				3C5900661C6E74A1001E335F /* objc */,
-				3C5900691C6E74A1001E335F /* testcases.docopt */,
+				3C772EF81FA90DC2004AF468 /* DocoptTestCase.swift */,
+				3C772EF91FA90DC2004AF468 /* DocoptTestCaseParser.swift */,
+				3C772EFA1FA90DC2004AF468 /* DocoptTestCasesTests.swift */,
+				3C772EFB1FA90DC2004AF468 /* DocoptTests.h */,
+				3C772EFC1FA90DC2004AF468 /* DocoptTests.swift */,
+				3C772EFD1FA90DC2004AF468 /* Info.plist */,
+				3C772F011FA90DC2004AF468 /* testcases.docopt */,
 			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		3C5900661C6E74A1001E335F /* objc */ = {
-			isa = PBXGroup;
-			children = (
-				3C5900671C6E74A1001E335F /* NMBExceptionCapture.h */,
-				3C5900681C6E74A1001E335F /* NMBExceptionCapture.m */,
-			);
-			path = objc;
+			path = DocoptTests;
 			sourceTree = "<group>";
 		};
 		3CE911241AA1DE7D00082C0B = {
@@ -372,7 +359,7 @@
 				3C4CA2C31AA8FFA800027F0F /* Examples */,
 				3CE9112F1AA1DE7D00082C0B /* Products */,
 				3C59003B1C6E7497001E335F /* Sources */,
-				3C59005F1C6E74A1001E335F /* Tests */,
+				3C772EF71FA90DC2004AF468 /* DocoptTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -626,7 +613,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C5900791C6E75AB001E335F /* testcases.docopt in Resources */,
+				3C772F081FA90DC2004AF468 /* testcases.docopt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -707,11 +694,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C5900761C6E7580001E335F /* DocoptTests.swift in Sources */,
-				3C5900731C6E7578001E335F /* DocoptTestCase.swift in Sources */,
-				3C5900741C6E757A001E335F /* DocoptTestCaseParser.swift in Sources */,
-				3C5900751C6E757C001E335F /* DocoptTestCasesTests.swift in Sources */,
-				3C5900771C6E7587001E335F /* NMBExceptionCapture.m in Sources */,
+				3C772F051FA90DC2004AF468 /* DocoptTests.swift in Sources */,
+				3C772F021FA90DC2004AF468 /* DocoptTestCase.swift in Sources */,
+				3C772F031FA90DC2004AF468 /* DocoptTestCaseParser.swift in Sources */,
+				3C772F041FA90DC2004AF468 /* DocoptTestCasesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1080,11 +1066,11 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = DocoptTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.kovpas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = Tests/DocoptTests.h;
+				SWIFT_OBJC_BRIDGING_HEADER = DocoptTests/DocoptTests.h;
 			};
 			name = Debug;
 		};
@@ -1096,11 +1082,11 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = DocoptTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.kovpas.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = Tests/DocoptTests.h;
+				SWIFT_OBJC_BRIDGING_HEADER = DocoptTests/DocoptTests.h;
 			};
 			name = Release;
 		};

@@ -12,7 +12,10 @@ import Darwin
 internal class DocoptError {
     var message: String
     var name: String
+   
     static var test: Bool = false
+    static var errorMessage: String?
+    
     init (_ message: String, name: String) {
         self.message = message
         self.name = name
@@ -21,10 +24,7 @@ internal class DocoptError {
     func raise(_ message: String? = nil) {
         let msg = (message ?? self.message).strip()
         if (DocoptError.test) {
-            NSException(
-                name: NSExceptionName.internalInconsistencyException,
-                reason: msg,
-                userInfo: nil).raise()
+            DocoptError.errorMessage = msg
         } else {
             print(msg)
             exit(0)

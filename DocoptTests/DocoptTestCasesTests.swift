@@ -25,7 +25,7 @@ class DocoptTestCasesTests: XCTestCase {
     }
     
     func testFixturesFileCanBeOpened() {
-        XCTAssertNotNil(fixturesFileContents(), "Could not read fixtures file")
+        XCTAssertNotEqual(fixturesFileContents(), "", "Could not read fixtures file")
     }
     
     func testTestCases() {
@@ -35,10 +35,11 @@ class DocoptTestCasesTests: XCTestCase {
         for testCase in parser.testCases {
             let expectedOutput: AnyObject = testCase.expectedOutput
             var result: AnyObject = "user-error" as AnyObject
-            let capture = NMBExceptionCapture(handler: nil, finally: nil)
-            capture?.try {
-                let opt = Docopt(testCase.usage, argv: testCase.arguments)
+            let opt = Docopt(testCase.usage, argv: testCase.arguments)
+            if DocoptError.errorMessage == nil {
                 result = opt.result as AnyObject
+            } else {
+                DocoptError.errorMessage = nil
             }
 
             if let expectedDictionary = expectedOutput as? NSDictionary,
