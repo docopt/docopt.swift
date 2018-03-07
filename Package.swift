@@ -12,12 +12,12 @@ let package = Package(
             name: "Docopt",
             path: "Sources"
         )
-        // Commented out until SPM supports resources
-        //, 
-        // .testTarget(
-        //     name: "DocoptTests",
-        //     dependencies: ["Docopt"],
-        //     path: "DocoptTests"
-        // )
+//         Commented out until SPM supports resources
+        ,
+         .testTarget(
+             name: "DocoptTests",
+             dependencies: ["Docopt"],
+             path: "DocoptTests"
+         )
     ]
 )

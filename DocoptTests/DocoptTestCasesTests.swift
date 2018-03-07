@@ -61,7 +61,18 @@ class DocoptTestCasesTests: XCTestCase {
     
     private func fixturesFilePath() -> String? {
         let testBundle: Bundle = Bundle(for: type(of: self))
-        return testBundle.path(forResource: "testcases", ofType: "docopt")
+        guard let path = testBundle.path(forResource: "testcases", ofType: "docopt") else {
+            // SwiftPM currently doesn't support bundles, so if the tests are run with it,
+            // we'll fail to find the bundle path here.
+            // As a temporary workaround, we can fall back on a relative path. This is fragile
+            // as it relies on the assumption that we know where SwiftPM will put the
+            // executable, and where the testcases file lives relative to it, but it's
+            // better than just disabling all the tests...
+            let url = testBundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("DocoptTests").appendingPathComponent("testcases.docopt")
+            return url.path
+        }
+        
+        return path
     }
     
     private func fixturesFileContents() -> String {
