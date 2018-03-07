@@ -177,7 +177,7 @@ open class Docopt : NSObject {
             let short = "-" + left[0..<1]
             let similar = options.filter {$0.short == short}
             var o: Option
-            left = left[1..<left.characters.count]
+            left = left[1..<left.count]
             
             if similar.count > 1 {
                 tokens.error.raise("\(short) is specified ambiguously \(similar.count) times")
