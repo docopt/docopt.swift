@@ -11,9 +11,7 @@ let package = Package(
         .target(
             name: "Docopt",
             path: "Sources"
-        )
-//         Commented out until SPM supports resources
-        ,
+        ),
          .testTarget(
              name: "DocoptTests",
              dependencies: ["Docopt"],
