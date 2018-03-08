@@ -59,20 +59,29 @@ class DocoptTestCasesTests: XCTestCase {
         }
     }
 
+    private func fallbackFilePath(from exeURL : URL) -> String? {
+        // SwiftPM currently doesn't support building bundles, and Linux doesn't support
+        // them at all, so if the tests are run with SwiftPM or on Linux,
+        // we'll fail to find the bundle path here.
+        // As a temporary workaround, we can fall back on a relative path from the executable.
+        // This is fragile as it relies on the assumption that we know where SwiftPM will
+        // put it, and where the testcases file lives relative to it, but it's
+        // better than just disabling all the tests...
+        let url = exeURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Tests/DocoptTests/testcases.docopt")
+        print(url.path)
+        return url.path
+    }
+
     private func fixturesFilePath() -> String? {
+        #if os(Linux)
+            return fallbackFilePath(from: URL(fileURLWithPath: CommandLine.arguments[0]))
+        #else
         let testBundle: Bundle = Bundle(for: type(of: self))
         guard let path = testBundle.path(forResource: "testcases", ofType: "docopt") else {
-            // SwiftPM currently doesn't support bundles, so if the tests are run with it,
-            // we'll fail to find the bundle path here.
-            // As a temporary workaround, we can fall back on a relative path. This is fragile
-            // as it relies on the assumption that we know where SwiftPM will put the
-            // executable, and where the testcases file lives relative to it, but it's
-            // better than just disabling all the tests...
-            let url = testBundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("DocoptTests").appendingPathComponent("testcases.docopt")
-            return url.path
+            return fallbackFilePath(from: testBundle.bundleURL)
         }
-
         return path
+        #endif
     }
 
     private func fixturesFileContents() -> String {
@@ -82,4 +91,8 @@ class DocoptTestCasesTests: XCTestCase {
         }
         return ""
     }
+
+    static var allTests = [
+        ("testTestCases", testTestCases),
+    ]
 }

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Docopt
+@testable import DocoptTests
 
 XCTMain([
-    testCase(DocoptTestCasesTests.testTestCases),
+    testCase(DocoptTestCasesTests.allTests),
 ])

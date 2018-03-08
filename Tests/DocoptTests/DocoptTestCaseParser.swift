@@ -94,6 +94,8 @@ public struct DocoptTestCaseParser {
         } catch let error1 as NSError {
             error = error1
             expectedOutputJSON = nil
+        } catch {
+            expectedOutputJSON = nil
         }
         if (expectedOutputJSON == nil) {
             NSLog("Error parsing \(expectedOutput) to JSON: \(String(describing: error))")
