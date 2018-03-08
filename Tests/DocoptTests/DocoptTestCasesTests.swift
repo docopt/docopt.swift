@@ -32,7 +32,6 @@ class DocoptTestCasesTests: XCTestCase {
         if let a1 = v1 as? [Any], let a2 = v2 as? [Any] {
             return arraysMatch(a1: a1, a2: a2)
         }
-        
         if let i1 = v1 as? Int, let i2 = v2 as? Int {
             return i1 == i2
         }
@@ -42,15 +41,17 @@ class DocoptTestCasesTests: XCTestCase {
         if let s1 = v1 as? String, let s2 = v2 as? String {
             return s1 == s2
         }
-
+        if let n1 = v1 as? NSNull, let n2 = v2 as? NSNull {
+            return n1 == n2
+        }
         return "\(v1)" == "\(v2)"
     }
-    
+
     static func arraysMatch(a1 : [Any], a2 : [Any]) -> Bool {
         if a1.count != a2.count {
             return false
         }
-        
+
         var index = 0
         for v1 in a1 {
             if !valuesMatch(v1: v1, v2: a2[index]) {
@@ -60,7 +61,7 @@ class DocoptTestCasesTests: XCTestCase {
         }
         return true
     }
-    
+
     static func dictionariesMatch(d1 : [String:Any], d2 : [String:Any]) -> Bool {
         // filter out all matching key/value pairs
         let remaining = d1.filter { (key, value) -> Bool in
@@ -69,11 +70,11 @@ class DocoptTestCasesTests: XCTestCase {
             }
             return true
         }
-        
+
         // there should be nothing left if the dictionaries match
         return remaining.count == 0
     }
-    
+
     func testTestCases() {
         let rawTestCases = fixturesFileContents()
         let parser = DocoptTestCaseParser(rawTestCases)
