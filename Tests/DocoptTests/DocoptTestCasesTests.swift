@@ -30,21 +30,20 @@ class DocoptTestCasesTests: XCTestCase {
 
     static func valuesMatch(v1 : Any, v2 : Any) -> Bool {
         if let a1 = v1 as? [Any], let a2 = v2 as? [Any] {
-            return !arraysMatch(a1: a1, a2: a2)
+            return arraysMatch(a1: a1, a2: a2)
         }
+        
         if let i1 = v1 as? Int, let i2 = v2 as? Int {
             return i1 == i2
-        }
-        if let s1 = v1 as? String, let s2 = v2 as? String {
-            return s1 == s2
         }
         if let b1 = v1 as? Bool, let b2 = v2 as? Bool {
             return b1 == b2
         }
-        if let n1 = v1 as? NSNull, let n2 = v2 as? NSNull {
-            return n1 == n2
+        if let s1 = v1 as? String, let s2 = v2 as? String {
+            return s1 == s2
         }
-        return false
+
+        return "\(v1)" == "\(v2)"
     }
     
     static func arraysMatch(a1 : [Any], a2 : [Any]) -> Bool {
