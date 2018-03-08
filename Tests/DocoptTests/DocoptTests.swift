@@ -347,6 +347,30 @@ class DocoptTests: XCTestCase {
         }
         XCTAssertEqual(result!.count, fixture.count)
     }
+
+    static var allTests = [
+        ("testPatternFlat", testPatternFlat),
+        ("testParseDefaults", testParseDefaults),
+        ("testParseSection", testParseSection),
+        ("testFormalUsage", testFormalUsage),
+        ("testParseArgv", testParseArgv),
+        ("testOptionParse", testOptionParse),
+        ("testOptionName", testOptionName),
+        ("testParsePattern", testParsePattern),
+        ("testOptionMatch", testOptionMatch),
+        ("testArgumentMatch", testArgumentMatch),
+        ("testCommandMatch", testCommandMatch),
+        ("testOptionalMatch", testOptionalMatch),
+        ("testRequiredMatch", testRequiredMatch),
+        ("testEitherMatch", testEitherMatch),
+        ("testOneOrMoreMatch", testOneOrMoreMatch),
+        ("testPatternEither", testPatternEither),
+        ("testFixRepeatingArguments", testFixRepeatingArguments),
+        ("testListArgumentMatch", testListArgumentMatch),
+        ("testBasicPatternMatch", testBasicPatternMatch),
+        ("testSet", testSet),
+        ("testDocopt", testDocopt),
+        ]
 }
 
 internal func ==(lhs: MatchResult, rhs: MatchResult) -> Bool {
