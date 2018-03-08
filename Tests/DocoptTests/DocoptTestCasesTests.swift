@@ -67,9 +67,8 @@ class DocoptTestCasesTests: XCTestCase {
         // This is fragile as it relies on the assumption that we know where SwiftPM will
         // put it, and where the testcases file lives relative to it, but it's
         // better than just disabling all the tests...
-        let url = exeURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Tests/DocoptTests/testcases.docopt")
-        print(url.path)
-        return url.path
+        let path = exeURL.appendingPathComponent("../../../../Tests/DocoptTests/testcases.docopt").standardized.path
+        return path
     }
 
     private func fixturesFilePath() -> String? {
