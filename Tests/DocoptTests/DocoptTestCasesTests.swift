@@ -28,6 +28,53 @@ class DocoptTestCasesTests: XCTestCase {
         XCTAssertNotEqual(fixturesFileContents(), "", "Could not read fixtures file")
     }
 
+    static func valuesMatch(v1 : Any, v2 : Any) -> Bool {
+        if let a1 = v1 as? [Any], let a2 = v2 as? [Any] {
+            return !arraysMatch(a1: a1, a2: a2)
+        }
+        if let i1 = v1 as? Int, let i2 = v2 as? Int {
+            return i1 == i2
+        }
+        if let s1 = v1 as? String, let s2 = v2 as? String {
+            return s1 == s2
+        }
+        if let b1 = v1 as? Bool, let b2 = v2 as? Bool {
+            return b1 == b2
+        }
+        if let n1 = v1 as? NSNull, let n2 = v2 as? NSNull {
+            return n1 == n2
+        }
+        return false
+    }
+    
+    static func arraysMatch(a1 : [Any], a2 : [Any]) -> Bool {
+        if a1.count != a2.count {
+            return false
+        }
+        
+        var index = 0
+        for v1 in a1 {
+            if !valuesMatch(v1: v1, v2: a2[index]) {
+                return false
+            }
+            index += 1
+        }
+        return true
+    }
+    
+    static func dictionariesMatch(d1 : [String:Any], d2 : [String:Any]) -> Bool {
+        // filter out all matching key/value pairs
+        let remaining = d1.filter { (key, value) -> Bool in
+            if let v2 = d2[key] {
+                return !valuesMatch(v1: value, v2: v2)
+            }
+            return true
+        }
+        
+        // there should be nothing left if the dictionaries match
+        return remaining.count == 0
+    }
+    
     func testTestCases() {
         let rawTestCases = fixturesFileContents()
         let parser = DocoptTestCaseParser(rawTestCases)
@@ -42,9 +89,9 @@ class DocoptTestCasesTests: XCTestCase {
                 DocoptError.errorMessage = nil
             }
 
-            if let expectedDictionary = expectedOutput as? NSDictionary,
-               let resultDictionary = result as? NSDictionary {
-                if resultDictionary != expectedDictionary
+            if let expectedDictionary = expectedOutput as? [String:Any],
+            let resultDictionary = result as? [String:Any] {
+                if !DocoptTestCasesTests.dictionariesMatch(d1: expectedDictionary, d2: resultDictionary)
                 {
                     XCTAssert(false,
                     "Test \(testCase.name) failed. Expected:\n\(expectedDictionary)\n\n, got: \(resultDictionary)\n\n")
