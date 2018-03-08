@@ -29,6 +29,9 @@ class DocoptTestCasesTests: XCTestCase {
     }
 
     static func valuesMatch(v1 : Any, v2 : Any) -> Bool {
+        if let d1 = v1 as? [String:Any], let d2 = v2 as? [String:Any] {
+            return dictionariesMatch(d1: d1, d2: d2)
+        }
         if let a1 = v1 as? [Any], let a2 = v2 as? [Any] {
             return arraysMatch(a1: a1, a2: a2)
         }
@@ -89,18 +92,7 @@ class DocoptTestCasesTests: XCTestCase {
                 DocoptError.errorMessage = nil
             }
 
-            if let expectedDictionary = expectedOutput as? [String:Any],
-            let resultDictionary = result as? [String:Any] {
-                if !DocoptTestCasesTests.dictionariesMatch(d1: expectedDictionary, d2: resultDictionary)
-                {
-                    XCTAssert(false,
-                    "Test \(testCase.name) failed. Expected:\n\(expectedDictionary)\n\n, got: \(resultDictionary)\n\n")
-                }
-            } else if let expectedString = expectedOutput as? String,
-                      let resultString = result as? String {
-                XCTAssertTrue(resultString == expectedString,
-                    "Test \(testCase.name) failed. Expected:\n\(expectedString)\n\n, got: \(resultString)\n\n")
-            } else {
+            if !DocoptTestCasesTests.valuesMatch(v1: expectedOutput, v2: result) {
                 XCTFail("Test \(testCase.name) failed. Expected:\n\(expectedOutput)\n\n, got: \(result)\n\n\(testCase.usage)\n\(String(describing: testCase.arguments))\n\n")
             }
         }
@@ -112,8 +104,8 @@ class DocoptTestCasesTests: XCTestCase {
         // we'll fail to find the bundle path here.
         // As a temporary workaround, we can fall back on a relative path from the executable.
         // This is fragile as it relies on the assumption that we know where SwiftPM will
-        // put it, and where the testcases file lives relative to it, but it's
-        // better than just disabling all the tests...
+        // put the build products, and where the testcases file lives relative to them,
+        // but it's better than just disabling all the tests...
         let path = exeURL.appendingPathComponent("../../../../Tests/DocoptTests/testcases.docopt").standardized.path
         return path
     }
