@@ -340,7 +340,7 @@ class DocoptTests: XCTestCase {
     func testDocopt() {
         let doc = "Usage: prog [-v] A\n\n           Options: -v  Be verbose."
         let result = Docopt(doc, argv: ["arg"]).result
-        let fixture = ["-v": false, "A": "arg"]
+        let fixture : [String:Any] = ["-v": false, "A": "arg"]
         for (key, value) in result!
         {
             XCTAssertEqual(value as! NSObject, fixture[key]! as! NSObject)
