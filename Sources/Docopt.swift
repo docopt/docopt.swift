@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Darwin
 
 @objc
 open class Docopt : NSObject {
