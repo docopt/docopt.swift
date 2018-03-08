@@ -11,12 +11,12 @@ import Foundation
 public class DocoptTestCase {
     public var name: String = ""
     public var usage: String = ""
-    
+
     public let programName: String
     public let arguments: [String]?
-    public let expectedOutput: AnyObject
-    
-    public init(_ programName: String, arguments: [String]?, expectedOutput: AnyObject) {
+    public let expectedOutput: Any
+
+    public init(_ programName: String, arguments: [String]?, expectedOutput: Any) {
         self.programName = programName
         self.arguments = arguments
         self.expectedOutput = expectedOutput

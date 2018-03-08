@@ -18,7 +18,7 @@ internal class Command: Argument {
             let pattern = left[i]
             if pattern is Argument {
                 if pattern.value as? String == self.name {
-                    return (i, Command(self.name, value: true as AnyObject))
+                    return (i, Command(self.name, value: true))
                 }
             }
         }

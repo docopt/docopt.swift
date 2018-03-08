@@ -23,21 +23,21 @@ class DocoptTestCasesTests: XCTestCase {
             XCTAssertTrue(exists, "Fixtures file testcases.docopt does not exist in testing bundle")
         }
     }
-    
+
     func testFixturesFileCanBeOpened() {
         XCTAssertNotEqual(fixturesFileContents(), "", "Could not read fixtures file")
     }
-    
+
     func testTestCases() {
         let rawTestCases = fixturesFileContents()
         let parser = DocoptTestCaseParser(rawTestCases)
-        
+
         for testCase in parser.testCases {
-            let expectedOutput: AnyObject = testCase.expectedOutput
-            var result: AnyObject = "user-error" as AnyObject
+            let expectedOutput: Any = testCase.expectedOutput
+            var result: Any = "user-error"
             let opt = Docopt(testCase.usage, argv: testCase.arguments)
             if DocoptError.errorMessage == nil {
-                result = opt.result as AnyObject
+                result = opt.result
             } else {
                 DocoptError.errorMessage = nil
             }
@@ -58,7 +58,7 @@ class DocoptTestCasesTests: XCTestCase {
             }
         }
     }
-    
+
     private func fixturesFilePath() -> String? {
         let testBundle: Bundle = Bundle(for: type(of: self))
         guard let path = testBundle.path(forResource: "testcases", ofType: "docopt") else {
@@ -71,10 +71,10 @@ class DocoptTestCasesTests: XCTestCase {
             let url = testBundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("DocoptTests").appendingPathComponent("testcases.docopt")
             return url.path
         }
-        
+
         return path
     }
-    
+
     private func fixturesFileContents() -> String {
         if let filePath = self.fixturesFilePath() {
             let fileContents = try! String(contentsOfFile: filePath, encoding: String.Encoding.utf8)

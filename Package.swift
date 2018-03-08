@@ -10,12 +10,9 @@ let package = Package(
     targets: [
         .target(
             name: "Docopt",
-            path: "Sources"
-        ),
+            dependencies: []),
          .testTarget(
              name: "DocoptTests",
-             dependencies: ["Docopt"],
-             path: "DocoptTests"
-         )
+             dependencies: ["Docopt"])
     ]
 )
