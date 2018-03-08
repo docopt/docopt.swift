@@ -83,7 +83,7 @@ public struct DocoptTestCaseParser {
         let programName: String = inputComponents.remove(at: 0) // first part
 
         var error : NSError?
-        let jsonData: NSData? = expectedOutput.data(using: String.Encoding.utf8, allowLossyConversion: false) as NSData?
+        let jsonData = expectedOutput.data(using: String.Encoding.utf8, allowLossyConversion: false)
         if jsonData == nil {
             NSLog("Error parsing \(expectedOutput) to JSON: \(String(describing: error))")
             return nil
