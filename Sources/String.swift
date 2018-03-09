@@ -23,18 +23,18 @@ internal extension String {
     
     func findAll(_ regex: String, flags: NSRegularExpression.Options) -> [String] {
         let re = try! NSRegularExpression(pattern: regex, options: flags)
-        let all = NSMakeRange(0, self.characters.count)
+        let all = NSMakeRange(0, self.count)
         let matches = re.matches(in: self, options: [], range: all)
         return matches.map {self[$0.range(at: 1)].strip()}
     }
     
     func split() -> [String] {
-        return self.characters.split(whereSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
+        return self.split(whereSeparator: {$0 == " " || $0 == "\n"}).map(String.init)
     }
     
     func split(_ regex: String) -> [String] {
         let re = try! NSRegularExpression(pattern: regex, options: .dotMatchesLineSeparators)
-        let all = NSMakeRange(0, self.characters.count)
+        let all = NSMakeRange(0, self.count)
         var result = [String]()
         let matches = re.matches(in: self, options: [], range: all)
         if matches.count > 0 {
@@ -52,7 +52,7 @@ internal extension String {
                     
                     result.append(self[range])
                     lastEnd = range.location + range.length
-                    if lastEnd == self.characters.count {
+                    if lastEnd == self.count {
                         // from python docs: If there are capturing groups in the separator and it matches at the start of the string,
                         // the result will start with an empty string. The same holds for the end of the string:
                         result.append("")
@@ -62,8 +62,8 @@ internal extension String {
                     lastEnd = match.range.location + match.range.length
                 }
             }
-            if lastEnd != self.characters.count {
-                result.append(self[lastEnd..<self.characters.count])
+            if lastEnd != self.count {
+                result.append(self[lastEnd..<self.count])
             }
             return result
         }
@@ -77,7 +77,7 @@ internal extension String {
     }
     
     subscript(range: Range<Int>) -> String {
-      return String(self[characters.index(startIndex, offsetBy: range.lowerBound)..<characters.index(startIndex, offsetBy: range.upperBound)])
+      return String(self[self.index(startIndex, offsetBy: range.lowerBound)..<self.index(startIndex, offsetBy: range.upperBound)])
     }
 
     subscript(range: NSRange) -> String {
