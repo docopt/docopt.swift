@@ -26,7 +26,7 @@ public struct DocoptTestCaseParser {
     
     private func removeComments(string: String) -> String {
         let removeCommentsRegEx = try! NSRegularExpression(pattern: "(?m)#.*$", options: [])
-        let fullRange: NSRange = NSMakeRange(0, string.characters.count)
+        let fullRange: NSRange = NSMakeRange(0, string.count)
         return removeCommentsRegEx.stringByReplacingMatches(in: string, options: [], range: fullRange, withTemplate: "")
     }
     
