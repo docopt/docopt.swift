@@ -1,8 +1,29 @@
-language: objective-c
-osx_image: xcode9
-install:
- - gem install xcpretty
-script:
-  - xcodebuild -scheme 'Docopt' clean build test | xcpretty -c
+matrix:
+  include:
+    - os: linux
+      language: generic
+      dist: trusty
+      sudo: required
+      env:
+        - SWIFT_BRANCH=swift-4.1-branch
+        - SWIFT_VERSION=swift-4.1-DEVELOPMENT-SNAPSHOT-2018-03-09-a
+      install:
+        - sudo apt-get install clang libicu-dev
+        - mkdir swift
+        - curl https://swift.org/builds/$SWIFT_BRANCH/ubuntu1404/$SWIFT_VERSION/$SWIFT_VERSION-ubuntu14.04.tar.gz -s | tar xz -C swift &> /dev/null
+        - export PATH=$(pwd)/swift/$SWIFT_VERSION-ubuntu14.04/usr/bin:$PATH
+        - swift package update
+      script:
+        - swift test
+
+    - os: osx
+      language: objective-c
+      osx_image: xcode9
+      install:
+        - gem install xcpretty
+      script:
+        - xcodebuild -scheme 'Docopt' clean build test | xcpretty -c
+
+
 notifications:
   email: false
