@@ -121,7 +121,7 @@ func ==(lhs: LeafPattern, rhs: LeafPattern) -> Bool {
     } else if let lval = lhs.value as? Int, let rval = rhs.value as? Int {
         valEqual = lval == rval
     } else {
-        valEqual = lhs.value as? AnyObject === rhs.value as? AnyObject
+        valEqual = lhs.value as AnyObject === rhs.value as AnyObject
     }
     return lhs.name == rhs.name && valEqual
 }
