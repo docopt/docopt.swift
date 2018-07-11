@@ -25,12 +25,12 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
             return self.description.hashValue
         }
     }
-    
+
     func fixIdentities(_ unq: [LeafPattern]? = nil) {}
-    
+
     func fixRepeatingArguments() -> Pattern {
         let either = Pattern.transform(self).children.map { ($0 as! Required).children }
-        
+
         for c in either {
             for ch in c {
                 let filteredChildren = c.filter {$0 == ch}
@@ -39,23 +39,23 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
                         let e = child as! LeafPattern
                         if ((e is Argument) && !(e is Command)) || ((e is Option) && (e as! Option).argCount != 0) {
                             if e.value == nil {
-                                e.value = [String]() as AnyObject
+                                e.value = [String]()
                             } else if !(e.value is [String]) {
-                                e.value = String(describing:e.value!).split() as AnyObject
+                                e.value = String(describing:e.value!).split()
                             }
                         }
                         if (e is Command) || ((e is Option) && (e as! Option).argCount == 0) {
-                            e.value = 0 as AnyObject
+                            e.value = 0
                             e.valueType = .int
                         }
                     }
                 }
             }
         }
-        
+
         return self
     }
-    
+
     static func isInParents(_ child: Pattern) -> Bool {
         return (child as? Required != nil)
             || (child as? Optional != nil)
@@ -63,18 +63,18 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
             || (child as? Either != nil)
             || (child as? OneOrMore != nil)
     }
-    
+
     static func transform(_ pattern: Pattern) -> Either {
         var result = [[Pattern]]()
         var groups = [[pattern]]
         while !groups.isEmpty {
             var children = groups.remove(at: 0)
             let child: BranchPattern? = children.filter({ self.isInParents($0) }).first as? BranchPattern
-            
+
             if let child = child {
                 let index = children.index(of: child)!
                 children.remove(at: index)
-                
+
                 if child is Either {
                     for pattern in child.children {
                         groups.append([pattern] + children)
@@ -88,7 +88,7 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
                 result.append(children)
             }
         }
-        
+
         return Either(result.map {Required($0)})
     }
 
@@ -99,11 +99,11 @@ internal class Pattern: Equatable, Hashable, CustomStringConvertible {
     func flat<T: Pattern>(_: T.Type) -> [T] {  // abstract
         return []
     }
-    
+
     func match<T: Pattern>(_ left: T, collected clld: [T]? = nil) -> MatchResult {
         return match([left], collected: clld)
     }
-    
+
     func match<T: Pattern>(_ left: [T], collected clld: [T]? = nil) -> MatchResult {  // abstract
         return (false, [], [])
     }
