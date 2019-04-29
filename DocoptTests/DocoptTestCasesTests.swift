@@ -23,15 +23,15 @@ class DocoptTestCasesTests: XCTestCase {
             XCTAssertTrue(exists, "Fixtures file testcases.docopt does not exist in testing bundle")
         }
     }
-    
+
     func testFixturesFileCanBeOpened() {
         XCTAssertNotEqual(fixturesFileContents(), "", "Could not read fixtures file")
     }
-    
+
     func testTestCases() {
         let rawTestCases = fixturesFileContents()
         let parser = DocoptTestCaseParser(rawTestCases)
-        
+
         for testCase in parser.testCases {
             let expectedOutput: AnyObject = testCase.expectedOutput
             var result: AnyObject = "user-error" as AnyObject
@@ -58,12 +58,26 @@ class DocoptTestCasesTests: XCTestCase {
             }
         }
     }
-    
+
+    private func fallbackFilePath(from exeURL : URL) -> String? {
+        // SwiftPM currently doesn't support building bundles, so if the tests are run
+        // with SwiftPM we'll fail to find the bundle path here.
+        // As a temporary workaround, we can fall back on a relative path from the executable.
+        // This is fragile as it relies on the assumption that we know where SwiftPM will
+        // put the build products, and where the testcases file lives relative to them,
+        // but it's better than just disabling all the tests...
+        let path = exeURL.appendingPathComponent("../../../../Tests/DocoptTests/testcases.docopt").standardized.path
+        return path
+    }
+
     private func fixturesFilePath() -> String? {
         let testBundle: Bundle = Bundle(for: type(of: self))
-        return testBundle.path(forResource: "testcases", ofType: "docopt")
+        guard let path = testBundle.path(forResource: "testcases", ofType: "docopt") else {
+            return fallbackFilePath(from: testBundle.bundleURL)
+        }
+        return path
     }
-    
+
     private func fixturesFileContents() -> String {
         if let filePath = self.fixturesFilePath() {
             let fileContents = try! String(contentsOfFile: filePath, encoding: String.Encoding.utf8)
